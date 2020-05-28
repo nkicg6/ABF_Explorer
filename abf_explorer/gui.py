@@ -3,6 +3,11 @@
 # https://doc.qt.io/qt-5/layout.html
 # https://pythonbasics.org/pyqt-grid/
 # examples python -m pyqtgraph.examples
+# plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
+# plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
+# TODO! Make the sample buttons work.
+# TODO! add keyboard shortcuts to activate those fns too
+
 # CONVENTIONS!
 # if it is a widget, it has widget in the name.
 
@@ -32,7 +37,25 @@ class PlotWidget(pg.GraphicsWindow):
         self.mainPlot = self.addPlot(title="main plot test")
 
     def plot_points(plotdict):
-        self.mainPlot.plot(plotdict['x'], plotdict['y'])
+        self.mainPlot.plot(plotdict['x'], plotdict['y'], name=plotdict['name'])
+        self.mainPlot.addLegend()
+        print("Plotting called")
+
+    def clear_plot():
+        self.mainPlot.clear()
+        print("cleared plot")
+
+
+class FileDisplay(qt.QWidget):
+    def __init__(self, parent):
+        super().__init__(parent=parent)
+        self.button_plot = qt.QPushButton("plot")
+        self.button_clear_plot = qt.QPushButton("clear plot")
+        self.layout = qt.QGridLayout()
+        self.layout.addWidget(self.button_plot, 0, 0)
+        self.layout.addWidget(self.button_clear_plot, 1, 0)
+        self.setLayout(self.layout)
+
 
 class ABFExplorer:
     def __init__(self, cmdflags):
@@ -41,7 +64,8 @@ class ABFExplorer:
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
 
-        self.leftSide = qt.QPushButton("Plot")
+        self.leftSide = FileDisplay(parent=self.centralWidget)
+
 
         self.bottomSide = qt.QLabel()
         self.bottomSide.setText("Bottom side")
