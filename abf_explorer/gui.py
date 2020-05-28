@@ -9,6 +9,8 @@ import PyQt5.QtWidgets as qt
 from PyQt5 import QtCore, QtGui
 import pyqtgraph as pg
 
+pg.setConfigOption('background', 'w')
+pg.setConfigOption('foreground', 'k')
 
 class MyWidget(qt.QWidget):
     def __init__(self):
@@ -37,7 +39,6 @@ class Main:
         self.baseWidget.setGeometry(50,50,600,400)
         self.baseWidget.show()
         self.mainApp.exec_()
-
 
 if __name__ == "__main__":
         Main(sys.argv)
