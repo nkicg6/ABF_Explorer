@@ -5,8 +5,8 @@
 # examples python -m pyqtgraph.examples
 # plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
-# TODO! Make the sample buttons work.
 # TODO! add keyboard shortcuts to activate those fns too
+# TODO! choose file widget, more buttons to bottom placeholder.
 
 # CONVENTIONS!
 # if it is a widget, it has widget in the name.
@@ -54,31 +54,36 @@ class FileDisplay(qt.QWidget):
 
 
 class ABFExplorer:
+    """main abf explorer class contains all widgets and defines all commands"""
     def __init__(self, cmdflags):
         self.mainApp = qt.QApplication([]) # command line flags if parsing
         self.mainWindow= qt.QMainWindow()
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
+        self.mainWindow.setWindowTitle("ABF explorer v0.0-dev")
 
-        self.leftSide = FileDisplay(parent=self.centralWidget)
+        # make widgets
+        self.leftSide = FileDisplay(parent=self.centralWidget) # PLACEHOLDER
+        self.bottomSide = qt.QLabel() # PLACEHOLDER
+        self.bottomSide.setText("Bottom side") # PLACEHOLDER
+        self.plotWidget = PlotWidget(parent=self.centralWidget) # PLACEHOLDER
 
-
-        self.bottomSide = qt.QLabel()
-        self.bottomSide.setText("Bottom side")
-
-        self.plotWidget = PlotWidget(parent=self.centralWidget)
-        self.mainWindow.setWindowTitle("abf explorer")
-        self.mainLayout = qt.QGridLayout()
         # main widget layout
+        self.mainLayout = qt.QGridLayout()
         self.mainLayout.addWidget(self.leftSide, 0,0)
         self.mainLayout.addWidget(self.plotWidget, 0,1)
         self.mainLayout.addWidget(self.bottomSide, 1,0)
+        self.centralWidget.setLayout(self.mainLayout)
 
-        # event driven
+        # events
         self.leftSide.button_clear_plot.clicked.connect(self.plotWidget.clear_plot)
         self.leftSide.button_plot.clicked.connect(self.TEMP_gen_data)
+
+        # keyboard shortcuts
+        self.shortcut_update_plot = qt.QShortcut(QtGui.QKeySequence("Tab")).activated.connect(self.TEMP_gen_data)
+        #self.shortcut_clear_plot = qt.Qshortcut()
+
         # another widget
-        self.centralWidget.setLayout(self.mainLayout)
         self.mainWindow.setGeometry(50,50,600,400)
         self.mainWindow.show()
         self.mainApp.exec_()
