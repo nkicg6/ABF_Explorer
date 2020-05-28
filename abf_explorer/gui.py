@@ -21,14 +21,6 @@ import pyqtgraph as pg
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
 
-class MyWidget(qt.QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle("abf explorer")
-        #self.layout = self.s.QVBoxLayout()
-        self.show()
-
-
 class PlotWidget(pg.GraphicsWindow):
     def __init__(self, parent):
         super().__init__(parent = parent)
@@ -36,21 +28,25 @@ class PlotWidget(pg.GraphicsWindow):
         self.y = np.random.randn(20)
         self.mainPlot = self.addPlot(title="main plot test")
 
-    def plot_points(plotdict):
-        self.mainPlot.plot(plotdict['x'], plotdict['y'], name=plotdict['name'])
-        self.mainPlot.addLegend()
+    def update_plot(self, plotdict):
+        self.mainPlot.plot(plotdict['x'], plotdict['y'],
+                           name=plotdict['name'])
+        self.mainPlot.setTitle(plotdict['name'])
+        #self.mainPlot.addLegend()
         print("Plotting called")
 
-    def clear_plot():
+    def clear_plot(self, e):
         self.mainPlot.clear()
-        print("cleared plot")
+        print(f"cleared plot")
 
 
 class FileDisplay(qt.QWidget):
     def __init__(self, parent):
         super().__init__(parent=parent)
         self.button_plot = qt.QPushButton("plot")
+        self.button_plot.setToolTip("add selected data to the plot ('Tab')")
         self.button_clear_plot = qt.QPushButton("clear plot")
+        self.button_clear_plot.setToolTip("clear plot ('c')")
         self.layout = qt.QGridLayout()
         self.layout.addWidget(self.button_plot, 0, 0)
         self.layout.addWidget(self.button_clear_plot, 1, 0)
@@ -77,11 +73,20 @@ class ABFExplorer:
         self.mainLayout.addWidget(self.leftSide, 0,0)
         self.mainLayout.addWidget(self.plotWidget, 0,1)
         self.mainLayout.addWidget(self.bottomSide, 1,0)
+
+        # event driven
+        self.leftSide.button_clear_plot.clicked.connect(self.plotWidget.clear_plot)
+        self.leftSide.button_plot.clicked.connect(self.TEMP_gen_data)
         # another widget
         self.centralWidget.setLayout(self.mainLayout)
         self.mainWindow.setGeometry(50,50,600,400)
         self.mainWindow.show()
         self.mainApp.exec_()
+
+    def TEMP_gen_data(self):
+        d = {'x':np.random.randn(20), 'y':np.random.randn(20),
+             'name':f'plot item {np.random.randn()}'}
+        self.plotWidget.update_plot(d)
 
 if __name__ == "__main__":
         ABFExplorer(sys.argv)
