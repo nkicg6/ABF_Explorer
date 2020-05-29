@@ -1,0 +1,16 @@
+* abf-explorer
+A simple [[https://riverbankcomputing.com/software/pyqt/download5][PyQt5]] and [[https://pyqtgraph.readthedocs.io/en/latest/][pyqtgraph]] based gui to view, annotate, and perform semi-automated analysis on axon binary format =ABF= files. 
+
+We use The excellent pyABF package (https://github.com/swharden/pyABF) to do the hard work of parsing ABF files, Thanks [[https://github.com/swharden/][Scott!]]
+
+The idea is to provide a *simple*, cross platform (shar-able) app for quickly viewing ABF files without a bunch of python/matlab/etc boilerplate. Eventually I will add functions for semi-automated analysis.
+
+* Development
+** testing 
+pytest
+
+** naming conventions
+- =vars= should start with =var_*=
+- private vars and functions (functions/vars that will not be called or accessed by the controller) should start with =_=
+- Qt widgets like buttons, listboxes, labels (=PyQt5.QWidget.*=), etc. should start with what the thing is, followed by an underscore and a more descriptive name. (=button_select_abfs=)
+- Divide the classes into =#VARS=, =widgets=, =layout=, and =Actions=. 
