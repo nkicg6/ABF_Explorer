@@ -35,7 +35,7 @@ class PlotWidget(pg.GraphicsWindow):
         #self.mainPlot.addLegend()
         print("Plotting called")
 
-    def clear_plot(self, e):
+    def clear_plot(self, e=None):
         self.mainPlot.clear()
         print(f"cleared plot")
 
@@ -80,7 +80,12 @@ class ABFExplorer:
         self.leftSide.button_plot.clicked.connect(self.TEMP_gen_data)
 
         # keyboard shortcuts
-        self.shortcut_update_plot = qt.QShortcut(QtGui.QKeySequence("Tab")).activated.connect(self.TEMP_gen_data)
+        self.shortcut_update_plot = qt.QShortcut(QtGui.QKeySequence("Tab"),
+                                                 self.leftSide.button_plot)
+        self.shortcut_clear_plot = qt.QShortcut(QtGui.QKeySequence("c"),
+                                                self.leftSide.button_clear_plot)
+        self.shortcut_update_plot.activated.connect(self.TEMP_gen_data)
+        self.shortcut_clear_plot.activated.connect(self.plotWidget.clear_plot)
         #self.shortcut_clear_plot = qt.Qshortcut()
 
         # another widget
