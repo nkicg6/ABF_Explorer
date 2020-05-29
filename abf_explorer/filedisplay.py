@@ -42,3 +42,9 @@ class FileDisplay(qt.QWidget):
         sorted_keys = sorted(self.var_selected_abf_files_dict.keys())
         for n,f in enumerate(sorted_keys):
             self.listbox_file_list.insertItem(n,f)
+        default_selection = self.listbox_file_list.item(0)
+        self.listbox_file_list.setCurrentItem(default_selection)
+
+    def signal_item_changed():
+        #https://doc.qt.io/qt-5/qlistwidget.html#itemActivated
+        pass
