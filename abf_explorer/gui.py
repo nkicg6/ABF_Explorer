@@ -10,7 +10,6 @@
 # CONVENTIONS!
 # if it is a widget, it has widget in the name.
 
-import os
 import sys
 import random
 import numpy as np
@@ -18,9 +17,10 @@ import PyQt5.QtWidgets as qt
 from PyQt5 import QtCore, QtGui
 import pyqtgraph as pg
 
+from filedisplay import FileDisplay
+
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
-DEBUG_DIR = "/Users/nick/Dropbox/lab_notebook/projects_and_data/mnc/analysis_and_data/patch_clamp/data/passive_membrane_properties_2019-10-26"
 
 class PlotWidget(pg.GraphicsWindow):
     def __init__(self, parent):
@@ -52,33 +52,6 @@ class PlotControls(qt.QWidget):
         self.layout.addWidget(self.button_plot, 0, 0)
         self.layout.addWidget(self.button_clear_plot, 1, 0)
         self.setLayout(self.layout)
-
-
-class FileDisplay(qt.QWidget):
-    def __init__(self, parent):
-        super().__init__(parent=parent)
-        self.layout = qt.QVBoxLayout()
-        self._workingDir = DEBUG_DIR # os.path.expanduser("~") # start home, replace with prev dir after selection
-        self.selected_abf_files_dict = dict
-        self.button_select_abf = qt.QPushButton("Choose file")
-        self.tempButton1 = qt.QPushButton("Another button")
-        self.layout.addWidget(self.button_select_abf)
-        self.layout.addWidget(self.tempButton1)
-        self.setLayout(self.layout)
-        # file button
-        self.button_select_abf.clicked.connect(self._choose_directory)
-
-    def _choose_directory(self):
-        abf_dir = str(qt.QFileDialog.getExistingDirectory(self, "Select dir", self._workingDir))
-        if not abf_dir:
-            return
-        self._filter_dir(abf_dir)
-
-    def _filter_dir(self, abf_dir):
-        self._workingDir = abf_dir
-        self.selected_abf_files_dict = {f:os.path.join(abf_dir, f) for f in os.listdir(abf_dir) if f.endswith(".abf")}
-        print(self.selected_abf_files_dict.keys())
-
 
 class ABFExplorer:
     """main abf explorer class contains all widgets and coordinates all actions"""
