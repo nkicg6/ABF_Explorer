@@ -5,12 +5,12 @@
 # examples python -m pyqtgraph.examples
 # plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
-# TODO! add keyboard shortcuts to activate those fns too
 # TODO! choose file widget, more buttons to bottom placeholder.
 
 # CONVENTIONS!
 # if it is a widget, it has widget in the name.
 
+import os
 import sys
 import random
 import numpy as np
@@ -20,6 +20,7 @@ import pyqtgraph as pg
 
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
+DEBUG_DIR = "/Users/nick/Dropbox/lab_notebook/projects_and_data/mnc/analysis_and_data/patch_clamp/data/passive_membrane_properties_2019-10-26"
 
 class PlotWidget(pg.GraphicsWindow):
     def __init__(self, parent):
@@ -40,7 +41,7 @@ class PlotWidget(pg.GraphicsWindow):
         print(f"cleared plot")
 
 
-class FileDisplay(qt.QWidget):
+class PlotControls(qt.QWidget):
     def __init__(self, parent):
         super().__init__(parent=parent)
         self.button_plot = qt.QPushButton("plot")
@@ -53,8 +54,34 @@ class FileDisplay(qt.QWidget):
         self.setLayout(self.layout)
 
 
+class FileDisplay(qt.QWidget):
+    def __init__(self, parent):
+        super().__init__(parent=parent)
+        self.layout = qt.QVBoxLayout()
+        self._workingDir = DEBUG_DIR # os.path.expanduser("~") # start home, replace with prev dir after selection
+        self.selected_abf_files_dict = dict
+        self.button_select_abf = qt.QPushButton("Choose file")
+        self.tempButton1 = qt.QPushButton("Another button")
+        self.layout.addWidget(self.button_select_abf)
+        self.layout.addWidget(self.tempButton1)
+        self.setLayout(self.layout)
+        # file button
+        self.button_select_abf.clicked.connect(self._choose_directory)
+
+    def _choose_directory(self):
+        abf_dir = str(qt.QFileDialog.getExistingDirectory(self, "Select dir", self._workingDir))
+        if not abf_dir:
+            return
+        self._filter_dir(abf_dir)
+
+    def _filter_dir(self, abf_dir):
+        self._workingDir = abf_dir
+        self.selected_abf_files_dict = {f:os.path.join(abf_dir, f) for f in os.listdir(abf_dir) if f.endswith(".abf")}
+        print(self.selected_abf_files_dict.keys())
+
+
 class ABFExplorer:
-    """main abf explorer class contains all widgets and defines all commands"""
+    """main abf explorer class contains all widgets and coordinates all actions"""
     def __init__(self, cmdflags):
         self.mainApp = qt.QApplication([]) # command line flags if parsing
         self.mainWindow= qt.QMainWindow()
@@ -63,32 +90,30 @@ class ABFExplorer:
         self.mainWindow.setWindowTitle("ABF explorer v0.0-dev")
 
         # make widgets
-        self.leftSide = FileDisplay(parent=self.centralWidget) # PLACEHOLDER
-        self.bottomSide = qt.QLabel() # PLACEHOLDER
-        self.bottomSide.setText("Bottom side") # PLACEHOLDER
-        self.plotWidget = PlotWidget(parent=self.centralWidget) # PLACEHOLDER
+        self.plotControlWidget= PlotControls(parent=self.centralWidget)
+        self.plotWidget = PlotWidget(parent=self.centralWidget)
+        self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
 
         # main widget layout
         self.mainLayout = qt.QGridLayout()
-        self.mainLayout.addWidget(self.leftSide, 0,0)
+        self.mainLayout.addWidget(self.fileExplorerWidget, 0,0)
         self.mainLayout.addWidget(self.plotWidget, 0,1)
-        self.mainLayout.addWidget(self.bottomSide, 1,0)
+        self.mainLayout.addWidget(self.plotControlWidget, 1,0)
         self.centralWidget.setLayout(self.mainLayout)
 
         # events
-        self.leftSide.button_clear_plot.clicked.connect(self.plotWidget.clear_plot)
-        self.leftSide.button_plot.clicked.connect(self.TEMP_gen_data)
+        self.plotControlWidget.button_clear_plot.clicked.connect(self.plotWidget.clear_plot)
+        self.plotControlWidget.button_plot.clicked.connect(self.TEMP_gen_data)
 
         # keyboard shortcuts
         self.shortcut_update_plot = qt.QShortcut(QtGui.QKeySequence("Tab"),
-                                                 self.leftSide.button_plot)
+                                                 self.plotControlWidget.button_plot)
         self.shortcut_clear_plot = qt.QShortcut(QtGui.QKeySequence("c"),
-                                                self.leftSide.button_clear_plot)
+                                                self.plotControlWidget.button_clear_plot)
         self.shortcut_update_plot.activated.connect(self.TEMP_gen_data)
         self.shortcut_clear_plot.activated.connect(self.plotWidget.clear_plot)
-        #self.shortcut_clear_plot = qt.Qshortcut()
 
-        # another widget
+        # geometry adn run
         self.mainWindow.setGeometry(50,50,600,400)
         self.mainWindow.show()
         self.mainApp.exec_()
