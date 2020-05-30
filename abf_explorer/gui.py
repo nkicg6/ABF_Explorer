@@ -5,7 +5,7 @@
 # examples python -m pyqtgraph.examples
 # plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
-# TODO! see choose file.
+# TODO! setup file info widget, have text input change when selection changes.
 
 import sys
 import random
