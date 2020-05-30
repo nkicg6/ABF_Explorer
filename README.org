@@ -14,3 +14,6 @@ pytest
 - private vars and functions (functions/vars that will not be called or accessed by the controller) should start with =_=
 - Qt widgets like buttons, listboxes, labels (=PyQt5.QWidget.*=), etc. should start with what the thing is, followed by an underscore and a more descriptive name. (=button_select_abfs=)
 - Divide the classes into =#VARS=, =widgets=, =layout=, and =Actions=. 
+
+** Best docs are pyside:
+- https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth

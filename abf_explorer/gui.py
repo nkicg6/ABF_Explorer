@@ -35,6 +35,7 @@ class PlotWidget(pg.GraphicsWindow):
 
     def clear_plot(self, e=None):
         self.mainPlot.clear()
+        self.mainPlot.setTitle("")
         print(f"cleared plot")
 
 
@@ -66,9 +67,14 @@ class ABFExplorer:
         self.plotWidget = PlotWidget(parent=self.centralWidget)
         self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
 
-        # main widget layout
+        # main widget layout and geometry
         self.mainLayout = qt.QGridLayout()
-        self.mainLayout.addWidget(self.fileExplorerWidget, 0, 0)
+        self.mainLayout.setColumnStretch(0,1)
+        self.mainLayout.setColumnStretch(1,5)
+        self.mainLayout.setColumnMinimumWidth(0,15)
+        self.mainLayout.setColumnMinimumWidth(1,400)
+
+        self.mainLayout.addWidget(self.fileExplorerWidget, 0, 0, 1, 1)
         self.mainLayout.addWidget(self.plotWidget, 0, 1)
         self.mainLayout.addWidget(self.plotControlWidget, 1, 0)
         self.centralWidget.setLayout(self.mainLayout)
@@ -90,7 +96,7 @@ class ABFExplorer:
         self.shortcut_clear_plot.activated.connect(self.plotWidget.clear_plot)
 
         # geometry adn run
-        self.mainWindow.setGeometry(50, 50, 600, 400)
+        self.mainWindow.setGeometry(50, 50, 900, 600)
         self.mainWindow.show()
         self.mainApp.exec_()
 
