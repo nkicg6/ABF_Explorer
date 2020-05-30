@@ -1,5 +1,6 @@
 import os
 import PyQt5.QtWidgets as qt
+
 # https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part1-example.html#part-1-designing-the-user-interface
 # TODO! signal changes. Print new file on change. This may need to be set in the main controller class? Alternatively, could add a listener to a VAR here for the main class to watch and take action.
 
@@ -62,4 +63,6 @@ class FileDisplay(qt.QWidget):
         # https://doc.qt.io/qt-5/qlistwidget.html#itemActivated
         # signal returns a pointer to the [*selection, *previous selection]
         self.var_current_selection_short_name = args[0].text()
-        self.var_current_selection_full_path = self.var_selected_abf_files_dict.get(args[0].text())
+        self.var_current_selection_full_path = self.var_selected_abf_files_dict.get(
+            args[0].text()
+        )

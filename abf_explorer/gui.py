@@ -69,10 +69,10 @@ class ABFExplorer:
 
         # main widget layout and geometry
         self.mainLayout = qt.QGridLayout()
-        self.mainLayout.setColumnStretch(0,1)
-        self.mainLayout.setColumnStretch(1,5)
-        self.mainLayout.setColumnMinimumWidth(0,15)
-        self.mainLayout.setColumnMinimumWidth(1,400)
+        self.mainLayout.setColumnStretch(0, 1)
+        self.mainLayout.setColumnStretch(1, 5)
+        self.mainLayout.setColumnMinimumWidth(0, 15)
+        self.mainLayout.setColumnMinimumWidth(1, 400)
 
         self.mainLayout.addWidget(self.fileExplorerWidget, 0, 0, 1, 1)
         self.mainLayout.addWidget(self.plotWidget, 0, 1)
