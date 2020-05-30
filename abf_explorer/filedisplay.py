@@ -61,4 +61,5 @@ class FileDisplay(qt.QWidget):
     def signal_item_changed(self, *args):
         # https://doc.qt.io/qt-5/qlistwidget.html#itemActivated
         # signal returns a pointer to the [*selection, *previous selection]
-        self.var_current_selection = args[0].text()
+        self.var_current_selection_short_name = args[0].text()
+        self.var_current_selection_full_path = self.var_selected_abf_files_dict.get(args[0].text())
