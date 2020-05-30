@@ -14,6 +14,7 @@ class FileDisplay(qt.QWidget):
         # VARS
         self._var_workingDir = DEBUG_DIR  # os.path.expanduser("~") # start home, replace with prev dir after selection
         self.var_selected_abf_files_dict = dict
+        self.var_current_selection = str
 
         # button and display
         self.button_select_abf = qt.QPushButton("Choose file")
@@ -27,6 +28,7 @@ class FileDisplay(qt.QWidget):
 
         # Actions
         self.button_select_abf.clicked.connect(self._choose_directory)
+        self.listbox_file_list.currentItemChanged.connect(self.signal_item_changed)
 
     def _choose_directory(self):
         abf_dir = str(
@@ -35,6 +37,7 @@ class FileDisplay(qt.QWidget):
             )
         )
         if not abf_dir:
+            print("[DEBUG] _choose_directory failed")
             return
         self._filter_dir(abf_dir)
 
@@ -55,6 +58,7 @@ class FileDisplay(qt.QWidget):
         default_selection = self.listbox_file_list.item(0)
         self.listbox_file_list.setCurrentItem(default_selection)
 
-    def signal_item_changed():
+    def signal_item_changed(self, *args):
         # https://doc.qt.io/qt-5/qlistwidget.html#itemActivated
-        pass
+        # signal returns a pointer to the [*selection, *previous selection]
+        self.var_current_selection = args[0].text()
