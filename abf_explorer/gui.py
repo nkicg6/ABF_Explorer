@@ -15,10 +15,10 @@ from PyQt5 import QtCore, QtGui
 import pyqtgraph as pg
 
 from filedisplay import FileDisplay
+from fileinfoplotcontrols import FileInfoPlotControls
 
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")
-
 
 class PlotWidget(pg.GraphicsWindow):
     def __init__(self, parent):
@@ -39,19 +39,6 @@ class PlotWidget(pg.GraphicsWindow):
         print(f"cleared plot")
 
 
-class PlotControls(qt.QWidget):
-    def __init__(self, parent):
-        super().__init__(parent=parent)
-        self.button_plot = qt.QPushButton("plot")
-        self.button_plot.setToolTip("add selected data to the plot ('Tab')")
-        self.button_clear_plot = qt.QPushButton("clear plot")
-        self.button_clear_plot.setToolTip("clear plot ('c')")
-        self.layout = qt.QGridLayout()
-        self.layout.addWidget(self.button_plot, 0, 0)
-        self.layout.addWidget(self.button_clear_plot, 1, 0)
-        self.setLayout(self.layout)
-
-
 class ABFExplorer:
     """main abf explorer class contains all widgets and coordinates all actions"""
 
@@ -60,12 +47,12 @@ class ABFExplorer:
         self.mainWindow = qt.QMainWindow()
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
-        self.mainWindow.setWindowTitle("ABF explorer v0.0-dev")
+        self.mainWindow.setWindowTitle("ABF explorer v0.1-dev")
 
         # make widgets
-        self.plotControlWidget = PlotControls(parent=self.centralWidget)
         self.plotWidget = PlotWidget(parent=self.centralWidget)
         self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
+        self.fileInfoPlotControlsWidget = FileInfoPlotControls(parent=self.centralWidget)
 
         # main widget layout and geometry
         self.mainLayout = qt.QGridLayout()
@@ -76,21 +63,23 @@ class ABFExplorer:
 
         self.mainLayout.addWidget(self.fileExplorerWidget, 0, 0, 1, 1)
         self.mainLayout.addWidget(self.plotWidget, 0, 1)
-        self.mainLayout.addWidget(self.plotControlWidget, 1, 0)
+        self.mainLayout.addWidget(self.fileInfoPlotControlsWidget, 1, 0, 1, 2)
+        self.mainLayout.addWidget(self.fileInfoPlotControlsWidget, 1,1)
         self.centralWidget.setLayout(self.mainLayout)
 
+
         # events
-        self.plotControlWidget.button_clear_plot.clicked.connect(
+        self.fileInfoPlotControlsWidget.button_plotControls_clear_plot.clicked.connect(
             self.plotWidget.clear_plot
         )
-        self.plotControlWidget.button_plot.clicked.connect(self.TEMP_gen_data)
+        self.fileInfoPlotControlsWidget.button_plotControls_plot.clicked.connect(self.TEMP_gen_data)
 
         # keyboard shortcuts
         self.shortcut_update_plot = qt.QShortcut(
-            QtGui.QKeySequence("Tab"), self.plotControlWidget.button_plot
+            QtGui.QKeySequence("Tab"), self.fileInfoPlotControlsWidget.button_plotControls_plot
         )
         self.shortcut_clear_plot = qt.QShortcut(
-            QtGui.QKeySequence("c"), self.plotControlWidget.button_clear_plot
+            QtGui.QKeySequence("c"), self.fileInfoPlotControlsWidget.button_plotControls_clear_plot
         )
         self.shortcut_update_plot.activated.connect(self.TEMP_gen_data)
         self.shortcut_clear_plot.activated.connect(self.plotWidget.clear_plot)
