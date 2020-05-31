@@ -28,7 +28,7 @@ class FileDisplay(qt.QWidget):
 
         # Actions
 
-    def _choose_directory(self):
+    def choose_directory(self):
         abf_dir = str(
             qt.QFileDialog.getExistingDirectory(
                 self, "Select dir", self._var_workingDir

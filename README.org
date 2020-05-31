@@ -27,3 +27,10 @@ I want to avoid classes accessing other class vars. Using that object oriented p
 ** Useful docs and links (Best docs are pyside)
 - https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
+
+* Development TODO's
+- plot the selected ABFs.
+  - Figure out legend and plot styling. Can the plot be dockable?
+
+
+
