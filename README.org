@@ -15,5 +15,15 @@ pytest
 - Qt widgets like buttons, listboxes, labels (=PyQt5.QWidget.*=), etc. should start with what the thing is, followed by an underscore and a more descriptive name. (=button_select_abfs=)
 - Divide the classes into =#VARS=, =widgets=, =layout=, and =Actions=. 
 
-** Best docs are pyside:
+** layout and class structure
+   Layout is complicated and initially painful to layout programatically. While there are excellent tools such as QtCreator to visually drag and drop to setup you window, I prefer to use the programmatic layout style (lots of typing). Manually, I have better control over both the layout and how the code is organized. 
+
+The main class, =ABFExplorer= has a simple grid layout, and is responsible for instantiating the classes for the other widgets and placing them in the grid. Individual widgets may have simple or more complex layouts, and I may decided to change the layout managers or contents over time. By keeping the main class layout simple, I can delegate all the complex layout decisions to individual widget classes, and have a working app even if I do major changes within individual widgets. 
+A good example of this is the =FileInfoPlotControls= class. It contains a parent class (=QWidget=), and two distinct layouts, a =QVBoxLayout=, and a =QFormLayout=. These two layouts are arranged in the parent =QWidget= in a grid, but this could easily change later. As far as the main window in ABFExplorer knows (or cares), it is just placing the main =FileInfoPlotControls= =QWidget=. 
+*** class interactions
+
+I want to avoid classes accessing other class vars. Using that object oriented pattern confuses me (even a few days later) by introducing interface coupling (changing a var name or type in one class can have unintended consequences across the system). It is too hard for me to understand. So while I will set and unset variables within a class, I will try to minimize cross-class interactions and prefer passing messages (data) instead. A good example is in =FileInfoPlotControls.update_file_name=, which simply takes a string of the file name. 
+
+** Useful docs and links (Best docs are pyside)
 - https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth
+- https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html

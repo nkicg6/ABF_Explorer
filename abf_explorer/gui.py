@@ -48,6 +48,10 @@ class ABFExplorer:
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
         self.mainWindow.setWindowTitle("ABF explorer v0.1-dev")
+        # vars
+        self.var_current_selection_short_name = str
+        self.var_current_selection_full_path = str
+        self.var_selected_abf_files_dict = dict
 
         # make widgets
         self.plotWidget = PlotWidget(parent=self.centralWidget)
@@ -68,7 +72,13 @@ class ABFExplorer:
         self.centralWidget.setLayout(self.mainLayout)
 
 
-        # events
+        #### events ####
+
+        # file explorer and info actions
+        self.fileExplorerWidget.button_select_abf.clicked.connect(self.fileExplorerWidget._choose_directory)
+        self.fileExplorerWidget.listbox_file_list.currentItemChanged.connect(self.signal_item_changed)
+
+        # ADD ACTIONS HERE
         self.fileInfoPlotControlsWidget.button_plotControls_clear_plot.clicked.connect(
             self.plotWidget.clear_plot
         )
@@ -96,6 +106,19 @@ class ABFExplorer:
             "name": f"plot item {np.random.randn()}",
         }
         self.plotWidget.update_plot(d)
+
+    def signal_file_selection_changed(self, *args):
+        # https://doc.qt.io/qt-5/qlistwidget.html#itemActivated
+        # signal returns a pointer to the [*selection, *previous selection]
+        try:
+            print(f"current selection is {args[0].text()}")
+            self.var_current_selection_short_name = args[0].text()
+            self.var_current_selection_full_path = self.fileExplorerWidget.var_selected_abf_files_dict.get(args[0].text())
+            self.fileInfoPlotControlsWidget.update_file_name(args[0].text())
+        except Exception as e:
+            print(f"[signal_file_selection_changed] Exception is: \n{e}\n")
+            self.fileInfoPlotControlsWidget.update_file_name("")
+
 
 
 if __name__ == "__main__":
