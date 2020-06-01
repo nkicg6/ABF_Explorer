@@ -5,41 +5,18 @@
 # examples python -m pyqtgraph.examples
 # plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
-# TODO! setup file info widget, have text input change when selection changes.
+
 
 import sys
 import random
 import numpy as np
 import PyQt5.QtWidgets as qt
 from PyQt5 import QtCore, QtGui
-import pyqtgraph as pg
 
 from filedisplay import FileDisplay
 from fileinfoplotcontrols import FileInfoPlotControls
+from plotting import PlotWidget
 import plotutils
-
-pg.setConfigOption("background", "w")
-pg.setConfigOption("foreground", "k")
-
-
-class PlotWidget(pg.GraphicsWindow):
-    def __init__(self, parent):
-        super().__init__(parent=parent)
-        self.x = np.linspace(0, 100, 20)
-        self.y = np.random.randn(20)
-        self.mainPlot = self.addPlot(title="main plot test")
-
-    def update_plot(self, plotdict):
-        self.mainPlot.plot(plotdict["x"], plotdict["y"], name=plotdict["name"])
-        self.mainPlot.setTitle(plotdict["name"])
-        # self.mainPlot.addLegend()
-        print("Plotting called")
-
-    def clear_plot(self, e=None):
-        self.mainPlot.clear()
-        self.mainPlot.setTitle("")
-        print(f"cleared plot")
-
 
 class ABFExplorer:
     """main abf explorer class contains all widgets and coordinates all actions"""
