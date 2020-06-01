@@ -15,7 +15,7 @@ class PlotWidget(pg.GraphicsWindow):
         # self.mainPlot.addLegend()
         print("Plotting called")
 
-    def clear_plot(self, e=None):
+    def clear_plot(self, *args):
         self.mainPlot.clear()
         self.mainPlot.setTitle("")
         print(f"cleared plot")

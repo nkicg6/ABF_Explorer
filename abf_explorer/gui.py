@@ -18,6 +18,7 @@ from fileinfoplotcontrols import FileInfoPlotControls
 from plotting import PlotWidget
 import plotutils
 
+
 class ABFExplorer:
     """main abf explorer class contains all widgets and coordinates all actions"""
 

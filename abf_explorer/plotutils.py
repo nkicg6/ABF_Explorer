@@ -1,15 +1,18 @@
 # utilities for interacting with pyabf
 # would like a simpler way to handle IO. So when you select the ABF, we should store the ABF somewhere? or store the path to the ABF somewhere along with something like n_sweeps, n_channels, +metadata? this should be included in the metadata, along with the full path.
+# Would this be simpler as a class? Verify the path once, then create the metadata map and autofill the opts_map with defaults?
 import os
 import pyabf
 
 METADATA = {
-        "short_filename": str,
-        "full_path":str,
-        "sampling_frequency_khz": str,
-        "protocol": str,
-        "n_sweeps": int,
-        "n_channels":int,}
+    "short_filename": str,
+    "full_path": str,
+    "sampling_frequency_khz": str,
+    "protocol": str,
+    "n_sweeps": int,
+    "n_channels": int,
+}
+
 
 def io_get_metadata(abf_path):
     metadata = METADATA.copy()
@@ -36,18 +39,18 @@ def io_read_abf(abf_path, loaddata):
         abf = pyabf.ABF(abf_path, loadData=loaddata)
         return abf
     except Exception as e:
-        error_str = f"[io_read_abf] problem reading abf. exception (likely thrown by pyABF):\n {e}"
-        print(f"error string is {error_str}")
+        error_str = f"[io_read_abf] problem reading abf. exception (likely thrown by pyABF):\n {e}\n"
+        print(f"{error_str}")
         raise AssertionError(error_str)
 
 
 def metadata_error(error, attempted_path):
     print("[metadata_error] returning blank metadata")
     metadata = METADATA.copy()
-    metadata['error'] = error
-    metadata['full_path'] = attempted_path
+    metadata["error"] = error
+    metadata["full_path"] = attempted_path
     return metadata
 
 
-def io_get_sweep(opts_dict):
+def io_get_data(opts_map):
     abf = io_read_abf()
