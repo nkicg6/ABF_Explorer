@@ -1,8 +1,10 @@
 # utilities for interacting with pyabf
 # would like a simpler way to handle IO. So when you select the ABF, we should store the ABF somewhere? or store the path to the ABF somewhere along with something like n_sweeps, n_channels, +metadata? this should be included in the metadata, along with the full path.
 # Would this be simpler as a class? Verify the path once, then create the metadata map and autofill the opts_map with defaults?
+import hashlib
 import os
 import pyabf
+
 
 PLOTDATA = {
     "short_filename": "",
@@ -53,14 +55,36 @@ def metadata_error(error, attempted_path):
     return metadata
 
 
-def io_get_data(metadata_map, target_sweep, target_channel):
+def make_name(metadata_map):
+    if metadata_map["mean_sweeps"] != False:
+        raise (NotImplementedError)
+    if metadata_map["filtered_sweeps"] != False:
+        raise (NotImplementedError)
+    return f"{metadata_map['short_filename']} sweep-{metadata_map['sweep']} ch-{metadata_map['channel']}"
+
+
+def io_gather_plot_data(
+    metadata_map, target_sweep, target_channel, mean_sweeps=False, filtered_sweeps=False
+):
     mm = metadata_map.copy()
-    abf = io_read_abf(mm["full_path"], loadData=True)
-    abf.setSweep(sweepNumber=target_sweep, channel=target_channel)
-    mm["target_channel"] = target_channel
-    mm["target_sweep"] = target_sweep
-    mm["x"] = abf.sweepX
-    mm["y"] = abf.sweepY
-    mm["x_units"] = abf.sweepUnitsX
-    mm["y_units"] = abf.sweepUnitsY
-    return mm
+    try:
+        abf = io_read_abf(mm["full_path"], loadData=True)
+        hashed_id = hashlib.sha256(
+            f"{mm['full_path']}-{target_sweep}-{target_channel}-{mean_sweeps}-{filtered_sweeps}".encode(
+                "utf-8"
+            )
+        ).hexdigets()
+        abf.setSweep(sweepNumber=target_sweep, channel=target_channel)
+        mm["hashed_id"] = hashed_id
+        mm["mean_sweeps"] = mean_sweeps  # NOT IMPLEMENTED
+        mm["filtered_sweeps"] = filtered_sweeps  # NOT IMPLEMENTED
+        mm["channel"] = target_channel
+        mm["sweep"] = target_sweep
+        mm["x"] = abf.sweepX
+        mm["y"] = abf.sweepY
+        mm["x_units"] = abf.sweepUnitsX
+        mm["y_units"] = abf.sweepUnitsY
+        mm["name"] = make_name(mm)
+        return mm
+    except Exception as e:
+        raise (AssertionError("Something went wrong in [io_gather_plot_data].\n\nexception is {e}\n"))
