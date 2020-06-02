@@ -1,4 +1,5 @@
 import PyQt5.QtWidgets as qt
+from PyQt5 import QtCore
 
 
 class FileInfoPlotControls(qt.QWidget):
@@ -46,10 +47,12 @@ class FileInfoPlotControls(qt.QWidget):
         )
         self.plotControlsLayout.addWidget(self.combobox_plotControls_sweep_list, 0, 0)
         self.plotControlsLayout.addWidget(self.combobox_plotControls_channel_list, 1, 0)
-        self.plotControlsLayout.addWidget(self.button_plotControls_plot, 0,1)
-        self.plotControlsLayout.addWidget(self.button_plotControls_clear_plot, 1,1)
+        self.plotControlsLayout.addWidget(self.button_plotControls_plot, 0, 1)
+        self.plotControlsLayout.addWidget(self.button_plotControls_clear_plot, 1, 1)
 
-        self.mainLayout.addWidget(self.fileInfoWidget, 0, 0)
+        self.mainLayout.addWidget(
+            self.fileInfoWidget, 0, 0, alignment=QtCore.Qt.AlignLeft
+        )
         self.mainLayout.addWidget(self.plotControlsWidget, 0, 1)
 
         self.fileInfoWidget.setLayout(self.fileInfoLayoutForm)
@@ -65,6 +68,18 @@ class FileInfoPlotControls(qt.QWidget):
     def _update_sampling_frequency(self, sampling_frequency):
         self.label_fileInfo_sampling_frequency_val.setText(sampling_frequency)
 
+    def _update_sweep_combobox(self, sweep_n):
+        self.combobox_plotControls_sweep_list.clear()
+        self.combobox_plotControls_sweep_list.addItems(
+            ["sweep " + str(sweep) for sweep in range(sweep_n)]
+        )
+
+    def _update_channel_combobox(self, channel_n):
+        self.combobox_plotControls_channel_list.clear()
+        self.combobox_plotControls_channel_list.addItems(
+            ["channel " + str(channel) for channel in range(channel_n)]
+        )
+
     def update_metadata_vals(self, file_metadata_dict):
         try:
             self._update_file_name(file_metadata_dict["short_filename"])
@@ -72,5 +87,7 @@ class FileInfoPlotControls(qt.QWidget):
                 file_metadata_dict["sampling_frequency_khz"]
             )
             self._update_protocol(file_metadata_dict["protocol"])
+            self._update_sweep_combobox(file_metadata_dict["n_sweeps"])
+            self._update_channel_combobox(file_metadata_dict["n_channels"])
         except Exception as e:
             print(f"metadata dict: {file_metadata_dict}\n\nError is {e}")

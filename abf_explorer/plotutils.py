@@ -32,6 +32,8 @@ def io_get_metadata(abf_path):
         metadata["full_path"] = abf_path
         metadata["sampling_frequency_khz"] = str(abf.dataRate / 1000)
         metadata["protocol"] = str(abf.protocol)
+        metadata["n_sweeps"] = abf.sweepCount
+        metadata["n_channels"] = abf.channelCount
         return metadata
     except AssertionError as e:
         return metadata_error(e, abf_path)
