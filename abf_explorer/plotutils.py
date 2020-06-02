@@ -87,4 +87,8 @@ def io_gather_plot_data(
         mm["name"] = make_name(mm)
         return mm
     except Exception as e:
-        raise (AssertionError("Something went wrong in [io_gather_plot_data].\n\nexception is {e}\n"))
+        raise (
+            AssertionError(
+                "Something went wrong in [io_gather_plot_data].\n\nexception is {e}\n"
+            )
+        )

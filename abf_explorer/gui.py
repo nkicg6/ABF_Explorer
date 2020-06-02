@@ -29,10 +29,10 @@ class ABFExplorer:
         self.mainWindow.setCentralWidget(self.centralWidget)
         self.mainWindow.setWindowTitle("ABF explorer v0.1-dev")
         # vars
-        self.var_current_selection_short_name = str
-        self.var_current_selection_full_path = str
-        self.var_current_metadata_map = dict
-        self.var_currently_plotted_data = list
+        self.var_current_selection_short_name = ""
+        self.var_current_selection_full_path = ""
+        self.var_current_metadata_map = {}
+        self.var_currently_plotted_data = {}
 
         # make widgets
         self.plotWidget = PlotWidget(parent=self.centralWidget)
@@ -84,14 +84,23 @@ class ABFExplorer:
         self.shortcut_update_plot.activated.connect(self.TEMP_gen_data)
         self.shortcut_clear_plot.activated.connect(self.plotWidget.clear_plot)
 
-        # geometry adn run
+        # geometry and run
         self.mainWindow.setGeometry(50, 50, 900, 600)
         self.mainWindow.show()
         self.mainApp.exec_()
 
     def clear_plot(self):
+        """clears plot and currently_plotted_items"""
         self.plotWidget.clear_plot()
-        self.var_currently_plotted_data = list
+        self.var_currently_plotted_data = {}
+
+    def add_to_var_currently_plotted(self, plotmap):
+        """strips unncessary vars, verifies it does not exist, then adds it as a key to
+        var_add_to_currently_plotted"""
+        pass
+
+    def get_plot_map(self):
+        pass
 
     def plot_selection(self):
         # get data, make sure it is not already plotted,
