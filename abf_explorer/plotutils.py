@@ -4,18 +4,19 @@
 import os
 import pyabf
 
-METADATA = {
-    "short_filename": str,
-    "full_path": str,
-    "sampling_frequency_khz": str,
-    "protocol": str,
-    "n_sweeps": int,
-    "n_channels": int,
+PLOTDATA = {
+    "short_filename": "",
+    "full_path": "",
+    "sampling_frequency_khz": "",
+    "protocol": "",
+    "n_sweeps": 0,
+    "n_channels": 0,
+    "target_sweep":None,
 }
 
 
 def io_get_metadata(abf_path):
-    metadata = METADATA.copy()
+    metadata = PLOTDATA.copy()
 
     if not abf_path.endswith(".abf"):
         return metadata_error("string is not an abf: {abf_path}")
@@ -25,7 +26,7 @@ def io_get_metadata(abf_path):
         return metadata_error("path passed is not a file: {abf_path}")
     try:
         abf = io_read_abf(abf_path, loaddata=False)
-        metadata["short_filename"] = os.path.split(abf_path)[-1]
+        metadata["short_filename"] = abf.abfID
         metadata["full_path"] = abf_path
         metadata["sampling_frequency_khz"] = str(abf.dataRate / 1000)
         metadata["protocol"] = str(abf.protocol)
@@ -33,24 +34,30 @@ def io_get_metadata(abf_path):
     except AssertionError as e:
         return metadata_error(e, abf_path)
 
-
 def io_read_abf(abf_path, loaddata):
     try:
         abf = pyabf.ABF(abf_path, loadData=loaddata)
         return abf
     except Exception as e:
-        error_str = f"[io_read_abf] problem reading abf. exception (likely thrown by pyABF):\n {e}\n"
+        error_str = f"[io_read_abf] problem reading abf. Path to bad file is: {abf_path}.\nException (likely thrown by pyABF):\n {e}\n"
         print(f"{error_str}")
         raise AssertionError(error_str)
 
-
 def metadata_error(error, attempted_path):
     print("[metadata_error] returning blank metadata")
-    metadata = METADATA.copy()
+    metadata = PLOTDATA.copy()
     metadata["error"] = error
     metadata["full_path"] = attempted_path
     return metadata
 
-
-def io_get_data(opts_map):
-    abf = io_read_abf()
+def io_get_data(metadata_map, target_sweep, target_channel):
+    mm = metadata_map.copy()
+    abf = io_read_abf(mm['full_path'], loadData=True)
+    abf.setSweep(sweepNumber=target_sweep, channel=target_channel)
+    mm['target_channel'] = target_channel
+    mm['target_sweep'] = target_sweep
+    mm['x'] = abf.sweepX
+    mm['y'] = abf.sweepY
+    mm['x_units'] = abf.sweepUnitsX
+    mm['y_units'] = abf.sweepUnitsY
+    return mm

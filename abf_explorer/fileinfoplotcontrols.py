@@ -61,6 +61,9 @@ class FileInfoPlotControls(qt.QWidget):
         self.label_fileInfo_sampling_frequency_val.setText(sampling_frequency)
 
     def update_metadata_vals(self, file_metadata_dict):
-        self._update_file_name(file_metadata_dict["short_filename"])
-        self._update_sampling_frequency(file_metadata_dict["sampling_frequency_khz"])
-        self._update_protocol(file_metadata_dict["protocol"])
+        try:
+            self._update_file_name(file_metadata_dict["short_filename"])
+            self._update_sampling_frequency(file_metadata_dict["sampling_frequency_khz"])
+            self._update_protocol(file_metadata_dict["protocol"])
+        except Exception as e:
+            print(f"metadata dict: {file_metadata_dict}\n\nError is {e}")

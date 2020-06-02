@@ -1,3 +1,6 @@
+#+OPTIONS: toc:nil author:nil title:nil date:nil num:nil ^:{} \n:1 todo:nil
+#+PROPERTY: header-args :eval never-export
+
 * abf-explorer
 A simple [[https://riverbankcomputing.com/software/pyqt/download5][PyQt5]] and [[https://pyqtgraph.readthedocs.io/en/latest/][pyqtgraph]] based gui to view, annotate, and perform semi-automated analysis on axon binary format =ABF= files. 
 
@@ -31,6 +34,7 @@ I want to avoid classes accessing other class vars. Using that object oriented p
 * Development TODO's
 - plot the selected ABFs.
   - Figure out legend and plot styling. Can the plot be dockable?
+- abf_explorer will contain ONLY visualization tools. Experimental analysis stuff will be developed in abf_analysis
 
 
 

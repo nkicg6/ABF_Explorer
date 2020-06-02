@@ -32,6 +32,7 @@ class ABFExplorer:
         self.var_current_selection_short_name = str
         self.var_current_selection_full_path = str
         self.var_current_metadata_map = dict
+        self.var_currently_plotted_data = list
 
         # make widgets
         self.plotWidget = PlotWidget(parent=self.centralWidget)
@@ -65,7 +66,7 @@ class ABFExplorer:
 
         # ADD ACTIONS HERE
         self.fileInfoPlotControlsWidget.button_plotControls_clear_plot.clicked.connect(
-            self.plotWidget.clear_plot
+            self.clear_plot
         )
         self.fileInfoPlotControlsWidget.button_plotControls_plot.clicked.connect(
             self.TEMP_gen_data
@@ -87,6 +88,15 @@ class ABFExplorer:
         self.mainWindow.setGeometry(50, 50, 900, 600)
         self.mainWindow.show()
         self.mainApp.exec_()
+
+    def clear_plot(self):
+        self.plotWidget.clear_plot()
+        self.var_currently_plotted_data = list
+
+    def plot_selection(self):
+        # get data, make sure it is not already plotted,
+        # plot
+        pass
 
     def TEMP_gen_data(self):
         d = {
@@ -118,7 +128,6 @@ class ABFExplorer:
             self.fileInfoPlotControlsWidget.update_metadata_vals(
                 self.var_current_metadata_map
             )
-
 
 if __name__ == "__main__":
     ABFExplorer(sys.argv)
