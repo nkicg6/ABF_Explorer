@@ -11,7 +11,7 @@ PLOTDATA = {
     "protocol": "",
     "n_sweeps": 0,
     "n_channels": 0,
-    "target_sweep":None,
+    "target_sweep": None,
 }
 
 
@@ -34,6 +34,7 @@ def io_get_metadata(abf_path):
     except AssertionError as e:
         return metadata_error(e, abf_path)
 
+
 def io_read_abf(abf_path, loaddata):
     try:
         abf = pyabf.ABF(abf_path, loadData=loaddata)
@@ -43,6 +44,7 @@ def io_read_abf(abf_path, loaddata):
         print(f"{error_str}")
         raise AssertionError(error_str)
 
+
 def metadata_error(error, attempted_path):
     print("[metadata_error] returning blank metadata")
     metadata = PLOTDATA.copy()
@@ -50,14 +52,15 @@ def metadata_error(error, attempted_path):
     metadata["full_path"] = attempted_path
     return metadata
 
+
 def io_get_data(metadata_map, target_sweep, target_channel):
     mm = metadata_map.copy()
-    abf = io_read_abf(mm['full_path'], loadData=True)
+    abf = io_read_abf(mm["full_path"], loadData=True)
     abf.setSweep(sweepNumber=target_sweep, channel=target_channel)
-    mm['target_channel'] = target_channel
-    mm['target_sweep'] = target_sweep
-    mm['x'] = abf.sweepX
-    mm['y'] = abf.sweepY
-    mm['x_units'] = abf.sweepUnitsX
-    mm['y_units'] = abf.sweepUnitsY
+    mm["target_channel"] = target_channel
+    mm["target_sweep"] = target_sweep
+    mm["x"] = abf.sweepX
+    mm["y"] = abf.sweepY
+    mm["x_units"] = abf.sweepUnitsX
+    mm["y_units"] = abf.sweepUnitsY
     return mm

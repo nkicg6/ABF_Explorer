@@ -129,6 +129,7 @@ class ABFExplorer:
                 self.var_current_metadata_map
             )
 
+
 if __name__ == "__main__":
     ABFExplorer(sys.argv)
     print("Closing")
