@@ -18,6 +18,10 @@ class FileInfoPlotControls(qt.QWidget):
             "add selected data to the plot ('Tab')"
         )
         self.button_plotControls_clear_plot.setToolTip("clear plot ('c')")
+
+        self.combobox_plotControls_sweep_list = qt.QComboBox()
+        self.combobox_plotControls_channel_list = qt.QComboBox()
+
         self.label_fileInfo_file_name = qt.QLabel("File name:")
         self.label_fileInfo_file_name_val = qt.QLabel("")
         self.label_fileInfo_protocol = qt.QLabel("Protocol:")
@@ -28,7 +32,7 @@ class FileInfoPlotControls(qt.QWidget):
         # layouts
         self.mainLayout = qt.QGridLayout()
         self.fileInfoLayoutForm = qt.QFormLayout()
-        self.plotControlsLayout = qt.QVBoxLayout()
+        self.plotControlsLayout = qt.QGridLayout()
 
         self.fileInfoLayoutForm.addRow(
             self.label_fileInfo_file_name, self.label_fileInfo_file_name_val
@@ -40,9 +44,10 @@ class FileInfoPlotControls(qt.QWidget):
             self.label_fileInfo_sampling_frequency,
             self.label_fileInfo_sampling_frequency_val,
         )
-
-        self.plotControlsLayout.addWidget(self.button_plotControls_plot)
-        self.plotControlsLayout.addWidget(self.button_plotControls_clear_plot)
+        self.plotControlsLayout.addWidget(self.combobox_plotControls_sweep_list, 0, 0)
+        self.plotControlsLayout.addWidget(self.combobox_plotControls_channel_list, 1, 0)
+        self.plotControlsLayout.addWidget(self.button_plotControls_plot, 0,1)
+        self.plotControlsLayout.addWidget(self.button_plotControls_clear_plot, 1,1)
 
         self.mainLayout.addWidget(self.fileInfoWidget, 0, 0)
         self.mainLayout.addWidget(self.plotControlsWidget, 0, 1)
