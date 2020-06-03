@@ -80,6 +80,11 @@ class FileInfoPlotControls(qt.QWidget):
             ["channel " + str(channel) for channel in range(channel_n)]
         )
 
+    def _get_combobox_selections(self):
+        curr_channel_ind = self.combobox_plotControls_channel_list.currentIndex()
+        curr_sweep_ind = self.combobox_plotControls_sweep_list.currentIndex()
+        return curr_channel_ind, curr_sweep_ind
+
     def update_metadata_vals(self, file_metadata_dict):
         try:
             self._update_file_name(file_metadata_dict["short_filename"])
@@ -94,4 +99,5 @@ class FileInfoPlotControls(qt.QWidget):
 
     def get_all_plotting_opts(self, file_metadata_dict):
         # RETURNS ALL OPTIONS AND CURRENT SELECTIONS. MUST SET DEFAULT SELECTIONS ON SETUP!
-        pass
+        mm = file_metadata_dict.copy()
+        channel_ind, sweep_ind = self._get_combobox_selections()

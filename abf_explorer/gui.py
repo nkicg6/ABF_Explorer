@@ -119,7 +119,9 @@ class ABFExplorer:
         # https://doc.qt.io/qt-5/qlistwidget.html#itemActivated
         # signal returns a pointer to the [*selection, *previous selection]
         try:
-            print(f"current selection is {args[0].text()}")
+            print(
+                f"[signal_file_selection_changed] current selection is {args[0].text()}"
+            )
             self.var_current_selection_short_name = args[0].text()
             self.var_current_selection_full_path = self.fileExplorerWidget.var_selected_abf_files_dict.get(
                 args[0].text(), "NONE"
@@ -139,13 +141,19 @@ class ABFExplorer:
             )
 
     def signal_plot_item_called(self, *args):
-        # IN PROGRESS
-        print("signal_plot_item_called")
-        curr_sel = self.fileExplorerWidget.listbox_file_list.selectedItems()
+
+        curr_sel = self.fileExplorerWidget.listbox_file_list.selectedItems()[
+            0
+        ].text()  # CHANGE FOR MULTIPLE SELECTIONS
+        assert (
+            curr_sel == self.var_current_selection_short_name
+        ), f"[signal_plot_item_called] ERROR, curr_sel {curr_sel} != var {self.var_current_selection_short_name}"
+
+        print(f"[signal_plot_item_called] current selection is {curr_sel}")
         if not curr_sel:
             print("[signal_plot_item_called] Nothing selected, continuing")
             return None
-        self.signal_file_selection_changed(curr_sel)
+        # self.signal_file_selection_changed(curr_sel)
         opts = self.fileInfoPlotControlsWidget.get_all_plotting_opts(
             self.var_current_metadata_map
         )
