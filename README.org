@@ -37,3 +37,5 @@ I want to avoid classes accessing other class vars. Using that object oriented p
   - auto re-scale between plotting sessions (after clear it won't always re-scale when plotting again)
 - abf_explorer will contain ONLY visualization tools. Experimental analysis stuff will be developed in =abf_analysis=
 - add logging. Also, add a message for error display. This should be mirror the log and be displayed as a dropdown text area if wanted/needed to send to me if there are problems so I have some context.
+- When mouse over, show name of trace.
+
