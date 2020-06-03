@@ -83,7 +83,7 @@ class FileInfoPlotControls(qt.QWidget):
     def _get_combobox_selections(self):
         curr_channel_ind = self.combobox_plotControls_channel_list.currentIndex()
         curr_sweep_ind = self.combobox_plotControls_sweep_list.currentIndex()
-        return curr_channel_ind, curr_sweep_ind
+        return curr_sweep_ind, curr_channel_ind
 
     def update_metadata_vals(self, file_metadata_dict):
         try:
@@ -97,7 +97,7 @@ class FileInfoPlotControls(qt.QWidget):
         except Exception as e:
             print(f"metadata dict: {file_metadata_dict}\n\nError is {e}")
 
-    def get_all_plotting_opts(self, file_metadata_dict):
+    def get_sweep_and_channel_plotting_opts(self):
         # RETURNS ALL OPTIONS AND CURRENT SELECTIONS. MUST SET DEFAULT SELECTIONS ON SETUP!
-        mm = file_metadata_dict.copy()
-        channel_ind, sweep_ind = self._get_combobox_selections()
+        sweep_ind, channel_ind = self._get_combobox_selections()
+        return sweep_ind, channel_ind

@@ -153,13 +153,30 @@ class ABFExplorer:
         if not curr_sel:
             print("[signal_plot_item_called] Nothing selected, continuing")
             return None
-        # self.signal_file_selection_changed(curr_sel)
-        opts = self.fileInfoPlotControlsWidget.get_all_plotting_opts(
-            self.var_current_metadata_map
+        (
+            sweep_ind,
+            channel_ind,
+        ) = self.fileInfoPlotControlsWidget.get_sweep_and_channel_plotting_opts()
+        plot_opts = plotutils.io_gather_plot_data(
+            self.var_current_metadata_map,
+            sweep_ind,
+            channel_ind,
+            mean_sweeps=False,
+            filtered_sweeps=False,
         )
-        # fmt opts (opts_fmt) for addition to already plotted and check.
-        # CHECK IF ALREADY PLOTTED FN, if so, return, if not, add it and continue
-        # PASS OPTS TO PLOT HERE
+        status, fmt_plot_opts = plotutils.check_fmt_opts(
+            self.var_currently_plotted_data, plot_opts
+        )
+        if status == "unchanged":
+            print("[signal_plot_item_called] unchanged, continuing")
+            return
+        if status == "updated":
+            print("[signal_plot_item_called] updating plot")
+            self.var_currently_plotted_data = fmt_plot_opts
+            self.plotWidget.update_plot(plot_opts)
+            return
+        else:
+            print("[signal_plot_item_called] problem, no paths taken.")
 
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ def io_get_metadata(abf_path):
     if not os.path.isfile(abf_path):
         return metadata_error("path passed is not a file: {abf_path}")
     try:
-        abf = io_read_abf(abf_path, loaddata=False)
+        abf = io_read_abf(abf_path, loadData=False)
         metadata["short_filename"] = abf.abfID
         metadata["full_path"] = abf_path
         metadata["sampling_frequency_khz"] = str(abf.dataRate / 1000)
@@ -39,9 +39,9 @@ def io_get_metadata(abf_path):
         return metadata_error(e, abf_path)
 
 
-def io_read_abf(abf_path, loaddata):
+def io_read_abf(abf_path, loadData):
     try:
-        abf = pyabf.ABF(abf_path, loadData=loaddata)
+        abf = pyabf.ABF(abf_path, loadData=loadData)
         return abf
     except Exception as e:
         error_str = f"[io_read_abf] problem reading abf. Path to bad file is: {abf_path}.\nException (likely thrown by pyABF):\n {e}\n"
@@ -75,7 +75,7 @@ def io_gather_plot_data(
             f"{mm['full_path']}-{target_sweep}-{target_channel}-{mean_sweeps}-{filtered_sweeps}".encode(
                 "utf-8"
             )
-        ).hexdigets()
+        ).hexdigest()
         abf.setSweep(sweepNumber=target_sweep, channel=target_channel)
         mm["hashed_id"] = hashed_id
         mm["mean_sweeps"] = mean_sweeps  # NOT IMPLEMENTED
@@ -91,6 +91,21 @@ def io_gather_plot_data(
     except Exception as e:
         raise (
             AssertionError(
-                "Something went wrong in [io_gather_plot_data].\n\nexception is {e}\n"
+                "[io_gather_plot_data] Something went wrong.\n\nexception is {e}\n"
             )
         )
+
+
+def check_fmt_opts(main_map, new_map):
+    mm = main_map.copy()
+    nm = new_map.copy()
+    hashed_id = nm.pop("hashed_id", None)
+    if not hashed_id in mm.keys():
+        # Dump bad vals
+        _ = nm.pop("x", None)
+        _ = nm.pop("y", None)
+        mm[hashed_id] = nm
+        return ("updated", mm)
+
+    print("[check_fmt_opts] Already plotted. Continuing")
+    return ("unchanged", mm)
