@@ -33,12 +33,15 @@ class PlotWidget(pg.GraphicsWindow):
             name=plotdict["name"],
             pen=pg.mkPen(self.color_cycler.__next__()),
         )
-        self.mainPlotWidget.setTitle(plotdict["name"])
+        self.mainPlotWidget.setLabels(
+            left=plotdict["y_units"], bottom=plotdict["x_units"]
+        )
         # self.mainPlot.addLegend()
         print("Plotting called")
+        print(f"plot items are: {[i.name() for i in self.mainPlotWidget.items]}")
 
     def clear_plot(self, *args):
         self.mainPlotWidget.clear()
-        self.mainPlotWidget.setTitle("")
+        self.mainPlotWidget.setLabels(left="", bottom="")
         self.color_cycler = cycle(self.color_list.copy())
         print(f"cleared plot")

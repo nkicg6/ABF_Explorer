@@ -98,8 +98,7 @@ class ABFExplorer:
         self.var_y_units_plotted = ""
 
     def signal_file_selection_changed(self, *args):
-        # https://doc.qt.io/qt-5/qlistwidget.html#itemActivated
-        # signal returns a pointer to the [*selection, *previous selection]
+        """signal when files selection changes. Used to update metadata displayed to user."""
         try:
             print(
                 f"[signal_file_selection_changed] current selection is {args[0].text()}"
@@ -123,6 +122,7 @@ class ABFExplorer:
             )
 
     def signal_plot_item_called(self, *args):
+        """called for plotting. Sets vars and gathers data for plot"""
 
         curr_sel = self.fileExplorerWidget.listbox_file_list.selectedItems()[
             0
