@@ -49,7 +49,7 @@ def io_read_abf(abf_path, loaddata):
         raise AssertionError(error_str)
 
 
-def metadata_error(error, attempted_path):
+def metadata_error(error, attempted_path=None):
     print("[metadata_error] returning blank metadata")
     metadata = PLOTDATA.copy()
     metadata["error"] = error

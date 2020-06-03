@@ -69,7 +69,7 @@ class ABFExplorer:
             self.clear_plot
         )
         self.fileInfoPlotControlsWidget.button_plotControls_plot.clicked.connect(
-            self.TEMP_gen_data
+            self.signal_plot_item_called,
         )
 
         # keyboard shortcuts
@@ -81,7 +81,7 @@ class ABFExplorer:
             QtGui.QKeySequence("c"),
             self.fileInfoPlotControlsWidget.button_plotControls_clear_plot,
         )
-        self.shortcut_update_plot.activated.connect(self.TEMP_gen_data)
+        self.shortcut_update_plot.activated.connect(self.signal_plot_item_called)
         self.shortcut_clear_plot.activated.connect(self.plotWidget.clear_plot)
 
         # geometry and run
@@ -137,6 +137,21 @@ class ABFExplorer:
             self.fileInfoPlotControlsWidget.update_metadata_vals(
                 self.var_current_metadata_map
             )
+
+    def signal_plot_item_called(self, *args):
+        # IN PROGRESS
+        print("signal_plot_item_called")
+        curr_sel = self.fileExplorerWidget.listbox_file_list.selectedItems()
+        if not curr_sel:
+            print("[signal_plot_item_called] Nothing selected, continuing")
+            return None
+        self.signal_file_selection_changed(curr_sel)
+        opts = self.fileInfoPlotControlsWidget.get_all_plotting_opts(
+            self.var_current_metadata_map
+        )
+        # fmt opts (opts_fmt) for addition to already plotted and check.
+        # CHECK IF ALREADY PLOTTED FN, if so, return, if not, add it and continue
+        # PASS OPTS TO PLOT HERE
 
 
 if __name__ == "__main__":

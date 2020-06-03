@@ -35,6 +35,4 @@ I want to avoid classes accessing other class vars. Using that object oriented p
 - plot the selected ABFs.
   - Figure out legend and plot styling. Can the plot be dockable?
 - abf_explorer will contain ONLY visualization tools. Experimental analysis stuff will be developed in abf_analysis
-
-
-
+- add logging. Also, add a message for error display. This should be mirror the log and be displayed as a dropdown text area if wanted/needed to send to me if there are problems so I have some context.

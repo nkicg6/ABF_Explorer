@@ -91,3 +91,7 @@ class FileInfoPlotControls(qt.QWidget):
             self._update_channel_combobox(file_metadata_dict["n_channels"])
         except Exception as e:
             print(f"metadata dict: {file_metadata_dict}\n\nError is {e}")
+
+    def get_all_plotting_opts(self, file_metadata_dict):
+        # RETURNS ALL OPTIONS AND CURRENT SELECTIONS. MUST SET DEFAULT SELECTIONS ON SETUP!
+        pass
