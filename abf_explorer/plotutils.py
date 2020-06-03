@@ -96,12 +96,14 @@ def io_gather_plot_data(
         )
 
 
-def check_fmt_opts(main_map, new_map):
+def check_fmt_opts(main_map, new_map, y_units_existing):
     mm = main_map.copy()
     nm = new_map.copy()
     hashed_id = nm.pop("hashed_id", None)
+    if len(y_units_existing) > 1:
+        return ("unit_error", mm)
     if not hashed_id in mm.keys():
-        # Dump bad vals
+        # Dump extra vals to save space
         _ = nm.pop("x", None)
         _ = nm.pop("y", None)
         mm[hashed_id] = nm
