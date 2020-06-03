@@ -21,6 +21,9 @@ class PlotWidget(pg.GraphicsWindow):
         ]
         self.color_cycler = cycle(self.color_list.copy())
         self.pen_width = 2
+        self.set_main_canvas()
+
+    def set_main_canvas(self):
         self.mainPlotWidget = self.addPlot(title="")
 
     def update_plot(self, plotdict):

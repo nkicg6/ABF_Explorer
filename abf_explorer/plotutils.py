@@ -96,11 +96,21 @@ def io_gather_plot_data(
         )
 
 
-def check_fmt_opts(main_map, new_map, y_units_existing):
+def _check_y_units(new_y_units, existing_y_units):
+    if existing_y_units == "":
+        return
+    if existing_y_units != 1:
+        assert existing_y_units == new_y_units, "Unit mismatch"
+        return
+
+
+def check_fmt_opts(main_map, new_map, existing_y_units):
     mm = main_map.copy()
     nm = new_map.copy()
     hashed_id = nm.pop("hashed_id", None)
-    if len(y_units_existing) > 1:
+    try:
+        _check_y_units(nm["y_units"], existing_y_units)
+    except AssertionError as e:
         return ("unit_error", mm)
     if not hashed_id in mm.keys():
         # Dump extra vals to save space

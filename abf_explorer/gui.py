@@ -33,8 +33,8 @@ class ABFExplorer:
         self.var_current_selection_full_path = ""
         self.var_current_metadata_map = {}
         self.var_currently_plotted_data = {}
-        self.var_x_units_plotted = set()
-        self.var_y_units_plotted = set()
+        self.var_x_units_plotted = ""
+        self.var_y_units_plotted = ""
 
         # make widgets
         self.plotWidget = PlotWidget(parent=self.centralWidget)
@@ -95,7 +95,7 @@ class ABFExplorer:
         """clears plot and currently_plotted_items"""
         self.plotWidget.clear_plot()
         self.var_currently_plotted_data = {}
-        self.var_y_units_plotted = set()
+        self.var_y_units_plotted = ""
 
     def signal_file_selection_changed(self, *args):
         # https://doc.qt.io/qt-5/qlistwidget.html#itemActivated
@@ -146,7 +146,6 @@ class ABFExplorer:
             mean_sweeps=False,
             filtered_sweeps=False,
         )
-        self.var_y_units_plotted.add(plot_opts["y_units"])
         status, fmt_plot_opts = plotutils.check_fmt_opts(
             self.var_currently_plotted_data, plot_opts, self.var_y_units_plotted,
         )
@@ -159,6 +158,7 @@ class ABFExplorer:
             return
         if status == "updated":
             print("[signal_plot_item_called] updating plot")
+            self.var_y_units_plotted = plot_opts["y_units"]
             self.var_currently_plotted_data = fmt_plot_opts
             self.plotWidget.update_plot(plot_opts)
             return
