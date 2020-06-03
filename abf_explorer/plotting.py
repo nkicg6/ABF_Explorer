@@ -1,4 +1,5 @@
 import pyqtgraph as pg
+from itertools import cycle
 
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")
@@ -7,15 +8,34 @@ pg.setConfigOption("foreground", "k")
 class PlotWidget(pg.GraphicsWindow):
     def __init__(self, parent):
         super().__init__(parent=parent)
-        self.mainPlot = self.addPlot(title="")
+        self.color_list = [
+            "440154ff",
+            "482878ff",
+            "3e4989ff",
+            "31688eff",
+            "26828eff",
+            "1f9e89ff",
+            "35b779ff",
+            "6ece58ff",
+            "b5de2bff",
+        ]
+        self.color_cycler = cycle(self.color_list.copy())
+        self.pen_width = 2
+        self.mainPlotWidget = self.addPlot(title="")
 
     def update_plot(self, plotdict):
-        self.mainPlot.plot(plotdict["x"], plotdict["y"], name=plotdict["name"])
-        self.mainPlot.setTitle(plotdict["name"])
+        self.mainPlotWidget.plot(
+            plotdict["x"],
+            plotdict["y"],
+            name=plotdict["name"],
+            pen=pg.mkPen(self.color_cycler.__next__()),
+        )
+        self.mainPlotWidget.setTitle(plotdict["name"])
         # self.mainPlot.addLegend()
         print("Plotting called")
 
     def clear_plot(self, *args):
-        self.mainPlot.clear()
-        self.mainPlot.setTitle("")
+        self.mainPlotWidget.clear()
+        self.mainPlotWidget.setTitle("")
+        self.color_cycler = cycle(self.color_list.copy())
         print(f"cleared plot")

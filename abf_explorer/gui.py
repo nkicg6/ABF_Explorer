@@ -82,7 +82,7 @@ class ABFExplorer:
             self.fileInfoPlotControlsWidget.button_plotControls_clear_plot,
         )
         self.shortcut_update_plot.activated.connect(self.signal_plot_item_called)
-        self.shortcut_clear_plot.activated.connect(self.plotWidget.clear_plot)
+        self.shortcut_clear_plot.activated.connect(self.clear_plot)
 
         # geometry and run
         self.mainWindow.setGeometry(50, 50, 900, 600)
