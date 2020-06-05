@@ -6,6 +6,7 @@ pg.setConfigOption("foreground", "k")
 
 # each thing plotted needs to be a distinct https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotdataitem.html plotdataitem, added to the plotitem https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 
+
 class PlotWidget(pg.GraphicsWindow):
     def __init__(self, parent):
         super().__init__(parent=parent)
@@ -42,9 +43,11 @@ class PlotWidget(pg.GraphicsWindow):
             left=plotdict["y_units"], bottom=plotdict["x_units"]
         )
 
-#        self.item_refs append each item to item refs and attach the signal
+        #        self.item_refs append each item to item refs and attach the signal
         print("Plotting called")
-        print(f"plot items are: {[(i.name(), type(i)) for i in self.mainPlotWidget.items]}")
+        print(
+            f"plot items are: {[(i.name(), type(i)) for i in self.mainPlotWidget.items]}"
+        )
 
     def clear_plot(self, *args):
         self.mainPlotWidget.clear()
