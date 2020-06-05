@@ -4,6 +4,7 @@ from itertools import cycle
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")
 
+# each thing plotted needs to be a distinct https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotdataitem.html plotdataitem, added to the plotitem https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 
 class PlotWidget(pg.GraphicsWindow):
     def __init__(self, parent):
@@ -23,8 +24,12 @@ class PlotWidget(pg.GraphicsWindow):
         self.pen_width = 2
         self.set_main_canvas()
 
+    def print_clicked(self, *args):
+        print("clicked!")
+        print(f"args: {[arg for arg in args]}")
+
     def set_main_canvas(self):
-        self.mainPlotWidget = self.addPlot(title="")
+        self.mainPlotItem = self.addPlot(title="")
 
     def update_plot(self, plotdict):
         self.mainPlotWidget.plot(
@@ -36,9 +41,10 @@ class PlotWidget(pg.GraphicsWindow):
         self.mainPlotWidget.setLabels(
             left=plotdict["y_units"], bottom=plotdict["x_units"]
         )
-        # self.mainPlot.addLegend()
+
+#        self.item_refs append each item to item refs and attach the signal
         print("Plotting called")
-        print(f"plot items are: {[i.name() for i in self.mainPlotWidget.items]}")
+        print(f"plot items are: {[(i.name(), type(i)) for i in self.mainPlotWidget.items]}")
 
     def clear_plot(self, *args):
         self.mainPlotWidget.clear()
