@@ -16,14 +16,16 @@ from PyQt5 import QtCore, QtGui
 from filedisplay import FileDisplay
 from fileinfoplotcontrols import FileInfoPlotControls
 from plotting import PlotWidget
+from args import parser
 import plotutils
 
 
 class ABFExplorer:
     """main abf explorer class contains all widgets and coordinates all actions"""
 
-    def __init__(self, cmdflags):
+    def __init__(self, startup_dir=None):
         self.mainApp = qt.QApplication([])  # command line flags if parsing
+        print(f"startup_dir is {startup_dir}")
         self.mainWindow = qt.QMainWindow()
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
@@ -167,5 +169,6 @@ class ABFExplorer:
 
 
 if __name__ == "__main__":
-    ABFExplorer(sys.argv)
+    cmd_args = parser.parse_args()
+    ABFExplorer(startup_dir=cmd_args.startup_dir)
     print("Closing")
