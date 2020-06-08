@@ -40,7 +40,9 @@ class ABFExplorer:
 
         # make widgets
         self.plotWidget = PlotWidget(parent=self.centralWidget)
-        self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
+        self.fileExplorerWidget = FileDisplay(
+            parent=self.centralWidget, startup=startup_dir
+        )
         self.fileInfoPlotControlsWidget = FileInfoPlotControls(
             parent=self.centralWidget
         )

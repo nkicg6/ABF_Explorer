@@ -4,16 +4,16 @@ import PyQt5.QtWidgets as qt
 # https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part1-example.html#part-1-designing-the-user-interface
 # TODO! signal changes. Print new file on change. This may need to be set in the main controller class? Alternatively, could add a listener to a VAR here for the main class to watch and take action.
 
-DEBUG_DIR = "/Users/nick/Dropbox/lab_notebook/projects_and_data/mnc/analysis_and_data/patch_clamp/data/passive_membrane_properties_2019-10-26"
-
 
 class FileDisplay(qt.QWidget):
     """controls display and file handling for file selection"""
 
-    def __init__(self, parent):
+    def __init__(self, parent, startup):
         super().__init__(parent=parent)
         # VARS
-        self._var_workingDir = DEBUG_DIR  # os.path.expanduser("~") # start home, replace with prev dir after selection
+        self._var_workingDir = os.path.expanduser(
+            "~"
+        )  # start home, replace with prev dir after selection
         self.var_selected_abf_files_dict = dict
 
         # button and display
@@ -25,8 +25,16 @@ class FileDisplay(qt.QWidget):
         self.layout.addWidget(self.button_select_abf)
         self.layout.addWidget(self.listbox_file_list)
         self.setLayout(self.layout)
+        self.startup_dir(startup)
 
         # Actions
+
+    def startup_dir(self, startup):
+        if startup is not None:
+            if not os.path.exists(startup):
+                print(f"[STARTUP ERROR] provided startup dir does not exist {startup}")
+                return
+            self._filter_dir(startup)
 
     def choose_directory(self):
         abf_dir = str(
@@ -51,6 +59,9 @@ class FileDisplay(qt.QWidget):
     def _populate_listbox_file_list(self):
         self.listbox_file_list.clear()
         sorted_keys = sorted(self.var_selected_abf_files_dict.keys())
+        if len(sorted_keys) == 0:
+            self.listbox_file_list.insertItem(0, "No ABFs found")
+            return
         for n, f in enumerate(sorted_keys):
             self.listbox_file_list.insertItem(n, f)
         default_selection = self.listbox_file_list.item(0)
