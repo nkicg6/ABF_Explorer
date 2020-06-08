@@ -1,31 +1,64 @@
 #+OPTIONS: toc:nil author:nil title:nil date:nil num:nil ^:{} \n:1 todo:nil
 #+PROPERTY: header-args :eval never-export
 
-* abf-explorer
-A simple [[https://riverbankcomputing.com/software/pyqt/download5][PyQt5]] and [[https://pyqtgraph.readthedocs.io/en/latest/][pyqtgraph]] based gui to view, annotate, and perform semi-automated analysis on axon binary format =ABF= files. 
+* ABF_Explorer
+A simple [[https://riverbankcomputing.com/software/pyqt/download5][PyQt5]] and [[https://pyqtgraph.readthedocs.io/en/latest/][pyqtgraph]] based GUI to view, annotate, and perform semi-automated analysis on Axon Binary Format (=ABF=) files.
 
-We use The excellent pyABF package (https://github.com/swharden/pyABF) to do the hard work of parsing ABF files, Thanks [[https://github.com/swharden/][Scott!]]
+#+CAPTION: ABF_Explorer UI
+#+ATTR_HTML: :width 50% :height 50% :alt  :title  :align 
+#+ATTR_LATEX: :placement [H] :width 0.5\textwidth
+[[file:docs/img/abfexplorer-example.png]]
 
-The idea is to provide a *simple*, cross platform (shar-able) app for quickly viewing ABF files without a bunch of python/matlab/etc boilerplate. Eventually I will add functions for semi-automated analysis.
+We use the excellent pyABF package (https://github.com/swharden/pyABF) to do the hard work of parsing ABF files, Thanks [[https://github.com/swharden/][Scott!]]
 
-* Development
+The idea of ABF_Explorer is to provide a *simple*, cross platform (shar-able) app for quickly viewing ABF files without a bunch of python/matlab/etc. boilerplate. Often I want to quickly look through some files or show an example, but I don't know exactly which file or sweep it is. This tool allows me to quickly scroll through files, read the metadata, and take a look at the data. 
+** Note and past efforts
+This project is under active development and is not well tested!
+I attempted this before using Tkinter and matplotlib ([[https://github.com/nkicg6/tkABF_Explorer][tkABF_Explorer]]) with the goal of simplify packaging and deployment (Tkinter ships with python, so less native C and C++ dependencies that may require compilation). Building GUIs (well) is difficult, and I found that the type of plot interaction that I wanted was difficult (for me) to achieve with Tkinter and matplotlib with reasonable performance, so I started fresh using PyQt and pyqtgraph's bindings to the powerful Qt framework. 
+
+* Roadmap/plans
+** ABF_Explorer should be easy to both *share* and *use*
+- =pip= installable, with few dependencies and reasonable command line options.
+- Easy to share and use with non-programmers or people unfamiliar with the nightmare that is python packaging.
+  - This means making a simple downloadable =app= or =exe=, likely with [[https://www.pyinstaller.org/][PyInstaller]], [[https://beeware.org/][BeeWare]], or a comparable tool.
+  - Cross platform (Windows, Mac OS, and Linux)
+- Keep it simple!
+** ABF_Explorer may offer limited semi-automated analysis features
+- I will use ABF_Explorer for analysis, but this is not the primary purpose of the version that I will distribute.
+- semi-automated analysis features will be add-hoc and likely only used via the =pip= version.
+
+* Development and design decisions
 ** testing 
-pytest
+Testing will be done with pytest. Testing GUIs is hard, I am working on unit tests. 
 
 ** naming conventions
 - =vars= should start with =var_*=
-- private vars and functions (functions/vars that will not be called or accessed by the controller) should start with =_=
+- follow the python convention of private vars and functions (functions/vars that will not be called or accessed by the controller) should start with =_=
 - Qt widgets like buttons, listboxes, labels (=PyQt5.QWidget.*=), etc. should start with what the thing is, followed by an underscore and a more descriptive name. (=button_select_abfs=)
 - Divide the classes into =#VARS=, =widgets=, =layout=, and =Actions=. 
 
 ** layout and class structure
-   Layout is complicated and initially painful to layout programatically. While there are excellent tools such as QtCreator to visually drag and drop to setup you window, I prefer to use the programmatic layout style (lots of typing). Manually, I have better control over both the layout and how the code is organized. 
+   Qt allows you to use a visual layout tool (QtCreator) to drag and drop widgets and generate a layout for your app visually. I did not do this. Initially, laying out the GUI programatically was quite painful and slow, but I feel that I have better control over both the layout and how the code is organized if I write it myself. 
 
-The main class, =ABFExplorer= has a simple grid layout, and is responsible for instantiating the classes for the other widgets and placing them in the grid. Individual widgets may have simple or more complex layouts, and I may decided to change the layout managers or contents over time. By keeping the main class layout simple, I can delegate all the complex layout decisions to individual widget classes, and have a working app even if I do major changes within individual widgets. 
+The main class, =ABFExplorer= has a simple grid layout, and is responsible for instantiating the classes for the other widgets and placing them in the grid. The other classes will typically contain one widget (inheriting from QWidget) and will have their own layout management. These individual widgets may have simple or more complex layouts, and I may decided to change the layout managers or contents over time. By keeping the main class layout simple, and any complexities in the other widget classes, I can delegate all the complex layout decisions to individual widget classes as needed, and have a working app even if I do major changes within individual widgets. 
+
 A good example of this is the =FileInfoPlotControls= class. It contains a parent class (=QWidget=), and two distinct layouts, a =QVBoxLayout=, and a =QFormLayout=. These two layouts are arranged in the parent =QWidget= in a grid, but this could easily change later. As far as the main window in ABFExplorer knows (or cares), it is just placing the main =FileInfoPlotControls= =QWidget=. 
-*** class interactions
 
-I want to avoid classes accessing other class vars. Using that object oriented pattern confuses me (even a few days later) by introducing interface coupling (changing a var name or type in one class can have unintended consequences across the system). It is too hard for me to understand. So while I will set and unset variables within a class, I will try to minimize cross-class interactions and prefer passing messages (data) instead. A good example is in =FileInfoPlotControls.update_file_name=, which simply takes a string of the file name. 
+** class interactions and inheritance
+
+I will not be using multiple inheritance, it confuses me. Most widget classes will inherit from QWidget, but that's about it.
+
+I am not very experienced with object oriented design patterns, so I may be describing some well known ones here. To build a GUI with Qt, you really need to use OO patterns. To avoid too much coupling and confusion, I want to prevent classes from reading or writing to other class vars. Not only is that type of code confusing, but it introduces a lot of coupling (changing a var name or type in one class can have unintended consequences across the system) and makes things hard to test.
+
+So while I will set and unset variables within a class (such as when a file selection changes), I will try to minimize cross-class interactions and prefer passing messages (data) instead.
+
+*If a class (some group of widgets with related purposes) needs info from another class, then that data will be gathered, organized into a data structure (likely a python =dict=) and passed to the function that needs it /as data/.*
+
+I am trying to promote functional style programming, in a mutable OO system.
+
+*In this system, if a class directly accesses (or mutates) a field in another class, that is a bug* (I know there are several 'bugs' now, I'm working on it). All information will pass as regular data structures returned from functions or class methods.
+
+For example, the plotting functions are in the =plotting.PlotWidget= class. The main =update_plot()= method accepts a =dictionary= with a set of keys for =x=, =y=, and =name=. =update_plot()= does not grab something from another class or even know about another class, it simply accepts a =dict=, which could come from /anywhere/. This makes testing easier, reduces coupling, and makes it easier to adapt to new future data input methods and options in the future if I want. 
 
 ** Useful docs and links (Best docs are pyside)
 - https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth
@@ -38,4 +71,6 @@ I want to avoid classes accessing other class vars. Using that object oriented p
 - abf_explorer will contain ONLY visualization tools. Experimental analysis stuff will be developed in =abf_analysis=
 - add logging. Also, add a message for error display. This should be mirror the log and be displayed as a dropdown text area if wanted/needed to send to me if there are problems so I have some context.
 - When mouse over, show name of trace.
+- Accept command line options.
+  - =--startup-dir=
 
