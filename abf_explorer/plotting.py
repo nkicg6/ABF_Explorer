@@ -1,6 +1,7 @@
 import pyqtgraph as pg
 from itertools import cycle
 from pprint import pprint
+
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")
 
@@ -33,23 +34,16 @@ class PlotWidget(pg.GraphicsWindow):
         print(f"args: {[arg for arg in args]}")
 
     def _clear_legend(self):
-        for stuff in self.mainPlotWidget.legend.items:
-            sample, label = stuff
-            self.mainPlotWidget.legend.items.remove((sample, label))
+        print("test clear called")
+        for sample, label in self.mainPlotWidget.legend.items:
             self.mainPlotWidget.legend.layout.removeItem(sample)
-            sample.close()
             self.mainPlotWidget.legend.layout.removeItem(label)
-            label.close()
-            self.mainPlotWidget.legend.updateSize()
-
-    def _clear_all_legend(self):
-        while len(self.mainPlotWidget.legend.items) != 0:
-            self._clear_legend()
+        self.mainPlotWidget.legend.items = []
+        self.mainPlotWidget.legend.updateSize()
 
     def set_main_canvas(self):
         self.mainPlotWidget = self.addPlot(title="")
         self.mainPlotWidget.addLegend()
-
 
     def update_plot(self, plotdict):
         self.mainPlotWidget.legend.update()
@@ -75,7 +69,8 @@ class PlotWidget(pg.GraphicsWindow):
         print(f"type {self.mainPlotWidget}")
 
     def clear_plot(self, *args):
-        self._clear_all_legend()
+        # self._clear_all_legend()
+        self._clear_legend()
         self.mainPlotWidget.clearPlots()
         self.mainPlotWidget.legend.update()
         self.mainPlotWidget.setLabels(left="", bottom="")
