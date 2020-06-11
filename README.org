@@ -12,10 +12,13 @@ A simple [[https://riverbankcomputing.com/software/pyqt/download5][PyQt5]] and [
 We use the excellent pyABF package (https://github.com/swharden/pyABF) to do the hard work of parsing ABF files, Thanks [[https://github.com/swharden/][Scott!]]
 
 The idea of ABF_Explorer is to provide a *simple*, cross platform (shar-able) app for quickly viewing ABF files without a bunch of python/matlab/etc. boilerplate. Often I want to quickly look through some files or show an example, but I don't know exactly which file or sweep it is. This tool allows me to quickly scroll through files, read the metadata, and take a look at the data. 
+** Useage
+
+Currently in development. clone this repository, make a virtual environment, =pip install -r requirements.txt= and run =python main.py=. If you want to load a directory of abf's at startup, use the =-d= or =--startup-dir= flag and pass the path to the directory. 
+
 ** Note and past efforts
 This project is under active development and is not well tested!
 I attempted this before using Tkinter and matplotlib ([[https://github.com/nkicg6/tkABF_Explorer][tkABF_Explorer]]) with the goal of simplify packaging and deployment (Tkinter ships with python, so less native C and C++ dependencies that may require compilation). Building GUIs (well) is difficult, and I found that the type of plot interaction that I wanted was difficult (for me) to achieve with Tkinter and matplotlib with reasonable performance, so I started fresh using PyQt and pyqtgraph's bindings to the powerful Qt framework. 
-
 * Roadmap/plans
 ** ABF_Explorer should be easy to both *share* and *use*
 - =pip= installable, with few dependencies and reasonable command line options.
