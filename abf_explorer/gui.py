@@ -5,19 +5,14 @@
 # examples python -m pyqtgraph.examples
 # plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
-
-
-import sys
-import random
 import numpy as np
 import PyQt5.QtWidgets as qt
 from PyQt5 import QtCore, QtGui
 
-from filedisplay import FileDisplay
-from fileinfoplotcontrols import FileInfoPlotControls
-from plotting import PlotWidget
-from args import parser
-import plotutils
+from .filedisplay import FileDisplay
+from .fileinfoplotcontrols import FileInfoPlotControls
+from .plotting import PlotWidget
+from . import plotutils
 
 
 class ABFExplorer:
@@ -170,7 +165,8 @@ class ABFExplorer:
             print("[signal_plot_item_called] problem, no paths taken.")
 
 
-if __name__ == "__main__":
-    cmd_args = parser.parse_args()
-    ABFExplorer(startup_dir=cmd_args.startup_dir)
-    print("Closing")
+# if __name__ == "__main__":
+#     testfn()
+#     cmd_args = parser.parse_args()
+#     ABFExplorer(startup_dir=cmd_args.startup_dir)
+#     print("Closing")
