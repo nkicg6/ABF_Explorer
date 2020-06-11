@@ -1,6 +1,6 @@
 import pyqtgraph as pg
 from itertools import cycle
-
+from pprint import pprint
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")
 
@@ -32,10 +32,28 @@ class PlotWidget(pg.GraphicsWindow):
         print("clicked!")
         print(f"args: {[arg for arg in args]}")
 
+    def _clear_legend(self):
+        for stuff in self.mainPlotWidget.legend.items:
+            sample, label = stuff
+            self.mainPlotWidget.legend.items.remove((sample, label))
+            self.mainPlotWidget.legend.layout.removeItem(sample)
+            sample.close()
+            self.mainPlotWidget.legend.layout.removeItem(label)
+            label.close()
+            self.mainPlotWidget.legend.updateSize()
+
+    def _clear_all_legend(self):
+        while len(self.mainPlotWidget.legend.items) != 0:
+            self._clear_legend()
+
     def set_main_canvas(self):
         self.mainPlotWidget = self.addPlot(title="")
+        self.mainPlotWidget.addLegend()
+
 
     def update_plot(self, plotdict):
+        self.mainPlotWidget.legend.update()
+        print(f"leg items {self.mainPlotWidget.legend.items}")
         self.data = pg.PlotDataItem(
             plotdict["x"],
             plotdict["y"],
@@ -49,7 +67,6 @@ class PlotWidget(pg.GraphicsWindow):
         self.mainPlotWidget.setLabels(
             left=plotdict["y_units"], bottom=plotdict["x_units"]
         )
-
         #        self.item_refs append each item to item refs and attach the signal
         print("Plotting called")
         print(
@@ -58,7 +75,9 @@ class PlotWidget(pg.GraphicsWindow):
         print(f"type {self.mainPlotWidget}")
 
     def clear_plot(self, *args):
-        self.mainPlotWidget.clear()
+        self._clear_all_legend()
+        self.mainPlotWidget.clearPlots()
+        self.mainPlotWidget.legend.update()
         self.mainPlotWidget.setLabels(left="", bottom="")
         self.color_cycler = cycle(self.color_list.copy())
         print(f"cleared plot")
