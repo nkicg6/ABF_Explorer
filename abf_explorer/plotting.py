@@ -52,7 +52,7 @@ class PlotWidget(pg.GraphicsWindow):
             plotdict["x"],
             plotdict["y"],
             name=plotdict["name"],
-            pen=pg.mkPen(self.color_cycler.__next__(), clickable=True, width=4),
+            pen=pg.mkPen(self.color_cycler.__next__(), clickable=True,),
         )
 
         self.data.sigClicked.connect(self.print_clicked)
