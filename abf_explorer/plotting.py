@@ -52,7 +52,7 @@ class PlotWidget(pg.GraphicsWindow):
             plotdict["x"],
             plotdict["y"],
             name=plotdict["name"],
-            pen=pg.mkPen(self.color_cycler.__next__(), clickable=True,),
+            pen=pg.mkPen(self.color_cycler.__next__(), width=1,),
         )
 
         self.data.sigClicked.connect(self.print_clicked)
@@ -69,7 +69,7 @@ class PlotWidget(pg.GraphicsWindow):
         print(f"type {self.mainPlotWidget}")
 
     def clear_plot(self, *args):
-        # self._clear_all_legend()
+        self.data = None
         self._clear_legend()
         self.mainPlotWidget.clearPlots()
         self.mainPlotWidget.legend.update()
