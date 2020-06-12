@@ -68,7 +68,7 @@ For example, the plotting functions are in the =plotting.PlotWidget= class. The 
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
 ** development dir
-Set environmental variable =DEBUG_DIR= to pass for quicker startup (no need to choose a file) so startup like this:
+Set environmental variable =DEBUG_DIR= to pass for quicker startup (no need to choose a directory) so startup like this:
 =python abf_explorer/gui.py --startup-dir $DEBUG_DIR=
 * Development TODO's
 - Figure out legend and plot styling. Can the plot be dockable?
