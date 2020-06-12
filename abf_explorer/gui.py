@@ -5,6 +5,10 @@
 # examples python -m pyqtgraph.examples
 # plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
+# TODO FileDisplay needs to loose the vars. methods should *return* current selection, dict list, etc, but should not store. Search for wherever I am doing .selectedItems or .get here and fix it.
+
+
+import os
 import numpy as np
 import PyQt5.QtWidgets as qt
 from PyQt5 import QtCore, QtGui
@@ -13,7 +17,7 @@ from .filedisplay import FileDisplay
 from .fileinfoplotcontrols import FileInfoPlotControls
 from .plotting import PlotWidget
 from . import plotutils
-from abf_explorer.abf_analysis import regionselection
+from abf_explorer.abf_analysis import lfpio as lfp
 
 
 class ABFExplorer:
@@ -48,9 +52,7 @@ class ABFExplorer:
 
         # make widgets
         self.plotWidget = PlotWidget(parent=self.centralWidget)
-        self.fileExplorerWidget = FileDisplay(
-            parent=self.centralWidget, startup=startup_dir
-        )
+        self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
         self.fileInfoPlotControlsWidget = FileInfoPlotControls(
             parent=self.centralWidget
         )
@@ -94,23 +96,40 @@ class ABFExplorer:
 
         # keyboard shortcuts
         self.shortcut_update_plot = qt.QShortcut(
-            QtGui.QKeySequence("Tab"),
-            self.fileInfoPlotControlsWidget.button_plotControls_plot,
-        )
-        self.shortcut_clear_plot = qt.QShortcut(
-            QtGui.QKeySequence("c"),
-            self.fileInfoPlotControlsWidget.button_plotControls_clear_plot,
+            QtGui.QKeySequence("Tab"), self.centralWidget
         )
         self.shortcut_update_plot.activated.connect(self.signal_plot_item_called)
+
+        self.shortcut_lfp_io = qt.QShortcut(
+            QtGui.QKeySequence("Ctrl+i"), self.centralWidget
+        )
+        self.shortcut_lfp_io.activated.connect(self.lfp_io_analysis_frame)
+
+        self.shortcut_clear_plot = qt.QShortcut(
+            QtGui.QKeySequence("c"), self.centralWidget
+        )
         self.shortcut_clear_plot.activated.connect(self.clear_plot)
 
         # geometry and run
         self.mainWindow.setGeometry(50, 50, 900, 600)
         self.mainWindow.show()
+        self.set_startup_dir(startup=startup_dir)
         self.mainApp.exec_()
+
+    def set_startup_dir(self, startup):
+        if startup is not None:
+            if not os.path.exists(startup):
+                print(f"[STARTUP ERROR] provided startup dir does not exist {startup}")
+                return
+        self.fileExplorerWidget._filter_dir(startup)
+        curr = self.fileExplorerWidget.listbox_file_list.selectedItems()[
+            0
+        ]  # CHANGE FOR MULTIPLE SELECTIONS
+        self.signal_file_selection_changed(curr)
 
     def lfp_io_analysis_frame(self):
         print("Raise IO!")
+        self.LFPIOWindow = lfp.LFPIOAnalysis()
 
     def lfp_refractory_analysis_frame(self):
         print("Raise refractory!")
@@ -124,15 +143,24 @@ class ABFExplorer:
         self.var_currently_plotted_data = {}
         self.var_y_units_plotted = ""
 
+    def _convert_Qobj_to_str(self, Qobj):
+        if Qobj is None:
+            return
+        if not isinstance(Qobj, str):
+            return Qobj.text()
+        else:
+            return Qobj
+
     def signal_file_selection_changed(self, *args):
         """signal when files selection changes. Used to update metadata displayed to user."""
+        selectedthing = self._convert_Qobj_to_str(args[0])
         try:
             print(
                 f"[signal_file_selection_changed] current selection is {args[0].text()}"
             )
-            self.var_current_selection_short_name = args[0].text()
+            self.var_current_selection_short_name = selectedthing
             self.var_current_selection_full_path = self.fileExplorerWidget.var_selected_abf_files_dict.get(
-                args[0].text(), "NONE"
+                selectedthing, "NONE"
             )
             self.var_current_metadata_map = plotutils.io_get_metadata(
                 self.var_current_selection_full_path
@@ -150,7 +178,6 @@ class ABFExplorer:
 
     def signal_plot_item_called(self, *args):
         """called for plotting. Sets vars and gathers data for plot"""
-
         curr_sel = self.fileExplorerWidget.listbox_file_list.selectedItems()[
             0
         ].text()  # CHANGE FOR MULTIPLE SELECTIONS
@@ -191,10 +218,3 @@ class ABFExplorer:
             return
         else:
             print("[signal_plot_item_called] problem, no paths taken.")
-
-
-# if __name__ == "__main__":
-#     testfn()
-#     cmd_args = parser.parse_args()
-#     ABFExplorer(startup_dir=cmd_args.startup_dir)
-#     print("Closing")

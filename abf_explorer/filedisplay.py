@@ -8,7 +8,7 @@ import PyQt5.QtWidgets as qt
 class FileDisplay(qt.QWidget):
     """controls display and file handling for file selection"""
 
-    def __init__(self, parent, startup):
+    def __init__(self, parent):
         super().__init__(parent=parent)
         # VARS
         self._var_workingDir = os.path.expanduser(
@@ -25,16 +25,8 @@ class FileDisplay(qt.QWidget):
         self.layout.addWidget(self.button_select_abf)
         self.layout.addWidget(self.listbox_file_list)
         self.setLayout(self.layout)
-        self.startup_dir(startup)
 
         # Actions
-
-    def startup_dir(self, startup):
-        if startup is not None:
-            if not os.path.exists(startup):
-                print(f"[STARTUP ERROR] provided startup dir does not exist {startup}")
-                return
-            self._filter_dir(startup)
 
     def choose_directory(self):
         abf_dir = str(

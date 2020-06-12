@@ -6,9 +6,6 @@ pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")
 
 # each thing plotted needs to be a distinct https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotdataitem.html plotdataitem, added to the plotitem https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
-# TODO (tonight) implement the filtering checkbox and mean all sweeps checkbox and a plot all sweeps checkbox..
-# TODO (saturday) implement the select region feature for analysis of field potentials.Allow manual region specification and save the data from the selected region for later automated analysis. Think of what data you need for each experiment (i.e. for IO, axon refract, and 83Hz)
-#
 
 
 class PlotWidget(pg.GraphicsWindow):
