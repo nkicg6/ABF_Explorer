@@ -13,6 +13,7 @@ from .filedisplay import FileDisplay
 from .fileinfoplotcontrols import FileInfoPlotControls
 from .plotting import PlotWidget
 from . import plotutils
+from abf_explorer.abf_analysis import regionselection
 
 
 class ABFExplorer:
@@ -25,6 +26,11 @@ class ABFExplorer:
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
         self.mainWindow.setWindowTitle("ABF explorer v0.1-dev")
+        # menu bar
+        self.menuBar = self.mainWindow.menuBar()
+        self.menuBarAnalysis = self.menuBar.addMenu("&Analysis")
+        self.selectRegionMenuAction = QtGui.QAction("&Select Region", self.mainWindow)
+        self.menuBarAnalysis.addAction(self.selectRegionMenuAction)
         # vars
         self.var_current_selection_short_name = ""
         self.var_current_selection_full_path = ""
@@ -73,6 +79,8 @@ class ABFExplorer:
             self.signal_plot_item_called,
         )
 
+        self.selectRegionMenuAction.triggered.connect(self.testprint)
+
         # keyboard shortcuts
         self.shortcut_update_plot = qt.QShortcut(
             QtGui.QKeySequence("Tab"),
@@ -89,6 +97,9 @@ class ABFExplorer:
         self.mainWindow.setGeometry(50, 50, 900, 600)
         self.mainWindow.show()
         self.mainApp.exec_()
+
+    def testprint(self):
+        print("analysis menu!")
 
     def clear_plot(self):
         """clears plot and currently_plotted_items"""
