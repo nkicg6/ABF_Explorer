@@ -29,8 +29,15 @@ class ABFExplorer:
         # menu bar
         self.menuBar = self.mainWindow.menuBar()
         self.menuBarAnalysis = self.menuBar.addMenu("&Analysis")
-        self.selectRegionMenuAction = QtGui.QAction("&Select Region", self.mainWindow)
-        self.menuBarAnalysis.addAction(self.selectRegionMenuAction)
+        self.selectLFPIOMenuAction = QtGui.QAction("&LFP IO region", self.mainWindow)
+        self.menuBarAnalysis.addAction(self.selectLFPIOMenuAction)
+        self.selectLFPRefractoryMenuAction = QtGui.QAction(
+            "&LFP refractory periods", self.mainWindow
+        )
+        self.menuBarAnalysis.addAction(self.selectLFPRefractoryMenuAction)
+        self.selectLFP83HzMenuAction = QtGui.QAction("&LFP 83Hz", self.mainWindow)
+        self.menuBarAnalysis.addAction(self.selectLFP83HzMenuAction)
+
         # vars
         self.var_current_selection_short_name = ""
         self.var_current_selection_full_path = ""
@@ -78,8 +85,12 @@ class ABFExplorer:
         self.fileInfoPlotControlsWidget.button_plotControls_plot.clicked.connect(
             self.signal_plot_item_called,
         )
-
-        self.selectRegionMenuAction.triggered.connect(self.testprint)
+        # analysis actions
+        self.selectLFPIOMenuAction.triggered.connect(self.lfp_io_analysis_frame)
+        self.selectLFPRefractoryMenuAction.triggered.connect(
+            self.lfp_refractory_analysis_frame
+        )
+        self.selectLFP83HzMenuAction.triggered.connect(self.lfp_83Hz_analysis_frame)
 
         # keyboard shortcuts
         self.shortcut_update_plot = qt.QShortcut(
@@ -98,8 +109,14 @@ class ABFExplorer:
         self.mainWindow.show()
         self.mainApp.exec_()
 
-    def testprint(self):
-        print("analysis menu!")
+    def lfp_io_analysis_frame(self):
+        print("Raise IO!")
+
+    def lfp_refractory_analysis_frame(self):
+        print("Raise refractory!")
+
+    def lfp_83Hz_analysis_frame(self):
+        print("Raise 83Hz")
 
     def clear_plot(self):
         """clears plot and currently_plotted_items"""
