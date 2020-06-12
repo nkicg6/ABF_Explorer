@@ -15,15 +15,15 @@ class PlotWidget(pg.GraphicsWindow):
     def __init__(self, parent):
         super().__init__(parent=parent)
         self.color_list = [
-            "A6CEE3ff",
-            "1f78b4ff",
-            "b2df8aff",
-            "33a02cff",
-            "fb9a99ff",
-            "e31a1cff",
-            "fdbf6fff",
-            "ff7f00ff",
-            "cab2d6ff",
+            "#e41a1cff",
+            "#377eb8ff",
+            "#4daf4aff",
+            "#984ea3ff",
+            "#ff7f00ff",
+            "#ffff33ff",
+            "#a65628ff",
+            "#f781bfff",
+            "#999999ff",
         ]
         self.color_cycler = cycle(self.color_list.copy())
         self.pen_width = 2
