@@ -3,6 +3,9 @@
 # Would this be simpler as a class? Verify the path once, then create the metadata map and autofill the opts_map with defaults?
 import hashlib
 import os
+from abf_logging import make_logger
+
+logger = make_logger(__name__)
 import pyabf
 
 

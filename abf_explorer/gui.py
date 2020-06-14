@@ -6,13 +6,12 @@
 # plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # TODO FileDisplay needs to loose the vars. methods should *return* current selection, dict list, etc, but should not store. Search for wherever I am doing .selectedItems or .get here and fix it.
-
-
 import os
 import numpy as np
 import PyQt5.QtWidgets as qt
 from PyQt5 import QtCore, QtGui
 
+from abf_logging import make_logger
 from filedisplay import FileDisplay
 from fileinfoplotcontrols import FileInfoPlotControls
 from plotting import PlotWidget
@@ -20,12 +19,15 @@ import plotutils
 from abf_analysis import lfpio as lfp
 
 
+logger = make_logger(__name__)
+
+
 class ABFExplorer:
     """main abf explorer class contains all widgets and coordinates all actions"""
 
     def __init__(self, startup_dir=None):
         self.mainApp = qt.QApplication([])  # command line flags if parsing
-        print(f"startup_dir is {startup_dir}")
+        logger.debug(f"Startup dir is {startup_dir}")
         self.mainWindow = qt.QMainWindow()
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
@@ -118,33 +120,30 @@ class ABFExplorer:
         self.mainApp.exec_()
 
     def set_startup_dir(self, startup):
-        print(f"startup is {startup}")
         if startup is None:
             return
         if startup is not None:
             if not os.path.exists(startup):
-                print(f"[STARTUP ERROR] provided startup dir does not exist {startup}")
+                logger.debug(f"provided startup dir does not exist {startup}")
                 return
         (
             selected_abf_files_dict,
             current_selection,
         ) = self.fileExplorerWidget.filter_and_select(startup)
-        print(f"selected_abf_files_dict is \n:{selected_abf_files_dict}")
-        print(f"current selection is \n:{current_selection}")
-
+        logger.debug(f"current selection is {current_selection}")
         self.var_selected_abf_files_dict = selected_abf_files_dict.copy()
         self.current_selection = current_selection
         self.signal_file_selection_changed(current_selection)
 
     def lfp_io_analysis_frame(self):
-        print("Raise IO!")
+        logger.debug("raise IO frame")
         self.LFPIOWindow = lfp.LFPIOAnalysis()
 
     def lfp_refractory_analysis_frame(self):
-        print("Raise refractory!")
+        logger.debug("Raise refractory!")
 
     def lfp_83Hz_analysis_frame(self):
-        print("Raise 83Hz")
+        logger.debug("Raise 83Hz")
 
     def clear_plot(self):
         """clears plot and currently_plotted_items"""
@@ -153,7 +152,6 @@ class ABFExplorer:
         self.var_y_units_plotted = ""
 
     def _convert_Qobj_to_str(self, Qobj):
-        print(f"Qobj type is {type(Qobj)}")
         if Qobj is None:
             return
         if isinstance(Qobj, str):
