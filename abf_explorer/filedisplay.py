@@ -14,7 +14,6 @@ class FileDisplay(qt.QWidget):
         self._var_workingDir = os.path.expanduser(
             "~"
         )  # start home, replace with prev dir after selection
-        self.var_selected_abf_files_dict = dict
 
         # button and display
         self.button_select_abf = qt.QPushButton("Choose file")
@@ -37,24 +36,38 @@ class FileDisplay(qt.QWidget):
         if not abf_dir:
             print("[DEBUG] _choose_directory failed")
             return
-        self._filter_dir(abf_dir)
+        selected_abf_files_dict, current_selection = self.filter_and_select(abf_dir)
+        return selected_abf_files_dict, current_selection
+
+    def filter_and_select(self, directory):
+        if not os.path.exists(directory):
+            print("[filter_and_select] dir does not exist: {directory}")
+            return
+        selected_abf_files_dict = self._filter_dir(directory)
+        current_selection = self._populate_listbox_file_list(selected_abf_files_dict)
+        return selected_abf_files_dict, current_selection
 
     def _filter_dir(self, abf_dir):
         self._var_workingDir = abf_dir
-        self.var_selected_abf_files_dict = {
+        selected_abf_files_dict = {
             f: os.path.join(abf_dir, f)
             for f in os.listdir(abf_dir)
             if f.endswith(".abf")
         }
-        self._populate_listbox_file_list()
+        return selected_abf_files_dict
 
-    def _populate_listbox_file_list(self):
+    def _populate_listbox_file_list(self, selected_abf_files_dict):
         self.listbox_file_list.clear()
-        sorted_keys = sorted(self.var_selected_abf_files_dict.keys())
+        sorted_keys = sorted(selected_abf_files_dict.keys())
         if len(sorted_keys) == 0:
             self.listbox_file_list.insertItem(0, "No ABFs found")
             return
+
         for n, f in enumerate(sorted_keys):
             self.listbox_file_list.insertItem(n, f)
         default_selection = self.listbox_file_list.item(0)
         self.listbox_file_list.setCurrentItem(default_selection)
+        return self.listbox_file_list.selectedItems()[0].text()
+
+    def get_current_selection(self):
+        return self.listbox_file_list.selectedItems()[0].text()

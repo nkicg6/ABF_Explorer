@@ -13,11 +13,11 @@ import numpy as np
 import PyQt5.QtWidgets as qt
 from PyQt5 import QtCore, QtGui
 
-from .filedisplay import FileDisplay
-from .fileinfoplotcontrols import FileInfoPlotControls
-from .plotting import PlotWidget
-from . import plotutils
-from abf_explorer.abf_analysis import lfpio as lfp
+from filedisplay import FileDisplay
+from fileinfoplotcontrols import FileInfoPlotControls
+from plotting import PlotWidget
+import plotutils
+from abf_analysis import lfpio as lfp
 
 
 class ABFExplorer:
@@ -50,6 +50,9 @@ class ABFExplorer:
         self.var_x_units_plotted = ""
         self.var_y_units_plotted = ""
 
+        self.var_current_selection = ""
+        self.var_selected_abf_files_dict = {}
+
         # make widgets
         self.plotWidget = PlotWidget(parent=self.centralWidget)
         self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
@@ -73,9 +76,7 @@ class ABFExplorer:
         #### events ####
 
         # file explorer and info actions
-        self.fileExplorerWidget.button_select_abf.clicked.connect(
-            self.fileExplorerWidget.choose_directory
-        )
+        self.fileExplorerWidget.button_select_abf.clicked.connect(self.choose_directory)
         self.fileExplorerWidget.listbox_file_list.currentItemChanged.connect(
             self.signal_file_selection_changed
         )
@@ -117,15 +118,23 @@ class ABFExplorer:
         self.mainApp.exec_()
 
     def set_startup_dir(self, startup):
+        print(f"startup is {startup}")
+        if startup is None:
+            return
         if startup is not None:
             if not os.path.exists(startup):
                 print(f"[STARTUP ERROR] provided startup dir does not exist {startup}")
                 return
-        self.fileExplorerWidget._filter_dir(startup)
-        curr = self.fileExplorerWidget.listbox_file_list.selectedItems()[
-            0
-        ]  # CHANGE FOR MULTIPLE SELECTIONS
-        self.signal_file_selection_changed(curr)
+        (
+            selected_abf_files_dict,
+            current_selection,
+        ) = self.fileExplorerWidget.filter_and_select(startup)
+        print(f"selected_abf_files_dict is \n:{selected_abf_files_dict}")
+        print(f"current selection is \n:{current_selection}")
+
+        self.var_selected_abf_files_dict = selected_abf_files_dict.copy()
+        self.current_selection = current_selection
+        self.signal_file_selection_changed(current_selection)
 
     def lfp_io_analysis_frame(self):
         print("Raise IO!")
@@ -144,23 +153,35 @@ class ABFExplorer:
         self.var_y_units_plotted = ""
 
     def _convert_Qobj_to_str(self, Qobj):
+        print(f"Qobj type is {type(Qobj)}")
         if Qobj is None:
             return
-        if not isinstance(Qobj, str):
-            return Qobj.text()
-        else:
+        if isinstance(Qobj, str):
             return Qobj
+        else:
+            return Qobj.text()
+
+    def choose_directory(self):
+        self.fileExplorerWidget.choose_directory()
+        self.signal_file_selection_changed()
 
     def signal_file_selection_changed(self, *args):
         """signal when files selection changes. Used to update metadata displayed to user."""
-        selectedthing = self._convert_Qobj_to_str(args[0])
+        print(f"signal_file_selection_changed args are {args}")
+
+        selectedthing = (
+            self.fileExplorerWidget.get_current_selection()
+        )  # self._convert_Qobj_to_str(args[0])
         try:
             print(
-                f"[signal_file_selection_changed] current selection is {args[0].text()}"
+                f"[signal_file_selection_changed] current selection is {selectedthing}"
             )
             self.var_current_selection_short_name = selectedthing
-            self.var_current_selection_full_path = self.fileExplorerWidget.var_selected_abf_files_dict.get(
+            self.var_current_selection_full_path = self.var_selected_abf_files_dict.get(
                 selectedthing, "NONE"
+            )
+            print(
+                f"var_current_selection_full_path is {self.var_current_selection_full_path}"
             )
             self.var_current_metadata_map = plotutils.io_get_metadata(
                 self.var_current_selection_full_path
@@ -178,12 +199,10 @@ class ABFExplorer:
 
     def signal_plot_item_called(self, *args):
         """called for plotting. Sets vars and gathers data for plot"""
-        curr_sel = self.fileExplorerWidget.listbox_file_list.selectedItems()[
-            0
-        ].text()  # CHANGE FOR MULTIPLE SELECTIONS
+        curr_sel = self.var_current_selection
         assert (
             curr_sel == self.var_current_selection_short_name
-        ), f"[signal_plot_item_called] ERROR, curr_sel {curr_sel} != var {self.var_current_selection_short_name}"
+        ), f"[signal_plot_item_called] ERROR, curr_sel '{curr_sel}' != var {self.var_current_selection_short_name}"
 
         print(f"[signal_plot_item_called] current selection is {curr_sel}")
         if not curr_sel:
