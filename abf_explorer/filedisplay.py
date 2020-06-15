@@ -80,10 +80,10 @@ class FileDisplay(qt.QWidget):
     def _filter_and_make_dict(self, directory):
         if not directory:
             logger.warning(f"Invalid directory: {directory}")
-            return {"Bad directory": "Bad directory"}
+            return {"Nothing here...": "Bad directory"}
         if not os.path.exists(directory):
             logger.warning(f"Directory does not exist: {directory}")
-            return {"Bad directory": "Bad directory"}
+            return {"Nothing here...": "Bad directory"}
         logger.debug(f"setting working dir to {directory}")
         self._var_workingDir = directory
         abfs = [abf for abf in os.listdir(directory) if abf.endswith("abf")]

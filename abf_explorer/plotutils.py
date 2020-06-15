@@ -22,13 +22,15 @@ PLOTDATA = {
 
 def io_get_metadata(abf_path):
     metadata = PLOTDATA.copy()
-
     if not abf_path.endswith(".abf"):
-        return metadata_error("string is not an abf: {abf_path}")
+        logger.warning(f"string is not an abf: {abf_path}")
+        return metadata_error(f"string is not an abf: {abf_path}")
     if not os.path.exists(abf_path):
-        return metadata_error("non existant path passed: {abf_path}")
+        logger.warning(f"path does not exist: {abf_path}")
+        return metadata_error(f"path does not exist: {abf_path}")
     if not os.path.isfile(abf_path):
-        return metadata_error("path passed is not a file: {abf_path}")
+        logger.warning(f"path passed is not a file: {abf_path}")
+        return metadata_error(f"path passed is not a file: {abf_path}")
     try:
         abf = io_read_abf(abf_path, loadData=False)
         metadata["short_filename"] = abf.abfID
@@ -39,21 +41,23 @@ def io_get_metadata(abf_path):
         metadata["n_channels"] = abf.channelCount
         return metadata
     except AssertionError as e:
+        logger.exception(e)
         return metadata_error(e, abf_path)
 
 
 def io_read_abf(abf_path, loadData):
     try:
+        logger.debug(f"reading ABF: {abf_path}")
         abf = pyabf.ABF(abf_path, loadData=loadData)
         return abf
     except Exception as e:
-        error_str = f"[io_read_abf] problem reading abf. Path to bad file is: {abf_path}.\nException (likely thrown by pyABF):\n {e}\n"
-        print(f"{error_str}")
+        logger.warning("exception likely thrown by pyABF")
+        logger.exception(e)
         raise AssertionError(error_str)
 
 
 def metadata_error(error, attempted_path=None):
-    print("[metadata_error] returning blank metadata")
+    logger.warning(f"returning blank metadata")
     metadata = PLOTDATA.copy()
     metadata["error"] = error
     metadata["full_path"] = attempted_path

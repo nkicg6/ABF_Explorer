@@ -5,7 +5,7 @@
 # examples python -m pyqtgraph.examples
 # plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 # plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
-# TODO FileDisplay needs to loose the vars. methods should *return* current selection, dict list, etc, but should not store. Search for wherever I am doing .selectedItems or .get here and fix it.
+
 import os
 import numpy as np
 import PyQt5.QtWidgets as qt
@@ -49,7 +49,7 @@ class ABFExplorer:
         self.var_current_selection_full_path = ""
         self.var_selected_abf_files_dict = {}
 
-        self.var_current_metadata_map = {}
+        self.var_current_metadata_dict = {}
         self.var_currently_plotted_data = {}
         self.var_x_units_plotted = ""
         self.var_y_units_plotted = ""
@@ -73,6 +73,12 @@ class ABFExplorer:
         self.mainLayout.addWidget(self.fileInfoPlotControlsWidget, 1, 0, 1, 2)
         self.mainLayout.addWidget(self.fileInfoPlotControlsWidget, 1, 1)
         self.centralWidget.setLayout(self.mainLayout)
+
+        # pass command line args here
+        if startup_dir:
+            # must run before currentItemChanged is registered
+            logger.debug(f"startup directory passed to choose_directory: {startup_dir}")
+            self.choose_directory(startup_dir)
 
         #### events ####
 
@@ -116,10 +122,7 @@ class ABFExplorer:
         # geometry and run
         self.mainWindow.setGeometry(50, 50, 900, 600)
         self.mainWindow.show()
-        # pass command line args here
-        if startup_dir:
-            logger.debug(f"startup directory passed to choose_directory: {startup_dir}")
-            self.choose_directory(startup_dir)
+
         self.mainApp.exec_()
 
     def lfp_io_analysis_frame(self):
@@ -143,13 +146,13 @@ class ABFExplorer:
         if command_line_dir in ("", False):
             command_line_dir = ""
         logger.debug(f"command_line_dir: {command_line_dir}")
-        print(f"\n\n{command_line_dir}\n\n")
         (
             current_selection,
             selected_file_dict,
         ) = self.fileExplorerWidget.choose_directory_button_activated(command_line_dir)
         self.var_current_selection_short_name = current_selection
         logger.debug(f"setting current_selection: {current_selection}")
+        logger.debug("setting current_selection_dict: not printed")
         self.var_current_selection_full_path = selected_file_dict.get(
             current_selection, None
         )
@@ -157,18 +160,31 @@ class ABFExplorer:
             f"setting current_selection_full_path to: {selected_file_dict.get(current_selection, None)}"
         )
         self.var_selected_abf_files_dict = selected_file_dict
-        logger.debug(f"setting current_metadata_map: not printed")
+        self._update_metadata_vals()
 
     def signal_file_selection_changed(self, *args):
         """signal when files selection changes. Used to update metadata displayed to user."""
-        #### TODO ####
-        current_selection = self.fileExplorerWidget.get_current_selection()
+        try:
+            # first arg in signal is new selection, second is previous selection
+            arg = [arg.text() for arg in args]
+        except Exception as e:
+            logger.warning(f"signal conversion exception: {e}")
+            return
+        current_selection = arg[0]
         self.var_current_selection_short_name = current_selection
+        logger.debug(f"current selection is: {current_selection}")
         self.var_current_selection_full_path = self.var_selected_abf_files_dict.get(
             current_selection, None
         )
-        logger.debug(f"current selection is {current_selection}")
-        logger.debug(f"full path is {self.var_current_selection_full_path}")
+        logger.debug(f"full path is: {self.var_current_selection_full_path}")
+        self._update_metadata_vals()
+
+    def _update_metadata_vals(self):
+        self.current_metadata_dict = plotutils.io_get_metadata(
+            self.var_current_selection_full_path
+        )
+        logger.debug(f"current metadata is: {self.current_metadata_dict}")
+        self.fileInfoPlotControlsWidget.update_metadata_vals(self.current_metadata_dict)
 
     def signal_plot_item_called(self, *args):
         """called for plotting. Sets vars and gathers data for plot"""

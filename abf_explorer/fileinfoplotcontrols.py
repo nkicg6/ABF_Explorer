@@ -1,5 +1,9 @@
 import PyQt5.QtWidgets as qt
 from PyQt5 import QtCore
+from abf_logging import make_logger
+
+
+logger = make_logger(__name__)
 
 
 class FileInfoPlotControls(qt.QWidget):
@@ -94,8 +98,10 @@ class FileInfoPlotControls(qt.QWidget):
             self._update_protocol(file_metadata_dict["protocol"])
             self._update_sweep_combobox(file_metadata_dict["n_sweeps"])
             self._update_channel_combobox(file_metadata_dict["n_channels"])
+            logger.debug("updated metadata")
         except Exception as e:
-            print(f"metadata dict: {file_metadata_dict}\n\nError is {e}")
+            logger.exception(e)
+            logger.debug("exception")
 
     def get_sweep_and_channel_plotting_opts(self):
         # RETURNS ALL OPTIONS AND CURRENT SELECTIONS. MUST SET DEFAULT SELECTIONS ON SETUP!
