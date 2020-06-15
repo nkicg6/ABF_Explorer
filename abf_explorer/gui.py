@@ -47,13 +47,12 @@ class ABFExplorer:
         # vars
         self.var_current_selection_short_name = ""
         self.var_current_selection_full_path = ""
+        self.var_selected_abf_files_dict = {}
+
         self.var_current_metadata_map = {}
         self.var_currently_plotted_data = {}
         self.var_x_units_plotted = ""
         self.var_y_units_plotted = ""
-
-        self.var_current_selection = ""
-        self.var_selected_abf_files_dict = {}
 
         # make widgets
         self.plotWidget = PlotWidget(parent=self.centralWidget)
@@ -139,14 +138,6 @@ class ABFExplorer:
         self.var_currently_plotted_data = {}
         self.var_y_units_plotted = ""
 
-    def _convert_Qobj_to_str(self, Qobj):
-        if Qobj is None:
-            return
-        if isinstance(Qobj, str):
-            return Qobj
-        else:
-            return Qobj.text()
-
     def choose_directory(self, command_line_dir=""):
         """gets data from selected directory. file connected to filedisplay.choose_directory_button_activated"""
         if command_line_dir in ("", False):
@@ -157,7 +148,7 @@ class ABFExplorer:
             current_selection,
             selected_file_dict,
         ) = self.fileExplorerWidget.choose_directory_button_activated(command_line_dir)
-        self.var_current_selection = current_selection
+        self.var_current_selection_short_name = current_selection
         logger.debug(f"setting current_selection: {current_selection}")
         self.var_current_selection_full_path = selected_file_dict.get(
             current_selection, None
@@ -165,40 +156,19 @@ class ABFExplorer:
         logger.debug(
             f"setting current_selection_full_path to: {selected_file_dict.get(current_selection, None)}"
         )
-        self.var_current_metadata_map = selected_file_dict
+        self.var_selected_abf_files_dict = selected_file_dict
         logger.debug(f"setting current_metadata_map: not printed")
 
     def signal_file_selection_changed(self, *args):
         """signal when files selection changes. Used to update metadata displayed to user."""
-        print(f"signal_file_selection_changed args are {args}")
-
-        selectedthing = (
-            self.fileExplorerWidget.get_current_selection()
-        )  # self._convert_Qobj_to_str(args[0])
-        try:
-            print(
-                f"[signal_file_selection_changed] current selection is {selectedthing}"
-            )
-            self.var_current_selection_short_name = selectedthing
-            self.var_current_selection_full_path = self.var_selected_abf_files_dict.get(
-                selectedthing, "NONE"
-            )
-            print(
-                f"var_current_selection_full_path is {self.var_current_selection_full_path}"
-            )
-            self.var_current_metadata_map = plotutils.io_get_metadata(
-                self.var_current_selection_full_path
-            )
-
-            self.fileInfoPlotControlsWidget.update_metadata_vals(
-                self.var_current_metadata_map
-            )
-        except AttributeError as e:
-            print(f"[signal_file_selection_changed] Exception is: \n{e}\n")
-            self.var_current_metadata_map = plotutils.metadata_error(e)
-            self.fileInfoPlotControlsWidget.update_metadata_vals(
-                self.var_current_metadata_map
-            )
+        #### TODO ####
+        current_selection = self.fileExplorerWidget.get_current_selection()
+        self.var_current_selection_short_name = current_selection
+        self.var_current_selection_full_path = self.var_selected_abf_files_dict.get(
+            current_selection, None
+        )
+        logger.debug(f"current selection is {current_selection}")
+        logger.debug(f"full path is {self.var_current_selection_full_path}")
 
     def signal_plot_item_called(self, *args):
         """called for plotting. Sets vars and gathers data for plot"""
