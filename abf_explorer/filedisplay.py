@@ -19,7 +19,7 @@ class FileDisplay(qt.QWidget):
         )  # start home, replace with prev dir after selection
 
         # button and display
-        self.button_select_abf = qt.QPushButton("Choose file")
+        self.button_select_abf = qt.QPushButton("Choose folder")
         self.listbox_file_list = qt.QListWidget()
 
         # layout
@@ -30,22 +30,23 @@ class FileDisplay(qt.QWidget):
 
         # Actions
 
-    def choose_directory_button_activated(self, command_line_dir: str = None) -> tuple:
+    def choose_directory_button_activated(self, command_line_dir: str = "") -> tuple:
         """sets file listbox and returns current selection and shortname:full-path dict.
         activated when button pushed or on startup with command line --startup-dir or -d. Checks for valid files (abf only now), sets the listbox with the file paths, and returns a tuple of
         returns a tuple with current_selection and a dictionary of
         :param command_line_dir: a string passed from --startup-dir or -d upon app startup, defaults to None.
         :return: a tuple of current_selection and a dictionary where keys are the base file name and vals are the full paths to the files.
         """
-        if command_line_dir is None:
+        if command_line_dir == "" or command_line_dir == False:
             logger.debug("no command_line_dir passed, opening file dialogue")
             selected_dir = self._choose_directory_button_action()
-        if command_line_dir is not None:
+        if command_line_dir != "":
             logger.debug("command_line_dir passed, continuing with command line dir")
             selected_dir = command_line_dir
         # case when button is cancelled.
         if selected_dir is None:
-            logger.debug(f"button action likely cancelled by user.")
+            logger.debug("button action likely cancelled by user.")
+            logger.warning("button action likely cancelled by user.")
             return (None, None)
         selected_file_dict = self._filter_and_make_dict(selected_dir)
         current_selection = self._populate_listbox_file_list(selected_file_dict)
@@ -56,14 +57,14 @@ class FileDisplay(qt.QWidget):
         current_selection = self.listbox_file_list.selectedItems()[0].text()
         if not isinstance(current_selection, str):
             logger.warning(
-                f"current selection is not a string, it is type {type(current_selection)}, id {current_selection}"
+                f"current selection is not a string, it is type: {type(current_selection)}, id: {current_selection}"
             )
             return None
-        logger.debug(f"current selection is {current_selection}")
+        logger.debug(f"current selection is: {current_selection}")
         return current_selection
 
     def _choose_directory_button_action(self):
-        logger.debug("entered")
+        logger.debug("Qt dir chooser")
         selected_directory = str(
             qt.QFileDialog.getExistingDirectory(
                 self, "Select dir", self._var_workingDir
@@ -71,7 +72,7 @@ class FileDisplay(qt.QWidget):
         )
         if not selected_directory:
             logger.warning(
-                f"Failed. selected_directory var is {selected_directory}. likely cancelled by user"
+                f"Failed. selected_directory var is: {selected_directory}. likely cancelled by user"
             )
             return None
         return selected_directory
