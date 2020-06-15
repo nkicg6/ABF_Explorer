@@ -3,8 +3,6 @@
 # https://doc.qt.io/qt-5/layout.html
 # https://pythonbasics.org/pyqt-grid/
 # examples python -m pyqtgraph.examples
-# plot item class https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
-# plot customizations for interaction https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
 
 import os
 import numpy as np
