@@ -96,11 +96,9 @@ def io_gather_plot_data(
         mm["name"] = make_name(mm)
         return mm
     except Exception as e:
-        raise (
-            AssertionError(
-                "[io_gather_plot_data] Something went wrong.\n\nexception is {e}\n"
-            )
-        )
+        logger.exception(e)
+        logger.warning(f"something went wrong. metadata_contents: {mm}")
+        raise (AssertionError(f"Something went wrong.\n\nexception is {e}\n"))
 
 
 def _check_y_units(new_y_units, existing_y_units):

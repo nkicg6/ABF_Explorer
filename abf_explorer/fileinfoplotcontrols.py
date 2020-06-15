@@ -63,6 +63,25 @@ class FileInfoPlotControls(qt.QWidget):
         self.plotControlsWidget.setLayout(self.plotControlsLayout)
         self.setLayout(self.mainLayout)
 
+    def update_metadata_vals(self, file_metadata_dict):
+        try:
+            self._update_file_name(file_metadata_dict["short_filename"])
+            self._update_sampling_frequency(
+                file_metadata_dict["sampling_frequency_khz"]
+            )
+            self._update_protocol(file_metadata_dict["protocol"])
+            self._update_sweep_combobox(file_metadata_dict["n_sweeps"])
+            self._update_channel_combobox(file_metadata_dict["n_channels"])
+            logger.debug("updated metadata")
+        except Exception as e:
+            logger.exception(e)
+            logger.debug("exception")
+
+    def get_sweep_and_channel_plotting_opts(self):
+        sweep_ind, channel_ind = self._get_combobox_selections()
+        logger.debug(f"sweep: {sweep_ind}, channel: {channel_ind}")
+        return sweep_ind, channel_ind
+
     def _update_file_name(self, shortfilename):
         self.label_fileInfo_file_name_val.setText(shortfilename)
 
@@ -88,22 +107,3 @@ class FileInfoPlotControls(qt.QWidget):
         curr_channel_ind = self.combobox_plotControls_channel_list.currentIndex()
         curr_sweep_ind = self.combobox_plotControls_sweep_list.currentIndex()
         return curr_sweep_ind, curr_channel_ind
-
-    def update_metadata_vals(self, file_metadata_dict):
-        try:
-            self._update_file_name(file_metadata_dict["short_filename"])
-            self._update_sampling_frequency(
-                file_metadata_dict["sampling_frequency_khz"]
-            )
-            self._update_protocol(file_metadata_dict["protocol"])
-            self._update_sweep_combobox(file_metadata_dict["n_sweeps"])
-            self._update_channel_combobox(file_metadata_dict["n_channels"])
-            logger.debug("updated metadata")
-        except Exception as e:
-            logger.exception(e)
-            logger.debug("exception")
-
-    def get_sweep_and_channel_plotting_opts(self):
-        # RETURNS ALL OPTIONS AND CURRENT SELECTIONS. MUST SET DEFAULT SELECTIONS ON SETUP!
-        sweep_ind, channel_ind = self._get_combobox_selections()
-        return sweep_ind, channel_ind

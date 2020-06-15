@@ -180,11 +180,13 @@ class ABFExplorer:
         self._update_metadata_vals()
 
     def _update_metadata_vals(self):
-        self.current_metadata_dict = plotutils.io_get_metadata(
+        self.var_current_metadata_dict = plotutils.io_get_metadata(
             self.var_current_selection_full_path
         )
-        logger.debug(f"current metadata is: {self.current_metadata_dict}")
-        self.fileInfoPlotControlsWidget.update_metadata_vals(self.current_metadata_dict)
+        logger.debug(f"current metadata is: {self.var_current_metadata_dict}")
+        self.fileInfoPlotControlsWidget.update_metadata_vals(
+            self.var_current_metadata_dict
+        )
 
     def _validate_selection_for_plotting(self):
         valid_current_selection = self.fileExplorerWidget.get_current_selection()
@@ -197,7 +199,7 @@ class ABFExplorer:
                     f"No valid current selection found: {valid_current_selection}"
                 )
             )
-        if self.var_current_selection != valid_current_selection:
+        if self.var_current_selection_short_name != valid_current_selection:
             logger.warning(
                 f"{self.var_current_selection} != {valid_current_selection}. Raising AssertionError"
             )
@@ -206,16 +208,24 @@ class ABFExplorer:
                     f"{self.var_current_selection} != {valid_current_selection}"
                 )
             )
-        return valid_current_selection
+        return
 
     def signal_plot_item_called(self, *args):
         """called for plotting. Sets vars and gathers data for plot"""
-        current_selection = self_validate_selection_for_plotting()
+        try:
+            self._validate_selection_for_plotting()
+        except AssertionError as e:
+            logger.exception(e)
+            logger.debug("returning due to a validation error")
+            return
+
         (
             sweep_ind,
             channel_ind,
         ) = self.fileInfoPlotControlsWidget.get_sweep_and_channel_plotting_opts()
-
+        logger.debug(
+            f"metadata passed to gather data: {self.var_current_metadata_dict}"
+        )
         plot_opts = plotutils.io_gather_plot_data(
             self.var_current_metadata_dict,
             sweep_ind,
@@ -227,17 +237,18 @@ class ABFExplorer:
             self.var_currently_plotted_data, plot_opts, self.var_y_units_plotted,
         )
         if status == "unit_error":
-            print(
+            logger.warning(
                 f"Unit mismatch, can't reasonably plot '{self.var_y_units_plotted}' together on the same axis"
             )
+            return
         if status == "unchanged":
-            print("[signal_plot_item_called] unchanged, continuing")
+            logger.debug(f"unchanged, continuing")
             return
         if status == "updated":
-            print("[signal_plot_item_called] updating plot")
+            logger.debug("updating plot")
             self.var_y_units_plotted = plot_opts["y_units"]
             self.var_currently_plotted_data = fmt_plot_opts
             self.plotWidget.update_plot(plot_opts)
             return
         else:
-            print("[signal_plot_item_called] problem, no paths taken.")
+            logger.warning("problem, no paths taken.")
