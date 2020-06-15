@@ -1,11 +1,13 @@
 import pyqtgraph as pg
 from itertools import cycle
 from pprint import pprint
+from abf_logging import make_logger
 
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")
 
 # each thing plotted needs to be a distinct https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotdataitem.html plotdataitem, added to the plotitem https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
+logger = make_logger(__name__)
 
 
 class PlotWidget(pg.GraphicsWindow):
@@ -27,11 +29,11 @@ class PlotWidget(pg.GraphicsWindow):
         self.set_main_canvas()
 
     def print_clicked(self, *args):
-        print("clicked!")
-        print(f"args: {[arg for arg in args]}")
+        logger.debug("Clicked")
+        logger.debug(f"args: {[arg for arg in args]}")
 
     def _clear_legend(self):
-        print("test clear called")
+        logger.debug("called")
         for sample, label in self.mainPlotWidget.legend.items:
             self.mainPlotWidget.legend.layout.removeItem(sample)
             self.mainPlotWidget.legend.layout.removeItem(label)
@@ -44,7 +46,8 @@ class PlotWidget(pg.GraphicsWindow):
 
     def update_plot(self, plotdict):
         self.mainPlotWidget.legend.update()
-        print(f"leg items {self.mainPlotWidget.legend.items}")
+        logger.debug("called")
+        logger.debug(f"legend items are {self.mainPlotWidget.legend.items}")
         self.data = pg.PlotDataItem(
             plotdict["x"],
             plotdict["y"],
@@ -58,18 +61,12 @@ class PlotWidget(pg.GraphicsWindow):
         self.mainPlotWidget.setLabels(
             left=plotdict["y_units"], bottom=plotdict["x_units"]
         )
-        #        self.item_refs append each item to item refs and attach the signal
-        print("Plotting called")
-        print(
-            f"plot items are: {[(i.name(), type(i)) for i in self.mainPlotWidget.items]}"
-        )
-        print(f"type {self.mainPlotWidget}")
 
     def clear_plot(self, *args):
+        logger.debug("called")
         self.data = None
         self._clear_legend()
         self.mainPlotWidget.clearPlots()
         self.mainPlotWidget.legend.update()
         self.mainPlotWidget.setLabels(left="", bottom="")
         self.color_cycler = cycle(self.color_list.copy())
-        print(f"cleared plot")
