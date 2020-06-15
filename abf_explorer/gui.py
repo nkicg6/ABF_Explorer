@@ -186,23 +186,38 @@ class ABFExplorer:
         logger.debug(f"current metadata is: {self.current_metadata_dict}")
         self.fileInfoPlotControlsWidget.update_metadata_vals(self.current_metadata_dict)
 
+    def _validate_selection_for_plotting(self):
+        valid_current_selection = self.fileExplorerWidget.get_current_selection()
+        if not valid_current_selection:
+            logger.warning(
+                f"No valid current selection found: {valid_current_selection}. Raising AssertionError"
+            )
+            raise (
+                AssertionError(
+                    f"No valid current selection found: {valid_current_selection}"
+                )
+            )
+        if self.var_current_selection != valid_current_selection:
+            logger.warning(
+                f"{self.var_current_selection} != {valid_current_selection}. Raising AssertionError"
+            )
+            raise (
+                AssertionError(
+                    f"{self.var_current_selection} != {valid_current_selection}"
+                )
+            )
+        return valid_current_selection
+
     def signal_plot_item_called(self, *args):
         """called for plotting. Sets vars and gathers data for plot"""
-        curr_sel = self.var_current_selection
-        assert (
-            curr_sel == self.var_current_selection_short_name
-        ), f"[signal_plot_item_called] ERROR, curr_sel '{curr_sel}' != var {self.var_current_selection_short_name}"
-
-        print(f"[signal_plot_item_called] current selection is {curr_sel}")
-        if not curr_sel:
-            print("[signal_plot_item_called] Nothing selected, continuing")
-            return None
+        current_selection = self_validate_selection_for_plotting()
         (
             sweep_ind,
             channel_ind,
         ) = self.fileInfoPlotControlsWidget.get_sweep_and_channel_plotting_opts()
+
         plot_opts = plotutils.io_gather_plot_data(
-            self.var_current_metadata_map,
+            self.var_current_metadata_dict,
             sweep_ind,
             channel_ind,
             mean_sweeps=False,
