@@ -1,6 +1,8 @@
 # LFP io frame
 import PyQt5.QtWidgets as qt
 from abf_logging import make_logger
+from abf_analysis import lfp
+import plotutils
 
 logger = make_logger(__name__)
 
@@ -10,7 +12,9 @@ class LFPIOAnalysis(qt.QWidget):
         super().__init__()
         logger.debug("initializing")
         self.parent = None
-        self.metadata_dict = init_dict
+        self.metadata_dict = init_dict.copy()
+        self.metadata_dict["mean_sweeps"] = True
+
         self.label_peak_direction_label = qt.QLabel("Peak direction:")
         self.combobox_peak_direction_options = qt.QComboBox()
         self.combobox_peak_direction_options.addItems(["+", "-"])
@@ -50,12 +54,6 @@ class LFPIOAnalysis(qt.QWidget):
         # start
         self.validate_dict_and_start(self.metadata_dict, base_ref)
 
-    def closeEvent(self, *args):
-        logger.debug("")
-        self.parent = None
-        # clear plot.
-        self.close()
-
     def validate_dict_and_start(self, d, base_ref):
         status, message = self._check_protocol(d["protocol"])
         if status == "Not-valid":
@@ -65,7 +63,7 @@ class LFPIOAnalysis(qt.QWidget):
         if status == "Valid":
             logger.debug("File selection valid")
             self.parent = base_ref
-            self._show_frame()
+            self._start()
 
     def _check_protocol(self, protocol):
         if protocol != "single-pulse-averaged":
@@ -79,13 +77,23 @@ class LFPIOAnalysis(qt.QWidget):
         else:
             return ("Valid", "Valid")
 
-    def _show_frame(self):
+    def make_plot_opts(self):
+        return plotutils.io_gather_plot_data(self.metadata_dict, 0, 0)
+
+    def _start(self):
         logger.debug("")
         # clear plot
-        # calc mean sweeps
-        # plot mean sweeps
+        self.parent.clear_plot()
+        plot_opts = self.make_plot_opts()
+        self.parent.plotWidget.update_plot(plot_opts)
         # place ref region
         self.show()
+
+    def closeEvent(self, *args):
+        logger.debug("")
+        self.parent.clear_plot()
+        self.parent = None
+        self.close()
 
     def _show_error(self, message):
         """show if protocol is not correct"""

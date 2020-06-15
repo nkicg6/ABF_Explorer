@@ -3,6 +3,7 @@
 # Would this be simpler as a class? Verify the path once, then create the metadata map and autofill the opts_map with defaults?
 import hashlib
 import os
+import numpy as np
 from abf_logging import make_logger
 
 logger = make_logger(__name__)
@@ -17,6 +18,8 @@ PLOTDATA = {
     "n_sweeps": 0,
     "n_channels": 0,
     "target_sweep": None,
+    "mean_sweeps": False,
+    "filtered_sweeps": False,
 }
 
 
@@ -56,6 +59,15 @@ def io_read_abf(abf_path, loadData):
         raise AssertionError(error_str)
 
 
+def mean_sweeps(abf, channel):
+    l = []
+    for sweep in abf.sweepList:
+        abf.setSweep(sweep, channel=channel)
+        l.append(abf.sweepY)
+    l = np.asarray(l)
+    return l.mean(axis=0)
+
+
 def metadata_error(error, attempted_path=None):
     logger.warning(f"returning blank metadata")
     metadata = PLOTDATA.copy()
@@ -66,31 +78,37 @@ def metadata_error(error, attempted_path=None):
 
 def make_name(metadata_map):
     if metadata_map["mean_sweeps"] != False:
-        raise (NotImplementedError)
+        return (
+            f"{metadata_map['short_filename']} mean-sweeps ch-{metadata_map['channel']}"
+        )
     if metadata_map["filtered_sweeps"] != False:
         raise (NotImplementedError)
     return f"{metadata_map['short_filename']} sweep-{metadata_map['sweep']} ch-{metadata_map['channel']}"
 
 
 def io_gather_plot_data(
-    metadata_map, target_sweep, target_channel, mean_sweeps=False, filtered_sweeps=False
+    metadata_map, target_sweep, target_channel,
 ):
     mm = metadata_map.copy()
     try:
         abf = io_read_abf(mm["full_path"], loadData=True)
         hashed_id = hashlib.sha256(
-            f"{mm['full_path']}-{target_sweep}-{target_channel}-{mean_sweeps}-{filtered_sweeps}".encode(
+            f"{mm['full_path']}-{target_sweep}-{target_channel}-{mm['mean_sweeps']}-{mm['filtered_sweeps']}".encode(
                 "utf-8"
             )
         ).hexdigest()
         abf.setSweep(sweepNumber=target_sweep, channel=target_channel)
         mm["hashed_id"] = hashed_id
-        mm["mean_sweeps"] = mean_sweeps  # NOT IMPLEMENTED
-        mm["filtered_sweeps"] = filtered_sweeps  # NOT IMPLEMENTED
+        mm["filtered_sweeps_data"] = None  # NOT IMPLEMENTED
         mm["channel"] = target_channel
         mm["sweep"] = target_sweep
         mm["x"] = abf.sweepX
-        mm["y"] = abf.sweepY
+        if mm["mean_sweeps"] == True:
+            logger.debug(f"mean sweeps True: {mm['mean_sweeps']}")
+            mm["y"] = mean_sweeps(abf, target_channel)
+        if mm["mean_sweeps"] == False:
+            logger.debug(f"mean sweeps True: {mm['mean_sweeps']}")
+            mm["y"] = abf.sweepY
         mm["x_units"] = abf.sweepUnitsX
         mm["y_units"] = abf.sweepUnitsY
         mm["name"] = make_name(mm)

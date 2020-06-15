@@ -226,13 +226,11 @@ class ABFExplorer:
         logger.debug(
             f"metadata passed to gather data: {self.var_current_metadata_dict}"
         )
+
         plot_opts = plotutils.io_gather_plot_data(
-            self.var_current_metadata_dict,
-            sweep_ind,
-            channel_ind,
-            mean_sweeps=False,
-            filtered_sweeps=False,
+            self.var_current_metadata_dict, sweep_ind, channel_ind,
         )
+
         status, fmt_plot_opts = plotutils.check_fmt_opts(
             self.var_currently_plotted_data, plot_opts, self.var_y_units_plotted,
         )
