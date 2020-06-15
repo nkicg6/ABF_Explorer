@@ -25,7 +25,6 @@ class ABFExplorer:
 
     def __init__(self, startup_dir=""):
         self.mainApp = qt.QApplication([])  # command line flags if parsing
-        logger.debug(f"Startup dir is {startup_dir}")
         self.mainWindow = qt.QMainWindow()
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
@@ -41,6 +40,9 @@ class ABFExplorer:
         self.menuBarAnalysis.addAction(self.selectLFPRefractoryMenuAction)
         self.selectLFP83HzMenuAction = QtGui.QAction("&LFP 83Hz", self.mainWindow)
         self.menuBarAnalysis.addAction(self.selectLFP83HzMenuAction)
+
+        # analysis windows
+        self.LFPIOWindow = None
 
         # vars
         self.var_current_selection_short_name = ""
@@ -75,7 +77,7 @@ class ABFExplorer:
         # pass command line args here
         if startup_dir:
             # must run before currentItemChanged is registered
-            logger.debug(f"startup directory passed to choose_directory: {startup_dir}")
+            logger.debug(f"Startup directory passed to choose_directory: {startup_dir}")
             self.choose_directory(startup_dir)
 
         #### events ####
@@ -125,7 +127,7 @@ class ABFExplorer:
 
     def lfp_io_analysis_frame(self):
         logger.debug("raise IO frame")
-        self.LFPIOWindow = lfp.LFPIOAnalysis()
+        self.LFPIOWindow = lfp.LFPIOAnalysis(self, self.var_current_metadata_dict)
 
     def lfp_refractory_analysis_frame(self):
         logger.debug("Raise refractory!")
