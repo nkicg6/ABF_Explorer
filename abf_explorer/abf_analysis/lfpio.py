@@ -2,7 +2,8 @@
 #### DANGER! UNSAFE! TESTING NEEDED! ####
 # reaches into parent and plotting stuff. be extra careful.
 # TODO add label and event to track linear region. Add export option and notes bar. Start analysis
-
+import json
+import os
 import PyQt5.QtWidgets as qt
 import numpy as np
 from abf_logging import make_logger
@@ -30,7 +31,7 @@ class LFPIOAnalysis(qt.QWidget):
 
         self.label_peak_direction_label = qt.QLabel("Peak direction:")
         self.combobox_peak_direction_options = qt.QComboBox()
-        self.combobox_peak_direction_options.addItems(["+", "-"])
+        self.combobox_peak_direction_options.addItems(["-", "+"])
         self.label_name_label = qt.QLabel("file:")
         self.label_name_value = qt.QLabel(
             self.var_metadata_dict.get("short_filename", "")
@@ -128,6 +129,42 @@ class LFPIOAnalysis(qt.QWidget):
         logger.debug(f"stop_x is: {stop_x}")
         return start_x, stop_x
 
+    def _get_peak_direction(self):
+        val = self.combobox_peak_direction_options.currentText()
+        logger.debug(f"returning current text {val}")
+        return val
+
+    def _get_short_file_name_and_path(self):
+        short_filename = self.label_name_value.text()
+        file_path = self.var_metadata_dict_plotted.get("full_path", "None")
+        logger.debug(f"returning: {short_filename}, path is: {file_path}")
+        return short_filename, file_path
+
+    def _get_boundaries_as_str(self):
+        return self.label_indicies_value.text()
+
+    def _convert_str_boundaries_to_ints(self, str_indicies):
+        s1, s2 = str_indicies.split(",")
+        return int(s1), int(s2)
+
+    def _get_use_options(self):
+        return self.combobox_use_options.currentText()
+
+    def make_export_dict(self):
+        export = {}
+        short_name, full_path = self._get_short_file_name_and_path()
+        str_bounds = self._get_boundaries_as_str()
+        low_bound, high_bound = self._convert_str_boundaries_to_ints(str_bounds)
+
+        export["peak_direction"] = self._get_peak_direction()
+        export["short_filename"] = short_name
+        export["full_path"] = full_path
+        export["use_opt"] = self._get_use_options()
+        export["start_ind"] = low_bound
+        export["stop_ind"] = high_bound
+        logger.debug(f"export dict is: {export}")
+        return export
+
     def _start(self):
         logger.debug("")
         # clear plot
@@ -145,27 +182,65 @@ class LFPIOAnalysis(qt.QWidget):
         self.parent.plotWidget.linear_region.sigRegionChangeFinished.connect(
             self.update_linear_region_signal
         )
-        self._update_region_label(
-            [self.var_default_window_x1, self.var_default_window_x2]
+        new_str = self.fmt_bounds_as_str_indicies(
+            [self.var_default_window_x1, self.var_default_window_x2],
+            self.var_metadata_dict_plotted,
         )
+        self._update_region_label(new_str)
         self.show()
 
     def update_linear_region_signal(self, *args):
         logger.debug("updating linear region")
         new_region = self._get_new_linear_region_bounds()
-        # convert to indicies
-        self._update_region_label(new_region)
+        new_str = self.fmt_bounds_as_str_indicies(
+            new_region, self.var_metadata_dict_plotted
+        )
+        self._update_region_label(new_str)
+
+    def fmt_bounds_as_str_indicies(self, vals, metadata):
+        x1, x2 = vals
+        x1_ind = self._convert_to_indicies(x1, metadata["x"])
+        x2_ind = self._convert_to_indicies(x2, metadata["x"])
+        return str(x1_ind) + " , " + str(x2_ind)
+
+    def _convert_to_indicies(self, val, real_x):
+        logger.debug(f"val passed is {val}\n")
+        ind = self._find_nearest(real_x, val)
+        logger.debug(f"ind is {ind}")
+        return int(ind)
+
+    def _find_nearest(self, array, value):
+        # https://stackoverflow.com/a/2566508
+        array = np.asarray(array)
+        idx = (np.abs(array - value)).argmin()
+        return idx
 
     def _get_new_linear_region_bounds(self):
         return self.parent.get_linear_region_bounds()
 
     def _update_region_label(self, new_bounds):
-        logger.debug(f"setting label to {new_bounds}")
-        self.label_indicies_value.setText(str(new_bounds))
+        logger.debug(f"setting label to: {new_bounds}")
+        self.label_indicies_value.setText(new_bounds)
+
+    def _update_label_saved_status(self):
+        self.label_status_value.setText("Saved!")
+
+    def _write_json_file(self, data, path):
+        with open(path, "w") as outfile:
+            json.dump(data, outfile)
+        logger.debug(f"writing json to {path}")
+
+    def _make_save_path(self, orig_path):
+        base, name = os.path.split(orig_path)
+        new_name = name.replace(".abf", "_io_region.json")
+        return os.path.join(base, new_name)
 
     def _save_region(self, *args):
         logger.debug(f"saving region props")
-        # grab everything, format, and save
+        export_dict = self.make_export_dict()
+        save_path = self._make_save_path(export_dict["full_path"])
+        self._write_json_file(export_dict, save_path)
+        self._update_label_saved_status()
 
     def _reset_region(self, *args):
         logger.debug(
