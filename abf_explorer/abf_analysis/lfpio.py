@@ -1,7 +1,7 @@
 # LFP io frame
 #### DANGER! UNSAFE! TESTING NEEDED! ####
 # reaches into parent and plotting stuff. be extra careful.
-# TODO Add linear region
+# TODO add label and event to track linear region. Add export option and notes bar. Start analysis
 
 import PyQt5.QtWidgets as qt
 import numpy as np
