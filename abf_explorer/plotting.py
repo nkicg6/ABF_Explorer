@@ -28,6 +28,7 @@ class PlotWidget(pg.GraphicsWindow):
         self.color_cycler = cycle(self.color_list.copy())
         self.pen_width = 2
         self.set_main_canvas()
+        self.var_linear_region_x_bounds = [None, None]
 
     def print_clicked(self, *args):
         logger.debug("Clicked")
@@ -69,13 +70,24 @@ class PlotWidget(pg.GraphicsWindow):
         )
 
     def make_linear_region(self, bounds):
-        self.linear_region = pg.LinearRegionItem(bounds, movable=True)
+        self.linear_region = pg.LinearRegionItem(bounds, movable=True, swapMode="block")
         self.mainPlotWidget.addItem(self.linear_region)
+        self.linear_region.sigRegionChangeFinished.connect(
+            self._emit_linear_region_x_bounds
+        )
+        self.var_linear_region_x_bounds = self._emit_linear_region_x_bounds()
         logger.debug(f"adding linear region with bounds {bounds}")
+
+    def _emit_linear_region_x_bounds(self):
+        logger.debug(
+            f"linear region signal called, data bounds: {self.linear_region.dataBounds(axis=0)}"
+        )
+        self.var_linear_region_x_bounds = self.linear_region.dataBounds(axis=0)
 
     def reset_linear_region(self, bounds):
         logger.debug(f"resetting region to {bounds}")
         self.linear_region.setRegion(bounds)
+        self.var_linear_region_x_bounds = self._emit_linear_region_x_bounds()
 
     def clear_plot(self, *args):
         logger.debug("called")
@@ -83,6 +95,7 @@ class PlotWidget(pg.GraphicsWindow):
         logger.debug(f"main_plot items: {[i for i in self.mainPlotWidget.items]}")
         self.linear_region = None
         self.data = None
+        self.var_linear_region_x_bounds = [None, None]
         self._clear_legend()
         self.mainPlotWidget.clearPlots()
         self.mainPlotWidget.legend.update()

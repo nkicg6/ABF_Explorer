@@ -142,8 +142,26 @@ class LFPIOAnalysis(qt.QWidget):
         self.parent.set_linear_selection_region(
             [self.var_default_window_x1, self.var_default_window_x2]
         )
-        # place ref region
+        self.parent.plotWidget.linear_region.sigRegionChangeFinished.connect(
+            self.update_linear_region_signal
+        )
+        self._update_region_label(
+            [self.var_default_window_x1, self.var_default_window_x2]
+        )
         self.show()
+
+    def update_linear_region_signal(self, *args):
+        logger.debug("updating linear region")
+        new_region = self._get_new_linear_region_bounds()
+        # convert to indicies
+        self._update_region_label(new_region)
+
+    def _get_new_linear_region_bounds(self):
+        return self.parent.get_linear_region_bounds()
+
+    def _update_region_label(self, new_bounds):
+        logger.debug(f"setting label to {new_bounds}")
+        self.label_indicies_value.setText(str(new_bounds))
 
     def _save_region(self, *args):
         logger.debug(f"saving region props")
