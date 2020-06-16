@@ -67,17 +67,14 @@ For example, the plotting functions are in the =plotting.PlotWidget= class. The 
 - https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
-** development dir
+** development
 Set environmental variable =DEBUG_DIR= to pass for quicker startup (no need to choose a directory) so startup like this:
-=python abf_explorer/gui.py --startup-dir $DEBUG_DIR=
+=python abf_explorer --startup-dir $DEBUG_DIR=
 * Development TODO's
-- Figure out legend and plot styling. Can the plot be dockable?
-- plot styling, thicker lines, different colors per sweep, legend? Could implement custom legend too.
-  - auto re-scale between plotting sessions (after clear it won't always re-scale when plotting again)
+- auto re-scale between plotting sessions (after clear it won't always re-scale when plotting again)
 - abf_explorer will contain ONLY visualization tools. Experimental analysis stuff will be developed in =abf_analysis=
 - add logging. Also, add a message for error display. This should be mirror the log and be displayed as a dropdown text area if wanted/needed to send to me if there are problems so I have some context.
 - When mouse over, show name of trace.
-- Accept command line options.
-  - +=--startup-dir=+
-  - =--plot-file=
+
+
 
