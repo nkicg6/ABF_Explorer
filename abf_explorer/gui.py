@@ -251,6 +251,8 @@ class ABFExplorer:
         else:
             logger.warning("problem, no paths taken.")
 
+
+
     def set_linear_selection_region(self, bounds):
         logger.debug("setting linear selection region")
         self.plotWidget.make_linear_region(bounds)
