@@ -15,6 +15,7 @@ class LFPIOAnalysis(qt.QWidget):
     def __init__(self, base_ref, init_dict):
         super().__init__()
         logger.debug("initializing")
+        self.setWindowTitle("LFP IO Analysis")
         self.parent = None
         self.var_metadata_dict = init_dict.copy()
         self.var_metadata_dict["mean_sweeps"] = True
@@ -42,20 +43,29 @@ class LFPIOAnalysis(qt.QWidget):
         self.combobox_use_options = qt.QComboBox()
         self.combobox_use_options.addItems(["Yes", "Maybe", "No"])
 
-        self.mainLayout = qt.QFormLayout()
+        self.button_save_region = qt.QPushButton("Save region...")
+        self.button_reset_region = qt.QPushButton("Reset region")
+
+        self.label_status_label = qt.QLabel("Region status:")
+        self.label_status_value = qt.QLabel("not saved")
+
+        self.formLayout = qt.QFormLayout()
+
         self.setGeometry(950, 0, 100, 250)
-        self.mainLayout.addRow(
+        self.formLayout.addRow(
             self.label_peak_direction_label, self.combobox_peak_direction_options
         )
 
-        self.mainLayout.addRow(self.label_name_label, self.label_name_value)
-        # self.mainLayout.addRow(self.label_filepath, self.label_filepath_value)
-        self.mainLayout.addRow(
+        self.formLayout.addRow(self.label_name_label, self.label_name_value)
+        # self.formLayout.addRow(self.label_filepath, self.label_filepath_value)
+        self.formLayout.addRow(
             self.label_indicies_boundaries_label, self.label_indicies_value
         )
-        self.mainLayout.addRow(self.label_use_label, self.combobox_use_options)
+        self.formLayout.addRow(self.label_use_label, self.combobox_use_options)
+        self.formLayout.addRow(self.button_reset_region, self.button_save_region)
+        self.formLayout.addRow(self.label_status_label, self.label_status_value)
 
-        self.setLayout(self.mainLayout)
+        self.setLayout(self.formLayout)
 
         self.errorFrame = qt.QWidget()
         self.errorFrame.messagelabel = qt.QLabel()
@@ -67,6 +77,8 @@ class LFPIOAnalysis(qt.QWidget):
         self.errorFrame.closeButton.clicked.connect(self._close_error)
         # start
         self.validate_dict_and_start(self.var_metadata_dict, base_ref)
+
+        self.button_reset_region.clicked.connect(self._reset_region)
 
     def validate_dict_and_start(self, d, base_ref):
         status, message = self._check_protocol(d["protocol"])
@@ -131,6 +143,14 @@ class LFPIOAnalysis(qt.QWidget):
         )
         # place ref region
         self.show()
+
+    def _reset_region(self, *args):
+        logger.debug(
+            f"resetting region to {self.var_default_window_x1}:{self.var_default_window_x2}"
+        )
+        self.parent.reset_linear_region(
+            [self.var_default_window_x1, self.var_default_window_x2]
+        )
 
     def _show_error(self, message):
         """show if protocol is not correct"""

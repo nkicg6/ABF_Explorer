@@ -24,6 +24,7 @@ class PlotWidget(pg.GraphicsWindow):
             "#f781bfff",
             "#999999ff",
         ]
+        self.linear_region = None
         self.color_cycler = cycle(self.color_list.copy())
         self.pen_width = 2
         self.set_main_canvas()
@@ -71,6 +72,10 @@ class PlotWidget(pg.GraphicsWindow):
         self.linear_region = pg.LinearRegionItem(bounds, movable=True)
         self.mainPlotWidget.addItem(self.linear_region)
         logger.debug(f"adding linear region with bounds {bounds}")
+
+    def reset_linear_region(self, bounds):
+        logger.debug(f"resetting region to {bounds}")
+        self.linear_region.setRegion(bounds)
 
     def clear_plot(self, *args):
         logger.debug("called")

@@ -254,3 +254,7 @@ class ABFExplorer:
     def set_linear_selection_region(self, bounds):
         logger.debug("setting linear selection region")
         self.plotWidget.make_linear_region(bounds)
+
+    def reset_linear_region(self, bounds):
+        logger.debug(f"resetting linear region to {bounds}")
+        self.plotWidget.reset_linear_region(bounds)
