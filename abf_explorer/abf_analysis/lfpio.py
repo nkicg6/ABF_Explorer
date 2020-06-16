@@ -126,6 +126,9 @@ class LFPIOAnalysis(qt.QWidget):
             self.var_default_window_x2,
         ) = self.calculate_original_window_indicies(self.var_metadata_dict_plotted)
         logger.debug(f"setting plot indicies")
+        self.parent.set_linear_selection_region(
+            [self.var_default_window_x1, self.var_default_window_x2]
+        )
         # place ref region
         self.show()
 

@@ -40,6 +40,11 @@ class PlotWidget(pg.GraphicsWindow):
         self.mainPlotWidget.legend.items = []
         self.mainPlotWidget.legend.updateSize()
 
+    def _clear_plot_items(self):
+        logger.debug("clearing items from plot")
+        while self.mainPlotWidget.items:
+            self.mainPlotWidget.removeItem(self.mainPlotWidget.items[0])
+
     def set_main_canvas(self):
         self.mainPlotWidget = self.addPlot(title="")
         self.mainPlotWidget.addLegend()
@@ -62,8 +67,16 @@ class PlotWidget(pg.GraphicsWindow):
             left=plotdict["y_units"], bottom=plotdict["x_units"]
         )
 
+    def make_linear_region(self, bounds):
+        self.linear_region = pg.LinearRegionItem(bounds, movable=True)
+        self.mainPlotWidget.addItem(self.linear_region)
+        logger.debug(f"adding linear region with bounds {bounds}")
+
     def clear_plot(self, *args):
         logger.debug("called")
+        self._clear_plot_items()
+        logger.debug(f"main_plot items: {[i for i in self.mainPlotWidget.items]}")
+        self.linear_region = None
         self.data = None
         self._clear_legend()
         self.mainPlotWidget.clearPlots()
