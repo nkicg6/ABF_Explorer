@@ -1,7 +1,10 @@
 # LFP io frame
+#### DANGER! UNSAFE! TESTING NEEDED! ####
+# reaches into parent and plotting stuff. be extra careful.
+# TODO Add linear region
+
 import PyQt5.QtWidgets as qt
 from abf_logging import make_logger
-from abf_analysis import lfp
 import plotutils
 
 logger = make_logger(__name__)
@@ -12,16 +15,19 @@ class LFPIOAnalysis(qt.QWidget):
         super().__init__()
         logger.debug("initializing")
         self.parent = None
-        self.metadata_dict = init_dict.copy()
-        self.metadata_dict["mean_sweeps"] = True
+        self.var_metadata_dict = init_dict.copy()
+        self.var_metadata_dict["mean_sweeps"] = True
+        self.var_metadata_dict_plotting = {}
 
         self.label_peak_direction_label = qt.QLabel("Peak direction:")
         self.combobox_peak_direction_options = qt.QComboBox()
         self.combobox_peak_direction_options.addItems(["+", "-"])
         self.label_name_label = qt.QLabel("file:")
-        self.label_name_value = qt.QLabel(self.metadata_dict.get("short_filename", ""))
+        self.label_name_value = qt.QLabel(
+            self.var_metadata_dict.get("short_filename", "")
+        )
         # self.label_filepath = qt.QLabel("path:")
-        # self.label_filepath_value = qt.QLabel(self.metadata_dict.get('full_path', ""))
+        # self.label_filepath_value = qt.QLabel(self.var_metadata_dict.get('full_path', ""))
         self.label_indicies_boundaries_label = qt.QLabel("boundaries:")
         self.label_indicies_value = qt.QLabel("")
         self.label_use_label = qt.QLabel("Use?")
@@ -52,7 +58,7 @@ class LFPIOAnalysis(qt.QWidget):
         self.errorFrame.setLayout(self.errorFrameLayout)
         self.errorFrame.closeButton.clicked.connect(self._close_error)
         # start
-        self.validate_dict_and_start(self.metadata_dict, base_ref)
+        self.validate_dict_and_start(self.var_metadata_dict, base_ref)
 
     def validate_dict_and_start(self, d, base_ref):
         status, message = self._check_protocol(d["protocol"])
@@ -78,14 +84,14 @@ class LFPIOAnalysis(qt.QWidget):
             return ("Valid", "Valid")
 
     def make_plot_opts(self):
-        return plotutils.io_gather_plot_data(self.metadata_dict, 0, 0)
+        return plotutils.io_gather_plot_data(self.var_metadata_dict, 0, 0)
 
     def _start(self):
         logger.debug("")
         # clear plot
         self.parent.clear_plot()
-        plot_opts = self.make_plot_opts()
-        self.parent.plotWidget.update_plot(plot_opts)
+        self.var_metadata_dict_plotted = self.make_plot_opts()
+        self.parent.plotWidget.update_plot(self.var_metadata_dict_plotted)
         # place ref region
         self.show()
 
