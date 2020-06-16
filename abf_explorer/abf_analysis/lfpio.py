@@ -79,6 +79,7 @@ class LFPIOAnalysis(qt.QWidget):
         self.validate_dict_and_start(self.var_metadata_dict, base_ref)
 
         self.button_reset_region.clicked.connect(self._reset_region)
+        self.button_save_region.clicked.connect(self._save_region)
 
     def validate_dict_and_start(self, d, base_ref):
         status, message = self._check_protocol(d["protocol"])
@@ -143,6 +144,10 @@ class LFPIOAnalysis(qt.QWidget):
         )
         # place ref region
         self.show()
+
+    def _save_region(self, *args):
+        logger.debug(f"saving region props")
+        # grab everything, format, and save
 
     def _reset_region(self, *args):
         logger.debug(
