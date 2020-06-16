@@ -86,9 +86,19 @@ def make_name(metadata_map):
     return f"{metadata_map['short_filename']} sweep-{metadata_map['sweep']} ch-{metadata_map['channel']}"
 
 
+def _check_lfp_analysis(d):
+    """if key LFP analysis is in the dict, return true"""
+    if "_lfp_analysis" in d.keys():
+        return True
+    else:
+        return False
+
+
 def io_gather_plot_data(
     metadata_map, target_sweep, target_channel,
 ):
+    """needs refactoring! each specialized transformation and hashing should have it's own fn.
+    errors in those fns should raise"""
     mm = metadata_map.copy()
     try:
         abf = io_read_abf(mm["full_path"], loadData=True)
@@ -109,6 +119,9 @@ def io_gather_plot_data(
         if mm["mean_sweeps"] == False:
             logger.debug(f"mean sweeps True: {mm['mean_sweeps']}")
             mm["y"] = abf.sweepY
+        if _check_lfp_analysis(mm):
+            abf.setSweep(0, channel=1)
+            mm["lfp_stim_data"] = abf.sweepY
         mm["x_units"] = abf.sweepUnitsX
         mm["y_units"] = abf.sweepUnitsY
         mm["name"] = make_name(mm)
