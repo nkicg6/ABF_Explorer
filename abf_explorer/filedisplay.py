@@ -37,10 +37,10 @@ class FileDisplay(qt.QWidget):
         :param command_line_dir: a string passed from --startup-dir or -d upon app startup, defaults to None.
         :return: a tuple of current_selection and a dictionary where keys are the base file name and vals are the full paths to the files.
         """
-        if command_line_dir == "" or command_line_dir == False:
+        if not command_line_dir:
             logger.debug("no command_line_dir passed, opening file dialogue")
             selected_dir = self._choose_directory_button_action()
-        if command_line_dir != "":
+        if command_line_dir:
             logger.debug("command_line_dir passed, continuing with command line dir")
             selected_dir = command_line_dir
         # case when button is cancelled.
