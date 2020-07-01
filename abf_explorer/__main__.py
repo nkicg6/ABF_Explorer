@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-)  # hack for tests for now..
+)  # hack for absolute imports/tests for now..
 import PyQt5.QtWidgets as qt
 from args import parser
 from gui import ABFExplorer
@@ -13,7 +13,6 @@ logger = make_logger(__name__)
 
 
 def main():
-    print("main")
     cmd_args = parser.parse_args()
     app = qt.QApplication([])
     explorer = ABFExplorer(startup_dir=cmd_args.startup_dir)
