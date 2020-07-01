@@ -32,8 +32,7 @@ I attempted this before using Tkinter and matplotlib ([[https://github.com/nkicg
 
 * Development and design decisions
 ** testing 
-Testing will be done with pytest. Testing GUIs is hard, I am working on unit tests. 
-
+We use [[https://docs.pytest.org/en/latest/][pytest]]. Run unit test by running =pytest= from the base directory.
 ** naming conventions
 - =vars= should start with =var_*=
 - follow the python convention of private vars and functions (functions/vars that will not be called or accessed by the controller) should start with =_=
@@ -41,23 +40,14 @@ Testing will be done with pytest. Testing GUIs is hard, I am working on unit tes
 - Divide the classes into =#VARS=, =widgets=, =layout=, and =Actions=. 
 
 ** layout and class structure
-   Qt allows you to use a visual layout tool (QtCreator) to drag and drop widgets and generate a layout for your app visually. I did not do this. Initially, laying out the GUI programatically was quite painful and slow, but I feel that I have better control over both the layout and how the code is organized if I write it myself. 
-
 The main class, =ABFExplorer= has a simple grid layout, and is responsible for instantiating the classes for the other widgets and placing them in the grid. The other classes will typically contain one widget (inheriting from QWidget) and will have their own layout management. These individual widgets may have simple or more complex layouts, and I may decided to change the layout managers or contents over time. By keeping the main class layout simple, and any complexities in the other widget classes, I can delegate all the complex layout decisions to individual widget classes as needed, and have a working app even if I do major changes within individual widgets. 
 
 A good example of this is the =FileInfoPlotControls= class. It contains a parent class (=QWidget=), and two distinct layouts, a =QVBoxLayout=, and a =QFormLayout=. These two layouts are arranged in the parent =QWidget= in a grid, but this could easily change later. As far as the main window in ABFExplorer knows (or cares), it is just placing the main =FileInfoPlotControls= =QWidget=. 
 
 ** class interactions and inheritance
 
-I will not be using multiple inheritance, it confuses me. Most widget classes will inherit from QWidget, but that's about it.
-
-I am not very experienced with object oriented design patterns, so I may be describing some well known ones here. To build a GUI with Qt, you really need to use OO patterns. To avoid too much coupling and confusion, I want to prevent classes from reading or writing to other class vars. Not only is that type of code confusing, but it introduces a lot of coupling (changing a var name or type in one class can have unintended consequences across the system) and makes things hard to test.
-
-So while I will set and unset variables within a class (such as when a file selection changes), I will try to minimize cross-class interactions and prefer passing messages (data) instead.
-
-*If a class (some group of widgets with related purposes) needs info from another class, then that data will be gathered, organized into a data structure (likely a python =dict=) and passed to the function that needs it /as data/.*
-
-I am trying to promote functional style programming, in a mutable OO system.
+Inheritance confuses me, so beyond inheriting from Qt classes, I will not be using multiple inheritance. 
+I am trying to reduce coupling by passing only data between classes. I am currently refactoring so classes communicate exclusively with Qt signals/slots, passing pure data. Signals will be connected to slots from the main class upon startup. 
 
 *In this system, if a class directly accesses (or mutates) a field in another class, that is a bug* (I know there are several 'bugs' now, I'm working on it). All information will pass as regular data structures returned from functions or class methods.
 
@@ -73,8 +63,12 @@ Set environmental variable =DEBUG_DIR= to pass for quicker startup (no need to c
 * Development TODO's
 - auto re-scale between plotting sessions (after clear it won't always re-scale when plotting again)
 - abf_explorer will contain ONLY visualization tools. Experimental analysis stuff will be developed in =abf_analysis=
-- add logging. Also, add a message for error display. This should be mirror the log and be displayed as a dropdown text area if wanted/needed to send to me if there are problems so I have some context.
+- +add logging.+
+- Add a message for error display. This should be mirror the log and be displayed as a dropdown text area if wanted/needed to send to me if there are problems so I have some context.
 - When mouse over, show name of trace.
+- adopt model view controller architecture (=mvc= branch)
+  - possibly use a global =context= object to store all state (from emitted signals), as described in "[[https://www.amazon.com/Philosophy-Software-Design-John-Ousterhout/dp/1732102201][A Philosophy of Software Design]]"
+
 
 
 
