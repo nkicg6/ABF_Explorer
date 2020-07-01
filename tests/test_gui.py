@@ -47,12 +47,16 @@ def test_startup_real_dir():
 def test_metadata_contents_gui_class():
     cmd_args = parser.parse_args(["-d", ABF_DATA_DIR_METADATA_CHECK])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
-    test_file_path = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101001.abf")
-    selected_abf_files_dict = {"20101001.abf": test_file_path}
+    test_file_path1 = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101001.abf")
+    test_file_path2 = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101006.abf")
+    selected_abf_files_dict = {
+        "20101001.abf": test_file_path1,
+        "20101006.abf": test_file_path2,
+    }
 
     current_metadata_dict = {
         "filtered_sweeps": False,
-        "full_path": test_file_path,
+        "full_path": test_file_path1,
         "mean_sweeps": False,
         "n_channels": 1,
         "n_sweeps": 23,
@@ -65,7 +69,7 @@ def test_metadata_contents_gui_class():
         explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert explorer.var_current_selection_short_name == "20101001.abf"
-    assert explorer.var_current_selection_full_path == test_file_path
+    assert explorer.var_current_selection_full_path == test_file_path1
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
     assert explorer.var_current_metadata_dict == current_metadata_dict
 
