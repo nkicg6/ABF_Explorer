@@ -122,7 +122,6 @@ class ABFExplorer:
         self.mainWindow.setGeometry(50, 50, 900, 600)
         self.mainWindow.show()
 
-
     def lfp_io_analysis_frame(self):
         logger.debug("raise IO frame")
         self.LFPIOWindow = lfp.LFPIOAnalysis(self, self.var_current_metadata_dict)
