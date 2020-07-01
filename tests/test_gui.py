@@ -44,7 +44,7 @@ def test_startup_real_dir():
     )
 
 
-def test_metadata_contents():
+def test_metadata_contents_gui_class():
     cmd_args = parser.parse_args(["-d", ABF_DATA_DIR_METADATA_CHECK])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     test_file_path = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101001.abf")
@@ -69,8 +69,14 @@ def test_metadata_contents():
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
     assert explorer.var_current_metadata_dict == current_metadata_dict
 
-    # file name 20101001
-    # protocol cc_01-steps
-    # sampling 20.0
-    # sweeps 16
-    # channels 1
+
+def test_metadata_contents_file_display_fields():
+    cmd_args = parser.parse_args(["-d", ABF_DATA_DIR_METADATA_CHECK])
+    explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
+    test_file_path = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101001.abf")
+    assert (
+        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+    )
+    assert explorer.fileInfoPlotControlsWidget.label_fileInfo_file_name_val.text() == "20101001"
+    assert explorer.fileInfoPlotControlsWidget.label_fileInfo_protocol_val.text() == "cc_01-steps"
+    assert explorer.fileInfoPlotControlsWidget.label_fileInfo_sampling_frequency_val.text() == "20.0"
