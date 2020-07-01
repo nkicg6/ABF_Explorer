@@ -77,6 +77,15 @@ def test_metadata_contents_file_display_fields():
     assert (
         explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
     )
-    assert explorer.fileInfoPlotControlsWidget.label_fileInfo_file_name_val.text() == "20101001"
-    assert explorer.fileInfoPlotControlsWidget.label_fileInfo_protocol_val.text() == "cc_01-steps"
-    assert explorer.fileInfoPlotControlsWidget.label_fileInfo_sampling_frequency_val.text() == "20.0"
+    assert (
+        explorer.fileInfoPlotControlsWidget.label_fileInfo_file_name_val.text()
+        == "20101001"
+    )
+    assert (
+        explorer.fileInfoPlotControlsWidget.label_fileInfo_protocol_val.text()
+        == "cc_01-steps"
+    )
+    assert (
+        explorer.fileInfoPlotControlsWidget.label_fileInfo_sampling_frequency_val.text()
+        == "20.0"
+    )
