@@ -24,7 +24,6 @@ class ABFExplorer:
     """main abf explorer class contains all widgets and coordinates all actions"""
 
     def __init__(self, startup_dir=""):
-        self.mainApp = qt.QApplication([])  # command line flags if parsing
         self.mainWindow = qt.QMainWindow()
         self.centralWidget = qt.QWidget()
         self.mainWindow.setCentralWidget(self.centralWidget)
@@ -123,7 +122,6 @@ class ABFExplorer:
         self.mainWindow.setGeometry(50, 50, 900, 600)
         self.mainWindow.show()
 
-        self.mainApp.exec_()
 
     def lfp_io_analysis_frame(self):
         logger.debug("raise IO frame")
