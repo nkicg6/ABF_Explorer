@@ -13,7 +13,7 @@ def test_startup_no_startup_dir():
     assert explorer.fileExplorerWidget.listbox_file_list.count() == 0
 
 
-def test_startup_non_existant_dir():
+def test_startup_non_existent_dir():
     cmd_args = parser.parse_args(["-d" "I_dont_exist"])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     assert (
