@@ -179,3 +179,65 @@ def test_metadata_contents_gui_class_changes_on_selection():
     assert explorer.var_current_selection_full_path == test_file_path2
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict1
     assert explorer.var_current_metadata_dict == current_metadata_dict2
+
+
+def test_metadata_contents_gui_class_bad_file():
+    cmd_args = parser.parse_args(["-d", ABF_DATA_DIR])
+    explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
+    selected_abf_files_dict = {
+        f: os.path.join(ABF_DATA_DIR, f)
+        for f in os.listdir(ABF_DATA_DIR)
+        if f.endswith(".abf")
+    }
+    test_file_path1 = os.path.join(ABF_DATA_DIR, "20101001.abf")
+    test_bad_file_path = os.path.join(ABF_DATA_DIR, "20101002.abf")
+    test_file_path2 = os.path.join(ABF_DATA_DIR, "20101006.abf")
+
+    current_metadata_dict1 = {
+        "filtered_sweeps": False,
+        "full_path": test_file_path1,
+        "mean_sweeps": False,
+        "n_channels": 1,
+        "n_sweeps": 23,
+        "protocol": "cc_01-steps",
+        "sampling_frequency_khz": "20.0",
+        "short_filename": "20101001",
+        "target_sweep": None,
+    }
+    current_metadata_dict_bad_file = {
+        "filtered_sweeps": False,
+        "full_path": test_bad_file_path,
+        "mean_sweeps": False,
+        "n_channels": None,
+        "n_sweeps": None,
+        "protocol": None,
+        "sampling_frequency_khz": None,
+        "short_filename": "20101002",
+        "target_sweep": None,
+    }
+
+    assert (
+        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+    )
+    assert (
+        explorer.fileExplorerWidget.listbox_file_list.selectedItems()[0].text()
+        == "20101001.abf"
+    )
+    assert explorer.var_current_selection_short_name == "20101001.abf"
+    assert explorer.var_current_selection_full_path == test_file_path1
+    assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
+    assert explorer.var_current_metadata_dict == current_metadata_dict1
+    #### CHANGE SELECTION ####
+    explorer.fileExplorerWidget.listbox_file_list.setCurrentRow(1)
+    #### did metadata update? ####
+    assert (
+        explorer.fileExplorerWidget.listbox_file_list.item(1).text() == "20101002.abf"
+    )
+    assert (
+        explorer.fileExplorerWidget.listbox_file_list.selectedItems()[0].text()
+        == "20101002.abf"
+    )
+    assert explorer.var_current_selection_short_name == "20101002.abf"
+    assert explorer.var_current_selection_full_path == test_bad_file_path
+    assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
+    assert explorer.var_current_metadata_dict == current_metadata_dict_bad_file
