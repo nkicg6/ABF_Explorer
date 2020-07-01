@@ -1,6 +1,6 @@
 import os
 import PyQt5.QtWidgets as qt
-from abf_logging import make_logger
+from abf_explorer.abf_logging import make_logger
 
 # https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part1-example.html#part-1-designing-the-user-interface
 # TODO! signal changes. Print new file on change. This may need to be set in the main controller class? Alternatively, could add a listener to a VAR here for the main class to watch and take action.

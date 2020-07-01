@@ -4,7 +4,7 @@
 import hashlib
 import os
 import numpy as np
-from abf_logging import make_logger
+from abf_explorer.abf_logging import make_logger
 
 logger = make_logger(__name__)
 import pyabf

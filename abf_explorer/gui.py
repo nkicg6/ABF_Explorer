@@ -3,7 +3,6 @@
 # https://doc.qt.io/qt-5/layout.html
 # https://pythonbasics.org/pyqt-grid/
 # examples python -m pyqtgraph.examples
-
 import os
 import numpy as np
 import PyQt5.QtWidgets as qt

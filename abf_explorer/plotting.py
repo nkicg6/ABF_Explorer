@@ -1,7 +1,7 @@
 import pyqtgraph as pg
 from itertools import cycle
 from pprint import pprint
-from abf_logging import make_logger
+from abf_explorer.abf_logging import make_logger
 
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")

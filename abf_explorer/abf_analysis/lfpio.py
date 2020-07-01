@@ -6,8 +6,8 @@ import json
 import os
 import PyQt5.QtWidgets as qt
 import numpy as np
-from abf_logging import make_logger
-import plotutils
+from abf_explorer.abf_logging import make_logger
+from abf_explorer import plotutils
 
 logger = make_logger(__name__)
 
