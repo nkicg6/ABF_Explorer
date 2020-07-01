@@ -8,10 +8,11 @@ from abf_explorer.args import parser
 app = qt.QApplication([])
 
 ABF_DATA_DIR = "data/abfs"
+ABF_DATA_DIR_METADATA_CHECK = "data/abfs/metadata-check"
 
 
 def test_startup_no_startup_dir():
-    cmd_args = parser.parse_args()
+    cmd_args = parser.parse_args([])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     assert explorer.fileExplorerWidget.listbox_file_list.count() == 0
 
@@ -41,3 +42,35 @@ def test_startup_real_dir():
     assert explorer.fileExplorerWidget.listbox_file_list.count() == len(
         abfs_in_test_dir
     )
+
+
+def test_metadata_contents():
+    cmd_args = parser.parse_args(["-d", ABF_DATA_DIR_METADATA_CHECK])
+    explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
+    test_file_path = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101001.abf")
+    selected_abf_files_dict = {"20101001.abf": test_file_path}
+
+    current_metadata_dict = {
+        "filtered_sweeps": False,
+        "full_path": test_file_path,
+        "mean_sweeps": False,
+        "n_channels": 1,
+        "n_sweeps": 23,
+        "protocol": "cc_01-steps",
+        "sampling_frequency_khz": "20.0",
+        "short_filename": "20101001",
+        "target_sweep": None,
+    }
+    assert (
+        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+    )
+    assert explorer.var_current_selection_short_name == "20101001.abf"
+    assert explorer.var_current_selection_full_path == test_file_path
+    assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
+    assert explorer.var_current_metadata_dict == current_metadata_dict
+
+    # file name 20101001
+    # protocol cc_01-steps
+    # sampling 20.0
+    # sweeps 16
+    # channels 1
