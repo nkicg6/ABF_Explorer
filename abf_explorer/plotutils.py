@@ -56,7 +56,7 @@ def io_read_abf(abf_path, loadData):
     except Exception as e:
         logger.warning("exception likely thrown by pyABF")
         logger.exception(e)
-        raise AssertionError(error_str)
+        raise AssertionError("exception likely thrown by pyABF")
 
 
 def mean_sweeps(abf, channel):
@@ -71,7 +71,6 @@ def mean_sweeps(abf, channel):
 def metadata_error(error, attempted_path=None):
     logger.warning(f"returning blank metadata")
     metadata = PLOTDATA.copy()
-    metadata["error"] = error
     metadata["full_path"] = attempted_path
     return metadata
 

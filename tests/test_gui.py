@@ -208,11 +208,11 @@ def test_metadata_contents_gui_class_bad_file():
         "filtered_sweeps": False,
         "full_path": test_bad_file_path,
         "mean_sweeps": False,
-        "n_channels": None,
-        "n_sweeps": None,
-        "protocol": None,
-        "sampling_frequency_khz": None,
-        "short_filename": "20101002",
+        "n_channels": 0,
+        "n_sweeps": 0,
+        "protocol": "",
+        "sampling_frequency_khz": "",
+        "short_filename": "",
         "target_sweep": None,
     }
 
