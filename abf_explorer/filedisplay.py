@@ -1,5 +1,6 @@
 import os
 import PyQt5.QtWidgets as qt
+import PyQt5.QtCore as qtc
 from abf_explorer.abf_logging import make_logger
 
 # https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part1-example.html#part-1-designing-the-user-interface
@@ -11,13 +12,16 @@ logger = make_logger(__name__)
 class FileDisplay(qt.QWidget):
     """controls display and file handling for file selection"""
 
-    def __init__(self, parent):
+    # signals
+    dirchanged = qtc.pyqtSignal(tuple)
+    selectionchanged = qtc.pyqtSignal(str)
+
+    def __init__(self, parent, command_line_dir=""):
         super().__init__(parent=parent)
         # VARS
         self._var_workingDir = os.path.expanduser(
             "~"
         )  # start home, replace with prev dir after selection
-
         # button and display
         self.button_select_abf = qt.QPushButton("Choose folder")
         self.listbox_file_list = qt.QListWidget()
@@ -29,6 +33,21 @@ class FileDisplay(qt.QWidget):
         self.setLayout(self.layout)
 
         # Actions
+
+        if command_line_dir:
+            self.input_dir(command_line_dir)
+
+    def input_dir(self, path):
+        current_dicts = self._filter_and_make_dict(path)
+        current_selection = self._populate_listbox_file_list(current_dicts)
+        self.onDirChanged(current_selection, current_dicts)
+
+    def onDirChanged(self, current_selection, current_dicts):
+        logger.debug(f"emitting tuple {(current_selection, current_dicts)}")
+        self.dirchanged.emit((current_selection, current_dicts))
+
+    def onSelectionChanged(self):
+        pass
 
     def choose_directory_button_activated(self, command_line_dir: str = "") -> tuple:
         """sets file listbox and returns current selection and shortname:full-path dict.
