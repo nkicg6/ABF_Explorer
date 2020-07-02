@@ -61,8 +61,8 @@ For example, the plotting functions are in the =plotting.PlotWidget= class. The 
 Set environmental variable =DEBUG_DIR= to pass for quicker startup (no need to choose a directory) so startup like this:
 =python abf_explorer --startup-dir $DEBUG_DIR=
 * Development TODO's
-- *Refactor main class (=ABFExplorer=) to inherit from =QMainWindow=*
 - *Simplify interface between all classes to use signals and emit data.* 
+- +Refactor main class ( =ABFExplorer= ) to inherit from =QMainWindow=+
 - adopt model view controller architecture (=mvc= branch)
   - possibly use a global =context= object to store all state (from emitted signals), as described in "[[https://www.amazon.com/Philosophy-Software-Design-John-Ousterhout/dp/1732102201][A Philosophy of Software Design]]"
 

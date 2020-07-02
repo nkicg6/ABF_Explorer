@@ -19,24 +19,24 @@ from abf_explorer.abf_analysis import lfpio as lfp
 logger = make_logger(__name__)
 
 
-class ABFExplorer:
+class ABFExplorer(qt.QMainWindow):
     """main abf explorer class contains all widgets and coordinates all actions"""
 
     def __init__(self, startup_dir=""):
-        self.mainWindow = qt.QMainWindow()
+        super().__init__()
         self.centralWidget = qt.QWidget()
-        self.mainWindow.setCentralWidget(self.centralWidget)
-        self.mainWindow.setWindowTitle("ABF explorer v0.1-dev")
+        self.setCentralWidget(self.centralWidget)
+        self.setWindowTitle("ABF explorer v0.1-dev")
         # menu bar
-        self.menuBar = self.mainWindow.menuBar()
+        self.menuBar = self.menuBar()
         self.menuBarAnalysis = self.menuBar.addMenu("&Analysis")
-        self.selectLFPIOMenuAction = QtGui.QAction("&LFP IO region", self.mainWindow)
+        self.selectLFPIOMenuAction = QtGui.QAction("&LFP IO region", self)
         self.menuBarAnalysis.addAction(self.selectLFPIOMenuAction)
         self.selectLFPRefractoryMenuAction = QtGui.QAction(
-            "&LFP refractory periods", self.mainWindow
+            "&LFP refractory periods", self
         )
         self.menuBarAnalysis.addAction(self.selectLFPRefractoryMenuAction)
-        self.selectLFP83HzMenuAction = QtGui.QAction("&LFP 83Hz", self.mainWindow)
+        self.selectLFP83HzMenuAction = QtGui.QAction("&LFP 83Hz", self)
         self.menuBarAnalysis.addAction(self.selectLFP83HzMenuAction)
 
         # analysis windows
@@ -118,8 +118,8 @@ class ABFExplorer:
         self.shortcut_clear_plot.activated.connect(self.clear_plot)
 
         # geometry and run
-        self.mainWindow.setGeometry(50, 50, 900, 600)
-        self.mainWindow.show()
+        self.setGeometry(50, 50, 900, 600)
+        self.show()
 
     def lfp_io_analysis_frame(self):
         logger.debug("raise IO frame")
