@@ -54,7 +54,6 @@ def test_dirchanged_startup_signal():
         "20101001.abf": "data/abfs/metadata-check/20101001.abf",
         "20101006.abf": "data/abfs/metadata-check/20101006.abf",
     }
-
     listboxtest = []
     for i in range(dummy.filedisplaywidget.listbox_file_list.count()):
         listboxtest.append(dummy.filedisplaywidget.listbox_file_list.item(i).text())
@@ -66,8 +65,8 @@ def test_bad_dir_signal():
     dummy.filedisplaywidget = filedisplay.FileDisplay(parent=dummy)
     dummy.filedisplaywidget.dirchanged.connect(dummy.setSelectionAndDict)
     dummy.filedisplaywidget.input_dir(dummy.kargs["command_line_dir"])
-    assert dummy.var_current_selection_short_name == "Nothing here..."
-    assert dummy.var_selected_abf_files_dict == {"Nothing here...": "Bad directory"}
+    assert dummy.var_current_selection_short_name == "No ABFs found"
+    assert dummy.var_selected_abf_files_dict == {"No ABFs found": "ABF directory error"}
 
 
 # TODO: what happens when file changes?

@@ -24,6 +24,7 @@ class ABFExplorer(qt.QMainWindow):
 
     def __init__(self, startup_dir=""):
         super().__init__()
+        self.startup_dir = startup_dir
         self.centralWidget = qt.QWidget()
         self.setCentralWidget(self.centralWidget)
         self.setWindowTitle("ABF explorer v0.1-dev")
@@ -44,7 +45,6 @@ class ABFExplorer(qt.QMainWindow):
 
         # vars
         self.var_current_selection_short_name = ""
-        self.var_current_selection_full_path = ""
         self.var_selected_abf_files_dict = {}
 
         self.var_current_metadata_dict = {}
@@ -52,9 +52,9 @@ class ABFExplorer(qt.QMainWindow):
         self.var_x_units_plotted = ""
         self.var_y_units_plotted = ""
 
-        # make widgets
+        # make widgets and connect signals
         self.plotWidget = PlotWidget(parent=self.centralWidget)
-        self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
+        self._init_file_explorer()
         self.fileInfoPlotControlsWidget = FileInfoPlotControls(
             parent=self.centralWidget
         )
@@ -72,20 +72,7 @@ class ABFExplorer(qt.QMainWindow):
         self.mainLayout.addWidget(self.fileInfoPlotControlsWidget, 1, 1)
         self.centralWidget.setLayout(self.mainLayout)
 
-        # pass command line args here
-        if startup_dir:
-            # must run before currentItemChanged is registered
-            logger.debug(f"Startup directory passed to choose_directory: {startup_dir}")
-            self.choose_directory(startup_dir)
-
         #### events ####
-
-        # file explorer and info actions
-        self.fileExplorerWidget.button_select_abf.clicked.connect(self.choose_directory)
-
-        self.fileExplorerWidget.listbox_file_list.currentItemChanged.connect(
-            self.signal_file_selection_changed
-        )
 
         # ADD ACTIONS HERE
         self.fileInfoPlotControlsWidget.button_plotControls_clear_plot.clicked.connect(
@@ -121,6 +108,25 @@ class ABFExplorer(qt.QMainWindow):
         self.setGeometry(50, 50, 900, 600)
         self.show()
 
+    def _init_file_explorer(self):
+        self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
+        self.fileExplorerWidget.dirchanged.connect(
+            self.update_current_directory_and_selection
+        )
+        if self.startup_dir:
+            logger.debug(f"startup dir passed: {self.startup_dir}")
+            self.fileExplorerWidget.input_dir(self.startup_dir)
+        # self.fileExplorerWidget.listbox_file_list.currentItemChanged.connect(
+        #     self.signal_file_selection_changed
+        # )
+
+    def update_current_directory_and_selection(self, item: tuple):
+        current, all_dict = item
+        logger.debug(f"setting with selection {current}")
+        self.var_current_selection_short_name = current
+        logger.debug(f"setting abf_dict to {all_dict}")
+        self.var_selected_abf_files_dict = all_dict
+
     def lfp_io_analysis_frame(self):
         logger.debug("raise IO frame")
         self.LFPIOWindow = lfp.LFPIOAnalysis(self, self.var_current_metadata_dict)
@@ -137,26 +143,26 @@ class ABFExplorer(qt.QMainWindow):
         self.var_currently_plotted_data = {}
         self.var_y_units_plotted = ""
 
-    def choose_directory(self, command_line_dir=""):
-        """gets data from selected directory. file connected to filedisplay.choose_directory_button_activated"""
-        if command_line_dir in ("", False):
-            command_line_dir = ""
-        logger.debug(f"command_line_dir: {command_line_dir}")
-        (
-            current_selection,
-            selected_file_dict,
-        ) = self.fileExplorerWidget.choose_directory_button_activated(command_line_dir)
-        self.var_current_selection_short_name = current_selection
-        logger.debug(f"setting current_selection: {current_selection}")
-        logger.debug("setting current_selection_dict: not printed")
-        self.var_current_selection_full_path = selected_file_dict.get(
-            current_selection, None
-        )
-        logger.debug(
-            f"setting current_selection_full_path to: {selected_file_dict.get(current_selection, None)}"
-        )
-        self.var_selected_abf_files_dict = selected_file_dict
-        self._update_metadata_vals()
+    # def choose_directory(self, command_line_dir=""):
+    #     """gets data from selected directory. file connected to filedisplay.choose_directory_button_activated"""
+    #     if command_line_dir in ("", False):
+    #         command_line_dir = ""
+    #     logger.debug(f"command_line_dir: {command_line_dir}")
+    #     (
+    #         current_selection,
+    #         selected_file_dict,
+    #     ) = self.fileExplorerWidget.choose_directory_button_activated(command_line_dir)
+    #     self.var_current_selection_short_name = current_selection
+    #     logger.debug(f"setting current_selection: {current_selection}")
+    #     logger.debug("setting current_selection_dict: not printed")
+    #     self.var_current_selection_full_path = selected_file_dict.get(
+    #         current_selection, None
+    #     )
+    #     logger.debug(
+    #         f"setting current_selection_full_path to: {selected_file_dict.get(current_selection, None)}"
+    #     )
+    #     self.var_selected_abf_files_dict = selected_file_dict
+    #     self._update_metadata_vals()
 
     def signal_file_selection_changed(self, *args):
         """signal when files selection changes. Used to update metadata displayed to user."""

@@ -21,8 +21,7 @@ def test_startup_non_existent_dir():
     cmd_args = parser.parse_args(["-d" "I_dont_exist"])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(0).text()
-        == "Nothing here..."
+        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "No ABFs found"
     )
 
 
@@ -69,7 +68,6 @@ def test_metadata_contents_gui_class():
         explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert explorer.var_current_selection_short_name == "20101001.abf"
-    assert explorer.var_current_selection_full_path == test_file_path1
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
     assert explorer.var_current_metadata_dict == current_metadata_dict
 
@@ -169,14 +167,12 @@ def test_metadata_contents_gui_class_changes_on_selection():
         explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert explorer.var_current_selection_short_name == "20101001.abf"
-    assert explorer.var_current_selection_full_path == test_file_path1
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict1
     assert explorer.var_current_metadata_dict == current_metadata_dict1
     #### CHANGE SELECTION ####
     explorer.fileExplorerWidget.listbox_file_list.setCurrentRow(1)
     #### did metadata update? ####
     assert explorer.var_current_selection_short_name == "20101006.abf"
-    assert explorer.var_current_selection_full_path == test_file_path2
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict1
     assert explorer.var_current_metadata_dict == current_metadata_dict2
 
@@ -224,7 +220,6 @@ def test_metadata_contents_gui_class_bad_file():
         == "20101001.abf"
     )
     assert explorer.var_current_selection_short_name == "20101001.abf"
-    assert explorer.var_current_selection_full_path == test_file_path1
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
     assert explorer.var_current_metadata_dict == current_metadata_dict1
     #### CHANGE SELECTION ####
@@ -238,6 +233,5 @@ def test_metadata_contents_gui_class_bad_file():
         == "20101002.abf"
     )
     assert explorer.var_current_selection_short_name == "20101002.abf"
-    assert explorer.var_current_selection_full_path == test_bad_file_path
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
     assert explorer.var_current_metadata_dict == current_metadata_dict_bad_file
