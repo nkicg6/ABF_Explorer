@@ -25,6 +25,11 @@ PLOTDATA = {
 
 def io_get_metadata(abf_path):
     metadata = PLOTDATA.copy()
+    if not abf_path:
+        logger.debug("no abf path passed")
+        logger.warning("no abf path passed")
+        return metadata_error("", abf_path)
+
     if not abf_path.endswith(".abf"):
         logger.warning(f"string is not an abf: {abf_path}")
         return metadata_error(f"string is not an abf: {abf_path}")

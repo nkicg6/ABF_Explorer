@@ -6,7 +6,8 @@
 import os
 import numpy as np
 import PyQt5.QtWidgets as qt
-from PyQt5 import QtCore, QtGui
+import PyQt5.QtCore as qtc
+from PyQt5 import QtGui
 
 from abf_explorer.abf_logging import make_logger
 from abf_explorer.filedisplay import FileDisplay
@@ -21,6 +22,9 @@ logger = make_logger(__name__)
 
 class ABFExplorer(qt.QMainWindow):
     """main abf explorer class contains all widgets and coordinates all actions"""
+
+    # signals
+    metadatachanged = qtc.pyqtSignal(dict)
 
     def __init__(self, startup_dir=""):
         super().__init__()
@@ -113,12 +117,15 @@ class ABFExplorer(qt.QMainWindow):
         self.fileExplorerWidget.dirchanged.connect(
             self.update_current_directory_and_selection
         )
-        self.fileExplorerWidget.selectionchanged.connect(
-            self.update_current_selection_and_metadata
-        )
+
         if self.startup_dir:
             logger.debug(f"startup dir passed: {self.startup_dir}")
             self.fileExplorerWidget.input_dir(self.startup_dir)
+
+        self.fileExplorerWidget.selectionchanged.connect(
+            self.update_current_selection_and_metadata
+        )
+        return
 
     def update_current_directory_and_selection(self, item: tuple):
         current, all_dict = item
@@ -131,6 +138,8 @@ class ABFExplorer(qt.QMainWindow):
             self.var_current_selection_short_name
         )
         self.var_current_metadata_dict = plotutils.io_get_metadata(item_path)
+        logger.debug(f"metadata is: {self.var_current_metadata_dict}")
+        return
 
     def update_current_selection_and_metadata(self, newselection):
         logger.debug(f"updating current selection to {newselection} and metadata")
@@ -139,6 +148,7 @@ class ABFExplorer(qt.QMainWindow):
             self.var_current_selection_short_name
         )
         self.var_current_metadata_dict = plotutils.io_get_metadata(item_path)
+        return
 
     def lfp_io_analysis_frame(self):
         logger.debug("raise IO frame")
@@ -146,15 +156,18 @@ class ABFExplorer(qt.QMainWindow):
 
     def lfp_refractory_analysis_frame(self):
         logger.debug("Raise refractory!")
+        return
 
     def lfp_83Hz_analysis_frame(self):
         logger.debug("Raise 83Hz")
+        return
 
     def clear_plot(self):
         """clears plot and currently_plotted_items"""
         self.plotWidget.clear_plot()
         self.var_currently_plotted_data = {}
         self.var_y_units_plotted = ""
+        return
 
     def _validate_selection_for_plotting(self):
         valid_current_selection = self.fileExplorerWidget.get_current_selection()
