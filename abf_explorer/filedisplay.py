@@ -22,11 +22,14 @@ class FileDisplay(qt.QWidget):
         self._var_workingDir = os.path.expanduser(
             "~"
         )  # start home, replace with prev dir after selection
-        # button and display
+
+        ##### Interaction and signal ####
         self.button_select_abf = qt.QPushButton("Choose folder")
         self.button_select_abf.clicked.connect(self.choose_directory_button_activated)
 
+        #### Listbox and signal ####
         self.listbox_file_list = qt.QListWidget()
+        self.listbox_file_list.currentItemChanged.connect(self.onSelectionChanged)
 
         # layout
         self.layout = qt.QVBoxLayout()
@@ -48,8 +51,18 @@ class FileDisplay(qt.QWidget):
         logger.debug(f"emitting tuple {(current_selection, current_dicts)}")
         self.dirchanged.emit((current_selection, current_dicts))
 
-    def onSelectionChanged(self):
-        pass
+    def onSelectionChanged(self, *args):
+        logger.debug(f"selection changed")
+        current = args[0]
+        if not current:
+            logger.debug(
+                f"selection is returning none, selections passed are: {selections_signal}"
+            )
+            return
+        current = current.text()
+        self.selectionchanged.emit(current)
+        logger.debug(f"Selection changed, emitting: {current}")
+        return
 
     def choose_directory_button_activated(self) -> tuple:
         """sets file listbox and returns current selection and shortname:full-path dict.

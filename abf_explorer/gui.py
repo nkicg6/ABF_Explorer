@@ -113,6 +113,7 @@ class ABFExplorer(qt.QMainWindow):
         self.fileExplorerWidget.dirchanged.connect(
             self.update_current_directory_and_selection
         )
+        self.fileExplorerWidget.selectionchanged.connect(print)  # TEMP
         if self.startup_dir:
             logger.debug(f"startup dir passed: {self.startup_dir}")
             self.fileExplorerWidget.input_dir(self.startup_dir)
@@ -124,7 +125,7 @@ class ABFExplorer(qt.QMainWindow):
         current, all_dict = item
         logger.debug(f"setting with selection {current}")
         self.var_current_selection_short_name = current
-        logger.debug(f"setting abf_dict to {all_dict}")
+        logger.debug("setting abf_dict")
         self.var_selected_abf_files_dict = all_dict
 
     def lfp_io_analysis_frame(self):
