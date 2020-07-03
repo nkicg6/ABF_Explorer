@@ -59,9 +59,7 @@ class ABFExplorer(qt.QMainWindow):
         # make widgets and connect signals
         self.plotWidget = PlotWidget(parent=self.centralWidget)
         self._init_file_explorer()
-        self.fileInfoPlotControlsWidget = FileInfoPlotControls(
-            parent=self.centralWidget
-        )
+        self._init_file_info_plot_controls()
 
         # main widget layout and geometry
         self.mainLayout = qt.QGridLayout()
@@ -79,12 +77,7 @@ class ABFExplorer(qt.QMainWindow):
         #### events ####
 
         # ADD ACTIONS HERE
-        self.fileInfoPlotControlsWidget.button_plotControls_clear_plot.clicked.connect(
-            self.clear_plot
-        )
-        self.fileInfoPlotControlsWidget.button_plotControls_plot.clicked.connect(
-            self.signal_plot_item_called,
-        )
+
         # analysis actions
         self.selectLFPIOMenuAction.triggered.connect(self.lfp_io_analysis_frame)
         self.selectLFPRefractoryMenuAction.triggered.connect(
@@ -113,6 +106,7 @@ class ABFExplorer(qt.QMainWindow):
         self.show()
 
     def _init_file_explorer(self):
+        logger.debug("Initializing FileDisplay")
         self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
         self.fileExplorerWidget.dirchanged.connect(
             self.update_current_directory_and_selection
@@ -124,6 +118,19 @@ class ABFExplorer(qt.QMainWindow):
 
         self.fileExplorerWidget.selectionchanged.connect(
             self.update_current_selection_and_metadata
+        )
+        return
+
+    def _init_file_info_plot_controls(self):
+        logger.debug("Initializing FileInfoPlotControls")
+        self.fileInfoPlotControlsWidget = FileInfoPlotControls(
+            parent=self.centralWidget
+        )
+        self.fileInfoPlotControlsWidget.button_plotControls_clear_plot.clicked.connect(
+            self.clear_plot
+        )
+        self.fileInfoPlotControlsWidget.button_plotControls_plot.clicked.connect(
+            self.signal_plot_item_called,
         )
         return
 
