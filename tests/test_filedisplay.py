@@ -30,6 +30,9 @@ class DummyTester(qt.QWidget):
         self.var_current_selection_short_name = thing[0]
         self.var_selected_abf_files_dict = thing[-1]
 
+    def setCurrentSelection(self, thing):
+        self.var_current_selection_short_name = thing
+
 
 def test_startup():
     filedisplaywidget = filedisplay.FileDisplay(parent=None)
@@ -67,6 +70,21 @@ def test_bad_dir_signal():
     dummy.filedisplaywidget.input_dir(dummy.kargs["command_line_dir"])
     assert dummy.var_current_selection_short_name == "No ABFs found"
     assert dummy.var_selected_abf_files_dict == {"No ABFs found": "ABF directory error"}
+
+
+def test_file_changed_signal():
+    dummy = DummyTester()
+    dummy.filedisplaywidget = filedisplay.FileDisplay(parent=dummy)
+    dummy.filedisplaywidget.dirchanged.connect(dummy.setSelectionAndDict)
+    dummy.filedisplaywidget.selectionchanged.connect(dummy.setCurrentSelection)
+    dummy.filedisplaywidget.input_dir(ABF_DATA_DIR)
+
+    assert dummy.var_current_selection_short_name == "20101001.abf"
+    # assert dummy.var_selected_abf_files_dict == {"No ABFs found": "ABF directory error"}
+    dummy.filedisplaywidget.listbox_file_list.setCurrentRow(1)
+    assert dummy.var_current_selection_short_name == "20101002.abf"
+    dummy.filedisplaywidget.listbox_file_list.setCurrentRow(0)
+    assert dummy.var_current_selection_short_name == "20101001.abf"
 
 
 # TODO: what happens when file changes?
