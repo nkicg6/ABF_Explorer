@@ -113,13 +113,12 @@ class ABFExplorer(qt.QMainWindow):
         self.fileExplorerWidget.dirchanged.connect(
             self.update_current_directory_and_selection
         )
-        self.fileExplorerWidget.selectionchanged.connect(print)  # TEMP
+        self.fileExplorerWidget.selectionchanged.connect(
+            self.update_current_selection_and_metadata
+        )
         if self.startup_dir:
             logger.debug(f"startup dir passed: {self.startup_dir}")
             self.fileExplorerWidget.input_dir(self.startup_dir)
-        # self.fileExplorerWidget.listbox_file_list.currentItemChanged.connect(
-        #     self.signal_file_selection_changed
-        # )
 
     def update_current_directory_and_selection(self, item: tuple):
         current, all_dict = item
@@ -127,6 +126,19 @@ class ABFExplorer(qt.QMainWindow):
         self.var_current_selection_short_name = current
         logger.debug("setting abf_dict")
         self.var_selected_abf_files_dict = all_dict
+        logger.debug("updating metadata")
+        item_path = self.var_selected_abf_files_dict.get(
+            self.var_current_selection_short_name
+        )
+        self.var_current_metadata_dict = plotutils.io_get_metadata(item_path)
+
+    def update_current_selection_and_metadata(self, newselection):
+        logger.debug(f"updating current selection to {newselection} and metadata")
+        self.var_current_selection_short_name = newselection
+        item_path = self.var_selected_abf_files_dict.get(
+            self.var_current_selection_short_name
+        )
+        self.var_current_metadata_dict = plotutils.io_get_metadata(item_path)
 
     def lfp_io_analysis_frame(self):
         logger.debug("raise IO frame")
@@ -143,53 +155,6 @@ class ABFExplorer(qt.QMainWindow):
         self.plotWidget.clear_plot()
         self.var_currently_plotted_data = {}
         self.var_y_units_plotted = ""
-
-    # def choose_directory(self, command_line_dir=""):
-    #     """gets data from selected directory. file connected to filedisplay.choose_directory_button_activated"""
-    #     if command_line_dir in ("", False):
-    #         command_line_dir = ""
-    #     logger.debug(f"command_line_dir: {command_line_dir}")
-    #     (
-    #         current_selection,
-    #         selected_file_dict,
-    #     ) = self.fileExplorerWidget.choose_directory_button_activated(command_line_dir)
-    #     self.var_current_selection_short_name = current_selection
-    #     logger.debug(f"setting current_selection: {current_selection}")
-    #     logger.debug("setting current_selection_dict: not printed")
-    #     self.var_current_selection_full_path = selected_file_dict.get(
-    #         current_selection, None
-    #     )
-    #     logger.debug(
-    #         f"setting current_selection_full_path to: {selected_file_dict.get(current_selection, None)}"
-    #     )
-    #     self.var_selected_abf_files_dict = selected_file_dict
-    #     self._update_metadata_vals()
-
-    def signal_file_selection_changed(self, *args):
-        """signal when files selection changes. Used to update metadata displayed to user."""
-        try:
-            # first arg in signal is new selection, second is previous selection
-            arg = [arg.text() for arg in args]
-        except Exception as e:
-            logger.warning(f"signal conversion exception: {e}")
-            return
-        current_selection = arg[0]
-        self.var_current_selection_short_name = current_selection
-        logger.debug(f"current selection is: {current_selection}")
-        self.var_current_selection_full_path = self.var_selected_abf_files_dict.get(
-            current_selection, None
-        )
-        logger.debug(f"full path is: {self.var_current_selection_full_path}")
-        self._update_metadata_vals()
-
-    def _update_metadata_vals(self):
-        self.var_current_metadata_dict = plotutils.io_get_metadata(
-            self.var_current_selection_full_path
-        )
-        logger.debug(f"current metadata is: {self.var_current_metadata_dict}")
-        self.fileInfoPlotControlsWidget.update_metadata_vals(
-            self.var_current_metadata_dict
-        )
 
     def _validate_selection_for_plotting(self):
         valid_current_selection = self.fileExplorerWidget.get_current_selection()
