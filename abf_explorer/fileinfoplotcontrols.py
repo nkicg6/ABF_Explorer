@@ -54,9 +54,7 @@ class FileInfoPlotControls(qt.QWidget):
         self.plotControlsLayout.addWidget(self.button_plotControls_plot, 0, 1)
         self.plotControlsLayout.addWidget(self.button_plotControls_clear_plot, 1, 1)
 
-        self.mainLayout.addWidget(
-            self.fileInfoWidget, 0, 0, alignment=QtCore.Qt.AlignLeft
-        )
+        self.mainLayout.addWidget(self.fileInfoWidget, 0, 0, alignment=qtc.Qt.AlignLeft)
         self.mainLayout.addWidget(self.plotControlsWidget, 0, 1)
 
         self.fileInfoWidget.setLayout(self.fileInfoLayoutForm)
