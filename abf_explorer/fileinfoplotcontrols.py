@@ -1,5 +1,5 @@
 import PyQt5.QtWidgets as qt
-from PyQt5 import QtCore
+import PyQt5.QtCore as qtc
 from abf_explorer.abf_logging import make_logger
 
 
@@ -88,11 +88,7 @@ class FileInfoPlotControls(qt.QWidget):
         logger.debug("updated metadata")
 
     def get_sweep_and_channel_plotting_opts(self):
-        sweep_ind, channel_ind = self._get_combobox_selections()
+        sweep_ind = self.combobox_plotControls_sweep_list.currentIndex()
+        channel_ind = self.combobox_plotControls_channel_list.currentIndex()
         logger.debug(f"sweep: {sweep_ind}, channel: {channel_ind}")
         return sweep_ind, channel_ind
-
-    def _get_combobox_selections(self):
-        curr_channel_ind = self.combobox_plotControls_channel_list.currentIndex()
-        curr_sweep_ind = self.combobox_plotControls_sweep_list.currentIndex()
-        return curr_sweep_ind, curr_channel_ind
