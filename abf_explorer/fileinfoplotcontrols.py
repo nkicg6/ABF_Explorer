@@ -64,44 +64,33 @@ class FileInfoPlotControls(qt.QWidget):
         self.setLayout(self.mainLayout)
 
     def update_metadata_vals(self, file_metadata_dict):
-        try:
-            self._update_file_name(file_metadata_dict["short_filename"])
-            self._update_sampling_frequency(
-                file_metadata_dict["sampling_frequency_khz"]
-            )
-            self._update_protocol(file_metadata_dict["protocol"])
-            self._update_sweep_combobox(file_metadata_dict["n_sweeps"])
-            self._update_channel_combobox(file_metadata_dict["n_channels"])
-            logger.debug("updated metadata")
-        except Exception as e:
-            logger.exception(e)
-            logger.debug("exception")
+        self.label_fileInfo_file_name_val.setText(
+            file_metadata_dict.get("short_filename")
+        )
+        self.label_fileInfo_protocol_val.setText(file_metadata_dict.get("protocol"))
+        self.label_fileInfo_sampling_frequency_val.setText(
+            file_metadata_dict.get("sampling_frequency_khz")
+        )
+        self.combobox_plotControls_sweep_list.clear()
+        self.combobox_plotControls_sweep_list.addItems(
+            [
+                "sweep " + str(sweep)
+                for sweep in range(file_metadata_dict.get("n_sweeps"))
+            ]
+        )
+        self.combobox_plotControls_channel_list.clear()
+        self.combobox_plotControls_sweep_list.addItems(
+            [
+                "channel " + str(sweep)
+                for sweep in range(file_metadata_dict.get("n_channels"))
+            ]
+        )
+        logger.debug("updated metadata")
 
     def get_sweep_and_channel_plotting_opts(self):
         sweep_ind, channel_ind = self._get_combobox_selections()
         logger.debug(f"sweep: {sweep_ind}, channel: {channel_ind}")
         return sweep_ind, channel_ind
-
-    def _update_file_name(self, shortfilename):
-        self.label_fileInfo_file_name_val.setText(shortfilename)
-
-    def _update_protocol(self, protocol):
-        self.label_fileInfo_protocol_val.setText(protocol)
-
-    def _update_sampling_frequency(self, sampling_frequency):
-        self.label_fileInfo_sampling_frequency_val.setText(sampling_frequency)
-
-    def _update_sweep_combobox(self, sweep_n):
-        self.combobox_plotControls_sweep_list.clear()
-        self.combobox_plotControls_sweep_list.addItems(
-            ["sweep " + str(sweep) for sweep in range(sweep_n)]
-        )
-
-    def _update_channel_combobox(self, channel_n):
-        self.combobox_plotControls_channel_list.clear()
-        self.combobox_plotControls_channel_list.addItems(
-            ["channel " + str(channel) for channel in range(channel_n)]
-        )
 
     def _get_combobox_selections(self):
         curr_channel_ind = self.combobox_plotControls_channel_list.currentIndex()
