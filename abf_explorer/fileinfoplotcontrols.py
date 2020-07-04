@@ -9,6 +9,9 @@ logger = make_logger(__name__)
 class FileInfoPlotControls(qt.QWidget):
     """class for display of info from selected file and controlling plots. Most complex class."""
 
+    sendselections = qtc.pyqtSignal(dict)
+    clearplot = qtc.pyqtSignal(str)
+
     def __init__(self, parent):
         super().__init__(parent=parent)
         # VARS
@@ -77,7 +80,7 @@ class FileInfoPlotControls(qt.QWidget):
             ]
         )
         self.combobox_plotControls_channel_list.clear()
-        self.combobox_plotControls_sweep_list.addItems(
+        self.combobox_plotControls_channel_list.addItems(
             [
                 "channel " + str(sweep)
                 for sweep in range(file_metadata_dict.get("n_channels"))

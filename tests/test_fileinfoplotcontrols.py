@@ -37,6 +37,25 @@ def test_startup():
     fileinfoplotcontrols = FileInfoPlotControls(parent=None)
 
 
+def test_update_metadata_vals():
+    DATA = {
+        "short_filename": "20101001.abf",
+        "protocol": "cc01-steps",
+        "sampling_frequency_khz": "20.0",
+        "n_sweeps": 24,
+        "n_channels": 2,
+    }
+    fileinfoplotcontrols = FileInfoPlotControls(parent=None)
+    fileinfoplotcontrols.update_metadata_vals(DATA)
+    assert fileinfoplotcontrols.label_fileInfo_file_name_val.text() == "20101001.abf"
+    assert fileinfoplotcontrols.label_fileInfo_protocol_val.text() == "cc01-steps"
+    assert fileinfoplotcontrols.label_fileInfo_sampling_frequency_val.text() == "20.0"
+    assert (
+        fileinfoplotcontrols.combobox_plotControls_sweep_list.count()
+        == DATA["n_sweeps"]
+    )
+
+
 """
 def test_dirchanged_signal():
     dummy = DummyTester()
