@@ -5,12 +5,6 @@ import PyQt5.QtWidgets as qt
 from abf_explorer import gui
 from abf_explorer.args import parser
 
-try:
-    if not app:
-        app = qt.QApplication([])
-except NameError:
-    pass
-
 ABF_DATA_DIR = "data/abfs"
 ABF_DATA_DIR_METADATA_CHECK = "data/abfs/metadata-check"
 
