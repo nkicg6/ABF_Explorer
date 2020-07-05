@@ -114,7 +114,8 @@ class ABFExplorer(qt.QMainWindow):
 
         if self.startup_dir:
             logger.debug(f"startup dir passed: {self.startup_dir}")
-            self.fileExplorerWidget.input_dir(self.startup_dir)
+            startup_stuff = self.fileExplorerWidget.input_dir(self.startup_dir)
+            self.update_current_directory_and_selection(startup_stuff)
 
         self.fileExplorerWidget.selectionchanged.connect(
             self.update_current_selection_and_metadata
@@ -126,12 +127,21 @@ class ABFExplorer(qt.QMainWindow):
         self.fileInfoPlotControlsWidget = FileInfoPlotControls(
             parent=self.centralWidget
         )
+        self.metadatachanged.connect(
+            self.fileInfoPlotControlsWidget.update_metadata_vals
+        )
         self.fileInfoPlotControlsWidget.button_plotControls_clear_plot.clicked.connect(
             self.clear_plot
         )
         self.fileInfoPlotControlsWidget.button_plotControls_plot.clicked.connect(
             self.signal_plot_item_called,
         )
+        self.broadcastMetadata()
+        return
+
+    def broadcastMetadata(self):
+        logger.debug(f"sending metadata")
+        self.metadatachanged.emit(self.var_current_metadata_dict.copy())
         return
 
     def update_current_directory_and_selection(self, item: tuple):
@@ -155,6 +165,7 @@ class ABFExplorer(qt.QMainWindow):
             self.var_current_selection_short_name
         )
         self.var_current_metadata_dict = plotutils.io_get_metadata(item_path)
+        self.broadcastMetadata()
         return
 
     def lfp_io_analysis_frame(self):

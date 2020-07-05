@@ -46,6 +46,7 @@ class FileDisplay(qt.QWidget):
         current_dicts = self._filter_and_make_dict(path)
         current_selection = self._populate_listbox_file_list(current_dicts)
         self.onDirChanged(current_selection, current_dicts)
+        return (current_selection, current_dicts)
 
     def onDirChanged(self, current_selection, current_dicts):
         logger.debug(f"emitting tuple {(current_selection, current_dicts)}")

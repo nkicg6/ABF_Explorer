@@ -54,6 +54,10 @@ def test_update_metadata_vals():
         fileinfoplotcontrols.combobox_plotControls_sweep_list.count()
         == DATA["n_sweeps"]
     )
+    assert (
+        fileinfoplotcontrols.combobox_plotControls_channel_list.count()
+        == DATA["n_channels"]
+    )
 
 
 """
