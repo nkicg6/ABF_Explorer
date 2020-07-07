@@ -12,8 +12,8 @@ class FileInfoPlotControls(qt.QWidget):
     sendselections = qtc.pyqtSignal(dict)
     clearplot = qtc.pyqtSignal(str)
 
-    def __init__(self, parent):
-        super().__init__(parent=parent)
+    def __init__(self, parent=None):
+        super().__init__(parent)
         # VARS
         # layout control widgets
         self.fileInfoWidget = qt.QWidget()

@@ -1,2 +1,5 @@
 """use pytest-qt for managing qt instances"""
-pytest_plugins = "pytest-qt"
+import pytest
+import PyQt5.QtWidgets as qt
+
+app = qt.QApplication([])

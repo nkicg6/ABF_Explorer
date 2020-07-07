@@ -6,7 +6,7 @@ from abf_explorer import gui
 from abf_explorer import filedisplay
 from abf_explorer.args import parser
 
-app = qt.QApplication([])
+# app = qt.QApplication([])
 
 ABF_DATA_DIR = "data/abfs"
 ABF_DATA_DIR_METADATA_CHECK = "data/abfs/metadata-check"
