@@ -25,6 +25,7 @@ class ABFExplorer(qt.QMainWindow):
 
     # signals
     metadatachanged = qtc.pyqtSignal(dict)
+    sendplotdata = qtc.pyqtSignal(dict)
 
     def __init__(self, startup_dir=""):
         super().__init__()
@@ -57,7 +58,7 @@ class ABFExplorer(qt.QMainWindow):
         self.var_y_units_plotted = ""
 
         # make widgets and connect signals
-        self.plotWidget = PlotWidget(parent=self.centralWidget)
+        self._init_plot_widget()
         self._init_file_explorer()
         self._init_file_info_plot_controls()
 
@@ -141,6 +142,11 @@ class ABFExplorer(qt.QMainWindow):
         self.broadcastMetadata()
         return
 
+    def _init_plot_widget(self):
+        logger.debug("Initializing PlotWidget")
+        self.plotWidget = PlotWidget(parent=self.centralWidget)
+        self.sendplotdata.connect(self.plotWidget.update_plot)
+
     def send_to_plot(self, sweep_and_channel):
         sweep, channel = sweep_and_channel
         logger.debug(f"updating metadata sweep: {sweep} channel: {channel}")
@@ -163,7 +169,8 @@ class ABFExplorer(qt.QMainWindow):
             logger.debug("updating plot")
             self.var_y_units_plotted = plot_opts["y_units"]
             self.var_currently_plotted_data = fmt_plot_opts
-            self.plotWidget.update_plot(plot_opts)
+            self.sendplotdata.emit(plot_opts)
+            logger.debug(f"emitting {plot_opts}")
             return
         else:
             logger.warning("problem, no paths taken.")
