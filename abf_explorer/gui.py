@@ -86,20 +86,12 @@ class ABFExplorer(qt.QMainWindow):
         self.selectLFP83HzMenuAction.triggered.connect(self.lfp_83Hz_analysis_frame)
 
         # keyboard shortcuts
-        self.shortcut_update_plot = qt.QShortcut(
-            QtGui.QKeySequence("Tab"), self.centralWidget
-        )
-        self.shortcut_update_plot.activated.connect(self.signal_plot_item_called)
+        # self.shortcut_update_plot.activated.connect(self.signal_plot_item_called)
 
         self.shortcut_lfp_io = qt.QShortcut(
             QtGui.QKeySequence("Ctrl+i"), self.centralWidget
         )
         self.shortcut_lfp_io.activated.connect(self.lfp_io_analysis_frame)
-
-        self.shortcut_clear_plot = qt.QShortcut(
-            QtGui.QKeySequence("c"), self.centralWidget
-        )
-        self.shortcut_clear_plot.activated.connect(self.clear_plot)
 
         # geometry and run
         self.setGeometry(50, 50, 900, 600)
@@ -127,17 +119,54 @@ class ABFExplorer(qt.QMainWindow):
         self.fileInfoPlotControlsWidget = FileInfoPlotControls(
             parent=self.centralWidget
         )
+
         self.metadatachanged.connect(
             self.fileInfoPlotControlsWidget.update_metadata_vals
         )
-        self.fileInfoPlotControlsWidget.button_plotControls_clear_plot.clicked.connect(
-            self.clear_plot
+        self.fileInfoPlotControlsWidget.sendselections.connect(self.send_to_plot)
+        self.fileInfoPlotControlsWidget.clearplot.connect(self.clear_plot)
+        self.shortcut_update_plot = qt.QShortcut(
+            QtGui.QKeySequence("Tab"), self.centralWidget
         )
-        self.fileInfoPlotControlsWidget.button_plotControls_plot.clicked.connect(
-            self.signal_plot_item_called,
+        self.shortcut_update_plot.activated.connect(
+            self.fileInfoPlotControlsWidget.get_sweep_and_channel_plotting_opts
+        )
+
+        self.shortcut_clear_plot = qt.QShortcut(
+            QtGui.QKeySequence("c"), self.centralWidget
+        )
+        self.shortcut_clear_plot.activated.connect(
+            self.fileInfoPlotControlsWidget.emit_clear_plot
         )
         self.broadcastMetadata()
         return
+
+    def send_to_plot(self, sweep_and_channel):
+        sweep, channel = sweep_and_channel
+        logger.debug(f"updating metadata sweep: {sweep} channel: {channel}")
+        plot_opts = plotutils.io_gather_plot_data(
+            self.var_current_metadata_dict, sweep, channel,
+        )
+
+        status, fmt_plot_opts = plotutils.check_fmt_opts(
+            self.var_currently_plotted_data, plot_opts, self.var_y_units_plotted,
+        )
+        if status == "unit_error":
+            logger.warning(
+                f"Unit mismatch, can't reasonably plot '{self.var_y_units_plotted}' together on the same axis"
+            )
+            return
+        if status == "unchanged":
+            logger.debug(f"unchanged, continuing")
+            return
+        if status == "updated":
+            logger.debug("updating plot")
+            self.var_y_units_plotted = plot_opts["y_units"]
+            self.var_currently_plotted_data = fmt_plot_opts
+            self.plotWidget.update_plot(plot_opts)
+            return
+        else:
+            logger.warning("problem, no paths taken.")
 
     def broadcastMetadata(self):
         logger.debug(f"sending metadata")
@@ -180,75 +209,12 @@ class ABFExplorer(qt.QMainWindow):
         logger.debug("Raise 83Hz")
         return
 
-    def clear_plot(self):
+    def clear_plot(self, *args):
         """clears plot and currently_plotted_items"""
         self.plotWidget.clear_plot()
         self.var_currently_plotted_data = {}
         self.var_y_units_plotted = ""
         return
-
-    def _validate_selection_for_plotting(self):
-        valid_current_selection = self.fileExplorerWidget.get_current_selection()
-        if not valid_current_selection:
-            logger.warning(
-                f"No valid current selection found: {valid_current_selection}. Raising AssertionError"
-            )
-            raise (
-                AssertionError(
-                    f"No valid current selection found: {valid_current_selection}"
-                )
-            )
-        if self.var_current_selection_short_name != valid_current_selection:
-            logger.warning(
-                f"{self.var_current_selection} != {valid_current_selection}. Raising AssertionError"
-            )
-            raise (
-                AssertionError(
-                    f"{self.var_current_selection} != {valid_current_selection}"
-                )
-            )
-        return
-
-    def signal_plot_item_called(self, *args):
-        """called for plotting. Sets vars and gathers data for plot"""
-        try:
-            self._validate_selection_for_plotting()
-        except AssertionError as e:
-            logger.exception(e)
-            logger.debug("returning due to a validation error")
-            return
-
-        (
-            sweep_ind,
-            channel_ind,
-        ) = self.fileInfoPlotControlsWidget.get_sweep_and_channel_plotting_opts()
-        logger.debug(
-            f"metadata passed to gather data: {self.var_current_metadata_dict}"
-        )
-
-        plot_opts = plotutils.io_gather_plot_data(
-            self.var_current_metadata_dict, sweep_ind, channel_ind,
-        )
-
-        status, fmt_plot_opts = plotutils.check_fmt_opts(
-            self.var_currently_plotted_data, plot_opts, self.var_y_units_plotted,
-        )
-        if status == "unit_error":
-            logger.warning(
-                f"Unit mismatch, can't reasonably plot '{self.var_y_units_plotted}' together on the same axis"
-            )
-            return
-        if status == "unchanged":
-            logger.debug(f"unchanged, continuing")
-            return
-        if status == "updated":
-            logger.debug("updating plot")
-            self.var_y_units_plotted = plot_opts["y_units"]
-            self.var_currently_plotted_data = fmt_plot_opts
-            self.plotWidget.update_plot(plot_opts)
-            return
-        else:
-            logger.warning("problem, no paths taken.")
 
     def set_linear_selection_region(self, bounds):
         logger.debug("setting linear selection region")

@@ -1,5 +1,6 @@
 import PyQt5.QtWidgets as qt
 import PyQt5.QtCore as qtc
+from PyQt5 import QtGui
 from abf_explorer.abf_logging import make_logger
 
 
@@ -9,8 +10,8 @@ logger = make_logger(__name__)
 class FileInfoPlotControls(qt.QWidget):
     """class for display of info from selected file and controlling plots. Most complex class."""
 
-    sendselections = qtc.pyqtSignal(dict)
-    clearplot = qtc.pyqtSignal(str)
+    sendselections = qtc.pyqtSignal(tuple)
+    clearplot = qtc.pyqtSignal(bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -21,11 +22,16 @@ class FileInfoPlotControls(qt.QWidget):
 
         # buttons and displays
         self.button_plotControls_plot = qt.QPushButton("plot")
-        self.button_plotControls_clear_plot = qt.QPushButton("clear plot")
         self.button_plotControls_plot.setToolTip(
             "add selected data to the plot ('Tab')"
         )
+        self.button_plotControls_plot.clicked.connect(
+            self.get_sweep_and_channel_plotting_opts
+        )
+
+        self.button_plotControls_clear_plot = qt.QPushButton("clear plot")
         self.button_plotControls_clear_plot.setToolTip("clear plot ('c')")
+        self.button_plotControls_clear_plot.clicked.connect(self.emit_clear_plot)
 
         self.combobox_plotControls_sweep_list = qt.QComboBox()
         self.combobox_plotControls_channel_list = qt.QComboBox()
@@ -76,14 +82,14 @@ class FileInfoPlotControls(qt.QWidget):
         self.combobox_plotControls_sweep_list.addItems(
             [
                 "sweep " + str(sweep)
-                for sweep in range(file_metadata_dict.get("n_sweeps"))
+                for sweep in range(file_metadata_dict.get("n_sweeps", 0))
             ]
         )
         self.combobox_plotControls_channel_list.clear()
         self.combobox_plotControls_channel_list.addItems(
             [
                 "channel " + str(sweep)
-                for sweep in range(file_metadata_dict.get("n_channels"))
+                for sweep in range(file_metadata_dict.get("n_channels", 0))
             ]
         )
         logger.debug("updated metadata")
@@ -91,5 +97,10 @@ class FileInfoPlotControls(qt.QWidget):
     def get_sweep_and_channel_plotting_opts(self):
         sweep_ind = self.combobox_plotControls_sweep_list.currentIndex()
         channel_ind = self.combobox_plotControls_channel_list.currentIndex()
-        logger.debug(f"sweep: {sweep_ind}, channel: {channel_ind}")
-        return sweep_ind, channel_ind
+        self.sendselections.emit((sweep_ind, channel_ind))
+        logger.debug(f"emitting tuple sweep: {sweep_ind}, channel: {channel_ind}")
+        return
+
+    def emit_clear_plot(self):
+        logger.debug("emitting clear plot")
+        self.clearplot.emit(True)
