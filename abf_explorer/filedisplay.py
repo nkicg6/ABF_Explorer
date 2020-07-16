@@ -3,6 +3,7 @@ import PyQt5.QtWidgets as qt
 import PyQt5.QtCore as qtc
 from abf_explorer.abf_logging import make_logger
 
+# TypeError: onDirChanged() missing 1 required positional argument: 'current_dicts' when calling choose dir button. Why?
 # https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part1-example.html#part-1-designing-the-user-interface
 # TODO! signal changes. Print new file on change. This may need to be set in the main controller class? Alternatively, could add a listener to a VAR here for the main class to watch and take action.
 
@@ -43,6 +44,7 @@ class FileDisplay(qt.QWidget):
             self.input_dir(command_line_dir)
 
     def input_dir(self, path):
+        logger.debug(f"called with: {path}")
         current_dicts = self._filter_and_make_dict(path)
         current_selection = self._populate_listbox_file_list(current_dicts)
         self.onDirChanged(current_selection, current_dicts)
@@ -71,7 +73,10 @@ class FileDisplay(qt.QWidget):
         :param command_line_dir: a string passed from --startup-dir or -d upon app startup, defaults to None.
         :return: a tuple of current_selection and a dictionary where keys are the base file name and vals are the full paths to the files.
         """
-        selected_dir = self._choose_directory_button_action()
+        selected_dir = qt.QFileDialog().getExistingDirectory(
+            self, "Select ABF Directory", self._var_workingDir
+        )
+        logger.debug(f"selected dir is {selected_dir}")
         # case when button is cancelled.
         if selected_dir is None:
             logger.debug("button action likely cancelled by user.")

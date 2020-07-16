@@ -33,25 +33,13 @@ I attempted this before using Tkinter and matplotlib ([[https://github.com/nkicg
 * Development and design decisions
 ** testing 
 We use [[https://docs.pytest.org/en/latest/][pytest]]. Run unit test by running =pytest= from the base directory.
-** naming conventions
-- =vars= should start with =var_*=
-- follow the python convention of private vars and functions (functions/vars that will not be called or accessed by the controller) should start with =_=
-- Qt widgets like buttons, listboxes, labels (=PyQt5.QWidget.*=), etc. should start with what the thing is, followed by an underscore and a more descriptive name. (=button_select_abfs=)
-- Divide the classes into =#VARS=, =widgets=, =layout=, and =Actions=. 
+** class interactions and inheritance
+I am currently refactoring so classes communicate exclusively with Qt signals/slots, passing pure data. Signals will be connected to slots from the main class upon startup, and all classes will pass only data using these methods. Classes should not directly access fields or methods in other classes. 
 
 ** layout and class structure
 The main class, =ABFExplorer= has a simple grid layout, and is responsible for instantiating the classes for the other widgets and placing them in the grid. The other classes will typically contain one widget (inheriting from QWidget) and will have their own layout management. These individual widgets may have simple or more complex layouts, and I may decided to change the layout managers or contents over time. By keeping the main class layout simple, and any complexities in the other widget classes, I can delegate all the complex layout decisions to individual widget classes as needed, and have a working app even if I do major changes within individual widgets. 
 
 A good example of this is the =FileInfoPlotControls= class. It contains a parent class (=QWidget=), and two distinct layouts, a =QVBoxLayout=, and a =QFormLayout=. These two layouts are arranged in the parent =QWidget= in a grid, but this could easily change later. As far as the main window in ABFExplorer knows (or cares), it is just placing the main =FileInfoPlotControls= =QWidget=. 
-
-** class interactions and inheritance
-
-Inheritance confuses me, so beyond inheriting from Qt classes, I will not be using multiple inheritance. 
-I am trying to reduce coupling by passing only data between classes. I am currently refactoring so classes communicate exclusively with Qt signals/slots, passing pure data. Signals will be connected to slots from the main class upon startup. 
-
-*In this system, if a class directly accesses (or mutates) a field in another class, that is a bug* (I know there are several 'bugs' now, I'm working on it). All information will pass as regular data structures returned from functions or class methods.
-
-For example, the plotting functions are in the =plotting.PlotWidget= class. The main =update_plot()= method accepts a =dictionary= with a set of keys for =x=, =y=, and =name=. =update_plot()= does not grab something from another class or even know about another class, it simply accepts a =dict=, which could come from /anywhere/. This makes testing easier, reduces coupling, and makes it easier to adapt to new future data input methods and options in the future if I want. 
 
 ** Useful docs and links (Best docs are pyside)
 - https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth
@@ -61,6 +49,12 @@ For example, the plotting functions are in the =plotting.PlotWidget= class. The 
 Set environmental variable =DEBUG_DIR= to pass for quicker startup (no need to choose a directory) so startup like this:
 =python abf_explorer --startup-dir $DEBUG_DIR=
 * Development TODO's
+- ERROR case when choosing dir:
+
+#+BEGIN_EXAMPLE
+# TypeError: onDirChanged() missing 1 required positional argument: 'current_dicts' when calling choose dir button. Why?
+#+END_EXAMPLE
+
 - *Simplify interface between all classes to use signals and emit data.*
   - Signals and tests for plotting class
 - adopt model view controller architecture (=mvc= branch)
