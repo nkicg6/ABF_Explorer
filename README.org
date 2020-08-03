@@ -2,7 +2,8 @@
 #+PROPERTY: header-args :eval never-export
 
 * ABF_Explorer
-A simple [[https://riverbankcomputing.com/software/pyqt/download5][PyQt5]] and [[https://pyqtgraph.readthedocs.io/en/latest/][pyqtgraph]] based GUI to view, annotate, and perform semi-automated analysis on Axon Binary Format (=ABF=) files.
+
+=ABF_Explorer= provides a *simple*, cross platform (shar-able) app for quickly viewing ABF files without a bunch of python/matlab/etc. boilerplate. Often I want to quickly look through some files or show someone an example, but I don't know exactly which file or sweep it is. This simple tool allows you to quickly scroll through files, read the metadata, and take a look at the data.
 
 #+CAPTION: ABF_Explorer UI
 #+ATTR_HTML: :width 50% :height 50% :alt  :title  :align 
@@ -11,56 +12,37 @@ A simple [[https://riverbankcomputing.com/software/pyqt/download5][PyQt5]] and [
 
 We use the excellent pyABF package (https://github.com/swharden/pyABF) to do the hard work of parsing ABF files, Thanks [[https://github.com/swharden/][Scott!]]
 
-The idea of ABF_Explorer is to provide a *simple*, cross platform (shar-able) app for quickly viewing ABF files without a bunch of python/matlab/etc. boilerplate. Often I want to quickly look through some files or show an example, but I don't know exactly which file or sweep it is. This tool allows me to quickly scroll through files, read the metadata, and take a look at the data. 
 ** Useage
 
-   Currently in development. clone this repository, make a virtual environment, =pip install -r requirements.txt= and run =python abf_explorer= from the project root. If you want to load a directory of abf's at startup, use the =-d= or =--startup-dir= flag and pass the path to the directory. 
+   *Currently in development*. To use, clone this repository, make a virtual environment, =pip install -r requirements.txt= and run =python abf_explorer= from the project root. If you want to directly load a folder full of abf's at startup, use the =-d= or =--startup-dir= flag and pass the path to the directory.
 
-** Note and past efforts
-This project is under active development and is not well tested!
-I attempted this before using Tkinter and matplotlib ([[https://github.com/nkicg6/tkABF_Explorer][tkABF_Explorer]]) in an attempt to simplify packaging and deployment (Tkinter ships with python, so less native C and C++ dependencies that may require compilation). I found that the type of plot interaction that I wanted was difficult (for me) to achieve with Tkinter and matplotlib with reasonable performance, so I started fresh using =PyQt= and =pyqtgraph='s bindings to the powerful Qt framework.
+#+BEGIN_SRC python :session new :results output
+python abf_explorer -d path/to/abfs
+#+END_SRC
+
 * Roadmap/plans
-** ABF_Explorer should be easy to both *share* and *use*
+
+** =ABF_Explorer= should be easy to both *share* and *use*
 - =pip= installable, with few dependencies and reasonable command line options.
 - Easy to share and use with non-programmers or people unfamiliar with the nightmare that is python packaging.
   - This means making a simple downloadable =app= or =exe=, likely with [[https://www.pyinstaller.org/][PyInstaller]], [[https://beeware.org/][BeeWare]], or a comparable tool.
   - Cross platform (Windows, Mac OS, and Linux)
 - Keep it simple!
-** ABF_Explorer may offer limited semi-automated analysis features
-- I will use ABF_Explorer for analysis, but this is not the primary purpose of the version that I will distribute.
-- semi-automated analysis features will be add-hoc and likely only used via the =pip= version.
+** =ABF_Explorer= for analysis
+- =ABF_Explorer= is meant to be a simple way to view patch clamp or extracellular electrophysiology data.
+- Analysis needs are often complex and require experiment specific customization, so the scope of this project will remain focused on displaying =ABF= files.
+- Future development may include a method for selecting regions of a sweep and exporting the selected regions for further custom analysis. 
+** =ABF_Explorer= for non-ABF files
+- this may be supported in the future, or will at least be easy to extend 
 
 * Development and design decisions
 ** testing 
-We use [[https://docs.pytest.org/en/latest/][pytest]]. Run unit test by running =pytest= from the base directory.
+- We use [[https://docs.pytest.org/en/latest/][pytest]]. Run unit test by running =pytest= from the base directory.
 ** class interactions and inheritance
-I am currently refactoring so classes communicate exclusively with Qt signals/slots, passing pure data. Signals will be connected to slots from the main class upon startup, and all classes will pass only data using these methods. Classes should not directly access fields or methods in other classes. 
+- Classes communicate exclusively with Qt signals/slots, passing pure data (typically python dictionaries). 
+- Classes should not directly access fields or methods in other classes.
 
-** layout and class structure
-The main class, =ABFExplorer= has a simple grid layout, and is responsible for instantiating the classes for the other widgets and placing them in the grid. The other classes will typically contain one widget (inheriting from QWidget) and will have their own layout management. These individual widgets may have simple or more complex layouts, and I may decided to change the layout managers or contents over time. By keeping the main class layout simple, and any complexities in the other widget classes, I can delegate all the complex layout decisions to individual widget classes as needed, and have a working app even if I do major changes within individual widgets. 
-
-A good example of this is the =FileInfoPlotControls= class. It contains a parent class (=QWidget=), and two distinct layouts, a =QVBoxLayout=, and a =QFormLayout=. These two layouts are arranged in the parent =QWidget= in a grid, but this could easily change later. As far as the main window in ABFExplorer knows (or cares), it is just placing the main =FileInfoPlotControls= =QWidget=. 
-
-** Useful docs and links (Best docs are pyside)
+** Useful documentation and links
 - https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
-** development
-Set environmental variable =DEBUG_DIR= to pass for quicker startup (no need to choose a directory) so startup like this:
-=python abf_explorer --startup-dir $DEBUG_DIR=
-* Development TODO's
-- ERROR case when choosing dir:
-
-#+BEGIN_EXAMPLE
-# TypeError: onDirChanged() missing 1 required positional argument: 'current_dicts' when calling choose dir button. Why?
-#+END_EXAMPLE
-
-- *Simplify interface between all classes to use signals and emit data.*
-  - Signals and tests for plotting class
-- adopt model view controller architecture (=mvc= branch)
-  - possibly use a global =context= object to store all state (from emitted signals), as described in "[[https://www.amazon.com/Philosophy-Software-Design-John-Ousterhout/dp/1732102201][A Philosophy of Software Design]]"
-
-- auto re-scale between plotting sessions (after clear it won't always re-scale when plotting again)
-- abf_explorer will contain ONLY visualization tools. Experimental analysis stuff will be developed in =abf_analysis=
-- Add a message for error display. This should be mirror the log and be displayed as a dropdown text area if wanted/needed to send to me if there are problems so I have some context.
-- When mouse over, show name of trace.
