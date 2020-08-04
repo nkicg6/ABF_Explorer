@@ -34,7 +34,7 @@ class FileDisplay(qt.QWidget):
 
         # Listbox and signal #
         self.listbox_file_list = qt.QListWidget()
-        self.listbox_file_list.currentItemChanged.connect(self.onSelectionChanged)
+        self.listbox_file_list.currentItemChanged.connect(self.on_selection_changed)
         # layout
         self.layout = qt.QVBoxLayout()
         self.layout.addWidget(self.button_select_abf)
@@ -57,7 +57,7 @@ class FileDisplay(qt.QWidget):
         logger.debug(f"emitting tuple {(current_selection, current_dicts)}")
         self.dirchanged.emit((current_selection, current_dicts))
 
-    def onSelectionChanged(self, *args):
+    def on_selection_changed(self, *args):
         logger.debug("selection changed")
         current = args[0]
         if not current:
