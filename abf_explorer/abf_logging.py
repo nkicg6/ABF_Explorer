@@ -3,7 +3,8 @@ import logging
 logformatter = logging.Formatter(
     "-> [%(levelname)s] %(name)s::%(funcName)s() : %(message)s"
 )
-# unfortunately have to set the base logger format because pyABF sets it. That's why stuff is commented below
+# unfortunately have to set the base logger format because pyABF sets it.
+# That's why stuff is commented below
 logging.basicConfig(
     level=logging.CRITICAL,
     format="-> [%(levelname)s] %(name)s::%(funcName)s() : %(message)s",

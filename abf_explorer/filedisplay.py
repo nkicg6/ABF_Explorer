@@ -3,9 +3,12 @@ import PyQt5.QtWidgets as qt
 import PyQt5.QtCore as qtc
 from abf_explorer.abf_logging import make_logger
 
-# TypeError: onDirChanged() missing 1 required positional argument: 'current_dicts' when calling choose dir button. Why?
+# TypeError: onDirChanged() missing 1 required positional argument:
+# 'current_dicts' when calling choose dir button. Why?
 # https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part1-example.html#part-1-designing-the-user-interface
-# TODO! signal changes. Print new file on change. This may need to be set in the main controller class? Alternatively, could add a listener to a VAR here for the main class to watch and take action.
+# TODO! signal changes. Print new file on change. This may need to be set in
+# the main controller class? Alternatively, could add a listener to a VAR here
+# for the main class to watch and take action.
 
 logger = make_logger(__name__)
 
@@ -24,11 +27,11 @@ class FileDisplay(qt.QWidget):
             "~"
         )  # start home, replace with prev dir after selection
 
-        ##### Interaction and signal ####
+        # Interaction and signal #
         self.button_select_abf = qt.QPushButton("Choose folder")
         self.button_select_abf.clicked.connect(self.choose_directory_button_activated)
 
-        #### Listbox and signal ####
+        # Listbox and signal #
         self.listbox_file_list = qt.QListWidget()
         self.listbox_file_list.currentItemChanged.connect(self.onSelectionChanged)
 
@@ -55,12 +58,10 @@ class FileDisplay(qt.QWidget):
         self.dirchanged.emit((current_selection, current_dicts))
 
     def onSelectionChanged(self, *args):
-        logger.debug(f"selection changed")
+        logger.debug("selection changed")
         current = args[0]
         if not current:
-            logger.debug(
-                f"selection is returning none, selections passed are: {selections_signal}"
-            )
+            logger.debug(f"problem! selections passed: {[arg for arg in args]}")
             return
         current = current.text()
         self.selectionchanged.emit(current)
@@ -69,9 +70,12 @@ class FileDisplay(qt.QWidget):
 
     def choose_directory_button_activated(self):
         """sets file listbox and returns current selection and shortname:full-path dict.
-        activated when button pushed. Checks for valid files (abf only now), sets the listbox with the file paths
-        :param command_line_dir: a string passed from --startup-dir or -d upon app startup, defaults to None.
-        :return: a tuple of current_selection and a dictionary where keys are the base file name and vals are the full paths to the files.
+        activated when button pushed. Checks for valid files (abf only now),
+        sets the listbox with the file paths
+        :param command_line_dir: a string passed from --startup-dir or -d upon app
+        startup, defaults to None.
+        :return: a tuple of current_selection and a dictionary where keys are the base
+        file name and vals are the full paths to the files.
         """
         selected_dir = qt.QFileDialog().getExistingDirectory(
             self, "Select ABF Directory", self._var_workingDir
