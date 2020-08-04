@@ -1,6 +1,4 @@
-import os
 from . import context
-import pytest
 import PyQt5.QtWidgets as qt
 from abf_explorer import gui
 from abf_explorer import filedisplay
@@ -36,13 +34,14 @@ class DummyTester(qt.QWidget):
 
 def test_startup():
     filedisplaywidget = filedisplay.FileDisplay(parent=None)
+    assert True
 
 
 def test_dirchanged_signal():
     dummy = DummyTester()
     dummy.filedisplaywidget = filedisplay.FileDisplay(parent=dummy)
     dummy.filedisplaywidget.dirchanged.connect(dummy.setSelectionAndDict)
-    dummy.filedisplaywidget.onDirChanged("TEST", "_")
+    dummy.filedisplaywidget.on_dir_changed("TEST", "_")
     assert dummy.var_current_selection_short_name == "TEST"
     assert dummy.var_selected_abf_files_dict == "_"
 

@@ -64,7 +64,7 @@ def test_dirchanged_signal():
     dummy = DummyTester()
     dummy.filedisplaywidget = filedisplay.FileDisplay(parent=dummy)
     dummy.filedisplaywidget.dirchanged.connect(dummy.setSelectionAndDict)
-    dummy.filedisplaywidget.onDirChanged("TEST", "_")
+    dummy.filedisplaywidget.on_dir_changed("TEST", "_")
     assert dummy.var_current_selection_short_name == "TEST"
     assert dummy.var_selected_abf_files_dict == "_"
 
