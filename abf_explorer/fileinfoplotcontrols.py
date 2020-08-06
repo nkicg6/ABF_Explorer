@@ -10,7 +10,6 @@ logger = make_logger(__name__)
 class FileInfoPlotControls(qt.QWidget):
     """class for display of info from selected file and controlling plots."""
 
-    # pylint: disable=too-many-arguments
     sendselections = qtc.pyqtSignal(tuple)
     clearplot = qtc.pyqtSignal(bool)
 
@@ -18,76 +17,82 @@ class FileInfoPlotControls(qt.QWidget):
         super().__init__(parent)
         # VARS
         # layout control widgets
-        self.fileInfoWidget = qt.QWidget()
-        self.plotControlsWidget = qt.QWidget()
+        self.file_info_widget = qt.QWidget()
+        self.plot_controls_widget = qt.QWidget()
 
         # buttons and displays
-        self.button_plotControls_plot = qt.QPushButton("plot")
-        self.button_plotControls_plot.setToolTip(
+        self.button_plot_controls_plot = qt.QPushButton("plot")
+        self.button_plot_controls_plot.setToolTip(
             "add selected data to the plot ('Tab')"
         )
-        self.button_plotControls_plot.clicked.connect(
+        self.button_plot_controls_plot.clicked.connect(
             self.get_sweep_and_channel_plotting_opts
         )
 
-        self.button_plotControls_clear_plot = qt.QPushButton("clear plot")
-        self.button_plotControls_clear_plot.setToolTip("clear plot ('c')")
-        self.button_plotControls_clear_plot.clicked.connect(self.emit_clear_plot)
+        self.button_plot_controls_clear_plot = qt.QPushButton("clear plot")
+        self.button_plot_controls_clear_plot.setToolTip("clear plot ('c')")
+        self.button_plot_controls_clear_plot.clicked.connect(self.emit_clear_plot)
 
-        self.combobox_plotControls_sweep_list = qt.QComboBox()
-        self.combobox_plotControls_channel_list = qt.QComboBox()
+        self.combobox_plot_controls_sweep_list = qt.QComboBox()
+        self.combobox_plot_controls_channel_list = qt.QComboBox()
 
-        self.label_fileInfo_file_name = qt.QLabel("File name:")
-        self.label_fileInfo_file_name_val = qt.QLabel("")
-        self.label_fileInfo_protocol = qt.QLabel("Protocol:")
-        self.label_fileInfo_protocol_val = qt.QLabel("")
-        self.label_fileInfo_sampling_frequency = qt.QLabel("Sampling Freq. (kHz):")
-        self.label_fileInfo_sampling_frequency_val = qt.QLabel("")
+        self.label_file_info_file_name = qt.QLabel("File name:")
+        self.label_file_info_file_name_val = qt.QLabel("")
+        self.label_file_info_protocol = qt.QLabel("Protocol:")
+        self.label_file_info_protocol_val = qt.QLabel("")
+        self.label_file_info_sampling_frequency = qt.QLabel("Sampling Freq. (kHz):")
+        self.label_file_info_sampling_frequency_val = qt.QLabel("")
 
         # layouts
-        self.mainLayout = qt.QGridLayout()
-        self.fileInfoLayoutForm = qt.QFormLayout()
-        self.plotControlsLayout = qt.QGridLayout()
+        self.main_layout = qt.QGridLayout()
+        self.file_info_layout_form = qt.QFormLayout()
+        self.plot_controls_layout = qt.QGridLayout()
 
-        self.fileInfoLayoutForm.addRow(
-            self.label_fileInfo_file_name, self.label_fileInfo_file_name_val
+        self.file_info_layout_form.addRow(
+            self.label_file_info_file_name, self.label_file_info_file_name_val
         )
-        self.fileInfoLayoutForm.addRow(
-            self.label_fileInfo_protocol, self.label_fileInfo_protocol_val
+        self.file_info_layout_form.addRow(
+            self.label_file_info_protocol, self.label_file_info_protocol_val
         )
-        self.fileInfoLayoutForm.addRow(
-            self.label_fileInfo_sampling_frequency,
-            self.label_fileInfo_sampling_frequency_val,
+        self.file_info_layout_form.addRow(
+            self.label_file_info_sampling_frequency,
+            self.label_file_info_sampling_frequency_val,
         )
-        self.plotControlsLayout.addWidget(self.combobox_plotControls_sweep_list, 0, 0)
-        self.plotControlsLayout.addWidget(self.combobox_plotControls_channel_list, 1, 0)
-        self.plotControlsLayout.addWidget(self.button_plotControls_plot, 0, 1)
-        self.plotControlsLayout.addWidget(self.button_plotControls_clear_plot, 1, 1)
+        self.plot_controls_layout.addWidget(
+            self.combobox_plot_controls_sweep_list, 0, 0
+        )
+        self.plot_controls_layout.addWidget(
+            self.combobox_plot_controls_channel_list, 1, 0
+        )
+        self.plot_controls_layout.addWidget(self.button_plot_controls_plot, 0, 1)
+        self.plot_controls_layout.addWidget(self.button_plot_controls_clear_plot, 1, 1)
 
-        self.mainLayout.addWidget(self.fileInfoWidget, 0, 0, alignment=qtc.Qt.AlignLeft)
-        self.mainLayout.addWidget(self.plotControlsWidget, 0, 1)
+        self.main_layout.addWidget(
+            self.file_info_widget, 0, 0, alignment=qtc.Qt.AlignLeft
+        )
+        self.main_layout.addWidget(self.plot_controls_widget, 0, 1)
 
-        self.fileInfoWidget.setLayout(self.fileInfoLayoutForm)
-        self.plotControlsWidget.setLayout(self.plotControlsLayout)
-        self.setLayout(self.mainLayout)
+        self.file_info_widget.setLayout(self.file_info_layout_form)
+        self.plot_controls_widget.setLayout(self.plot_controls_layout)
+        self.setLayout(self.main_layout)
 
     def update_metadata_vals(self, file_metadata_dict):
-        self.label_fileInfo_file_name_val.setText(
+        self.label_file_info_file_name_val.setText(
             file_metadata_dict.get("short_filename")
         )
-        self.label_fileInfo_protocol_val.setText(file_metadata_dict.get("protocol"))
-        self.label_fileInfo_sampling_frequency_val.setText(
+        self.label_file_info_protocol_val.setText(file_metadata_dict.get("protocol"))
+        self.label_file_info_sampling_frequency_val.setText(
             file_metadata_dict.get("sampling_frequency_khz")
         )
-        self.combobox_plotControls_sweep_list.clear()
-        self.combobox_plotControls_sweep_list.addItems(
+        self.combobox_plot_controls_sweep_list.clear()
+        self.combobox_plot_controls_sweep_list.addItems(
             [
                 "sweep " + str(sweep)
                 for sweep in range(file_metadata_dict.get("n_sweeps", 0))
             ]
         )
-        self.combobox_plotControls_channel_list.clear()
-        self.combobox_plotControls_channel_list.addItems(
+        self.combobox_plot_controls_channel_list.clear()
+        self.combobox_plot_controls_channel_list.addItems(
             [
                 "channel " + str(sweep)
                 for sweep in range(file_metadata_dict.get("n_channels", 0))
@@ -96,11 +101,10 @@ class FileInfoPlotControls(qt.QWidget):
         logger.debug("updated metadata")
 
     def get_sweep_and_channel_plotting_opts(self):
-        sweep_ind = self.combobox_plotControls_sweep_list.currentIndex()
-        channel_ind = self.combobox_plotControls_channel_list.currentIndex()
+        sweep_ind = self.combobox_plot_controls_sweep_list.currentIndex()
+        channel_ind = self.combobox_plot_controls_channel_list.currentIndex()
         self.sendselections.emit((sweep_ind, channel_ind))
         logger.debug(f"emitting tuple sweep: {sweep_ind}, channel: {channel_ind}")
-        return
 
     def emit_clear_plot(self):
         logger.debug("emitting clear plot")

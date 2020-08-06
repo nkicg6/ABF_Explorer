@@ -1,10 +1,10 @@
+"""main GUI interface class"""
 # pyqt and graph testing
 # https://doc.qt.io/qtforpython/PySide2/QtWidgets/QWidget.html
 # https://doc.qt.io/qt-5/layout.html
 # https://pythonbasics.org/pyqt-grid/
 # examples python -m pyqtgraph.examples
-import os
-import numpy as np
+
 import PyQt5.QtWidgets as qt
 import PyQt5.QtCore as qtc
 from PyQt5 import QtGui
@@ -63,17 +63,17 @@ class ABFExplorer(qt.QMainWindow):
         self._init_file_info_plot_controls()
 
         # main widget layout and geometry
-        self.mainLayout = qt.QGridLayout()
-        self.mainLayout.setColumnStretch(0, 1)
-        self.mainLayout.setColumnStretch(1, 5)
-        self.mainLayout.setColumnMinimumWidth(0, 15)
-        self.mainLayout.setColumnMinimumWidth(1, 400)
+        self.main_layout = qt.QGridLayout()
+        self.main_layout.setColumnStretch(0, 1)
+        self.main_layout.setColumnStretch(1, 5)
+        self.main_layout.setColumnMinimumWidth(0, 15)
+        self.main_layout.setColumnMinimumWidth(1, 400)
 
-        self.mainLayout.addWidget(self.fileExplorerWidget, 0, 0, 1, 1)
-        self.mainLayout.addWidget(self.plotWidget, 0, 1)
-        self.mainLayout.addWidget(self.fileInfoPlotControlsWidget, 1, 0, 1, 2)
-        self.mainLayout.addWidget(self.fileInfoPlotControlsWidget, 1, 1)
-        self.centralWidget.setLayout(self.mainLayout)
+        self.main_layout.addWidget(self.fileExplorerWidget, 0, 0, 1, 1)
+        self.main_layout.addWidget(self.plotWidget, 0, 1)
+        self.main_layout.addWidget(self.fileInfoPlotControlsWidget, 1, 0, 1, 2)
+        self.main_layout.addWidget(self.fileInfoPlotControlsWidget, 1, 1)
+        self.centralWidget.setLayout(self.main_layout)
 
         #### events ####
 

@@ -46,15 +46,15 @@ def test_update_metadata_vals():
     }
     fileinfoplotcontrols = FileInfoPlotControls(parent=None)
     fileinfoplotcontrols.update_metadata_vals(DATA)
-    assert fileinfoplotcontrols.label_fileInfo_file_name_val.text() == "20101001.abf"
-    assert fileinfoplotcontrols.label_fileInfo_protocol_val.text() == "cc01-steps"
-    assert fileinfoplotcontrols.label_fileInfo_sampling_frequency_val.text() == "20.0"
+    assert fileinfoplotcontrols.label_file_info_file_name_val.text() == "20101001.abf"
+    assert fileinfoplotcontrols.label_file_info_protocol_val.text() == "cc01-steps"
+    assert fileinfoplotcontrols.label_file_info_sampling_frequency_val.text() == "20.0"
     assert (
-        fileinfoplotcontrols.combobox_plotControls_sweep_list.count()
+        fileinfoplotcontrols.combobox_plot_controls_sweep_list.count()
         == DATA["n_sweeps"]
     )
     assert (
-        fileinfoplotcontrols.combobox_plotControls_channel_list.count()
+        fileinfoplotcontrols.combobox_plot_controls_channel_list.count()
         == DATA["n_channels"]
     )
 

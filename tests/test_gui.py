@@ -78,15 +78,15 @@ def test_metadata_contents_file_display_fields():
         explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_file_name_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_file_name_val.text()
         == "20101001"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_protocol_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_protocol_val.text()
         == "cc_01-steps"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_sampling_frequency_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_sampling_frequency_val.text()
         == "20.0"
     )
 
@@ -98,15 +98,15 @@ def test_switch_file_updates_display_fields():
         explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_file_name_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_file_name_val.text()
         == "20101001"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_protocol_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_protocol_val.text()
         == "cc_01-steps"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_sampling_frequency_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_sampling_frequency_val.text()
         == "20.0"
     )
     #### CHANGE SELECTION ####
@@ -116,15 +116,15 @@ def test_switch_file_updates_display_fields():
         explorer.fileExplorerWidget.listbox_file_list.item(1).text() == "20101006.abf"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_file_name_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_file_name_val.text()
         == "20101006"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_protocol_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_protocol_val.text()
         == "cc_04-long-steps"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_fileInfo_sampling_frequency_val.text()
+        explorer.fileInfoPlotControlsWidget.label_file_info_sampling_frequency_val.text()
         == "20.0"
     )
 
