@@ -144,11 +144,11 @@ class ABFExplorer(qt.QMainWindow):
         )
         if status == "unit_error":
             logger.warning(
-                f"Unit mismatch, can't reasonably plot '{self.var_y_units_plotted}' together on the same axis"
+                f"Unit mismatch, can't plot '{self.var_y_units_plotted}' on the same axis"
             )
             return
         if status == "unchanged":
-            logger.debug(f"unchanged, continuing")
+            logger.debug("unchanged, continuing")
             return
         if status == "updated":
             logger.debug("updating plot")
@@ -161,7 +161,7 @@ class ABFExplorer(qt.QMainWindow):
             logger.warning("problem, no paths taken.")
 
     def broadcast_metadata(self):
-        logger.debug(f"sending metadata")
+        logger.debug("sending metadata")
         self.metadatachanged.emit(self.var_current_metadata_dict.copy())
         return
 

@@ -1,12 +1,15 @@
-import pyqtgraph as pg
+"""plotting widget"""
 from itertools import cycle
-from pprint import pprint
+import pyqtgraph as pg
 from abf_explorer.abf_logging import make_logger
 
 pg.setConfigOption("background", "w")
 pg.setConfigOption("foreground", "k")
 
-# each thing plotted needs to be a distinct https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotdataitem.html plotdataitem, added to the plotitem https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
+# each thing plotted needs to be a distinct plotdataitem added to the plotitem
+# https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotdataitem.html
+# https://pyqtgraph.readthedocs.io/en/latest/graphicsItems/plotitem.html
+
 logger = make_logger(__name__)
 
 
@@ -25,6 +28,7 @@ class PlotWidget(pg.GraphicsWindow):
             "#999999ff",
         ]
         self.linear_region = None
+        self.data = None
         self.color_cycler = cycle(self.color_list.copy())
         self.pen_width = 2
         self.set_main_canvas()
@@ -36,25 +40,24 @@ class PlotWidget(pg.GraphicsWindow):
 
     def _clear_legend(self):
         logger.debug("called")
-        for sample, label in self.mainPlotWidget.legend.items:
-            self.mainPlotWidget.legend.layout.removeItem(sample)
-            self.mainPlotWidget.legend.layout.removeItem(label)
-        self.mainPlotWidget.legend.items = []
-        self.mainPlotWidget.legend.updateSize()
+        for sample, label in self.main_plot_widget.legend.items:
+            self.main_plot_widget.legend.layout.removeItem(sample)
+            self.main_plot_widget.legend.layout.removeItem(label)
+        self.main_plot_widget.legend.items = []
+        self.main_plot_widget.legend.updateSize()
 
     def _clear_plot_items(self):
         logger.debug("clearing items from plot")
-        while self.mainPlotWidget.items:
-            self.mainPlotWidget.removeItem(self.mainPlotWidget.items[0])
+        while self.main_plot_widget.items:
+            self.main_plot_widget.removeItem(self.main_plot_widget.items[0])
 
     def set_main_canvas(self):
-        self.mainPlotWidget = self.addPlot(title="")
-        self.mainPlotWidget.addLegend()
+        self.main_plot_widget = self.addPlot(title="")
+        self.main_plot_widget.addLegend()
 
     def update_plot(self, plotdict):
-        self.mainPlotWidget.legend.update()
-        logger.debug("called")
-        logger.debug(f"legend items are {self.mainPlotWidget.legend.items}")
+        self.main_plot_widget.legend.update()
+        logger.debug(f"called. legend items are {self.main_plot_widget.legend.items}")
         self.data = pg.PlotDataItem(
             plotdict["x"],
             plotdict["y"],
@@ -63,15 +66,14 @@ class PlotWidget(pg.GraphicsWindow):
         )
 
         self.data.sigClicked.connect(self.print_clicked)
-        self.mainPlotWidget.addItem(self.data)
-        # self.proxy = pg.SignalProxy(self.mainPlotWidget.scene().sigMouseMoved, rateLimit=60,slot=self.print_clicked)
-        self.mainPlotWidget.setLabels(
+        self.main_plot_widget.addItem(self.data)
+        self.main_plot_widget.setLabels(
             left=plotdict["y_units"], bottom=plotdict["x_units"]
         )
 
     def make_linear_region(self, bounds):
         self.linear_region = pg.LinearRegionItem(bounds, movable=True, swapMode="block")
-        self.mainPlotWidget.addItem(self.linear_region)
+        self.main_plot_widget.addItem(self.linear_region)
         self.linear_region.sigRegionChangeFinished.connect(
             self._emit_linear_region_x_bounds
         )
@@ -92,12 +94,12 @@ class PlotWidget(pg.GraphicsWindow):
     def clear_plot(self, *args):
         logger.debug("called")
         self._clear_plot_items()
-        logger.debug(f"main_plot items: {[i for i in self.mainPlotWidget.items]}")
+        logger.debug(f"main_plot items: {[i for i in self.main_plot_widget.items]}")
         self.linear_region = None
         self.data = None
         self.var_linear_region_x_bounds = [None, None]
         self._clear_legend()
-        self.mainPlotWidget.clearPlots()
-        self.mainPlotWidget.legend.update()
-        self.mainPlotWidget.setLabels(left="", bottom="")
+        self.main_plot_widget.clearPlots()
+        self.main_plot_widget.legend.update()
+        self.main_plot_widget.setLabels(left="", bottom="")
         self.color_cycler = cycle(self.color_list.copy())
