@@ -1,6 +1,6 @@
+"""This module displays data for file metadata"""
 import PyQt5.QtWidgets as qt
 import PyQt5.QtCore as qtc
-from PyQt5 import QtGui
 from abf_explorer.abf_logging import make_logger
 
 
@@ -8,8 +8,9 @@ logger = make_logger(__name__)
 
 
 class FileInfoPlotControls(qt.QWidget):
-    """class for display of info from selected file and controlling plots. Most complex class."""
+    """class for display of info from selected file and controlling plots."""
 
+    # pylint: disable=too-many-arguments
     sendselections = qtc.pyqtSignal(tuple)
     clearplot = qtc.pyqtSignal(bool)
 
