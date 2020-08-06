@@ -30,20 +30,14 @@ class ABFExplorer(qt.QMainWindow):
     def __init__(self, startup_dir=""):
         super().__init__()
         self.startup_dir = startup_dir
-        self.centralWidget = qt.QWidget()
-        self.setCentralWidget(self.centralWidget)
+        self.central_widget = qt.QWidget()
+        self.setCentralWidget(self.central_widget)
         self.setWindowTitle("ABF explorer v0.1-dev")
         # menu bar
-        self.menuBar = self.menuBar()
-        self.menuBarAnalysis = self.menuBar.addMenu("&Analysis")
-        self.selectLFPIOMenuAction = QtGui.QAction("&LFP IO region", self)
-        self.menuBarAnalysis.addAction(self.selectLFPIOMenuAction)
-        self.selectLFPRefractoryMenuAction = QtGui.QAction(
-            "&LFP refractory periods", self
-        )
-        self.menuBarAnalysis.addAction(self.selectLFPRefractoryMenuAction)
-        self.selectLFP83HzMenuAction = QtGui.QAction("&LFP 83Hz", self)
-        self.menuBarAnalysis.addAction(self.selectLFP83HzMenuAction)
+        self.menu_bar = self.menuBar()
+        self.menu_bar_analysis = self.menu_bar.addMenu("&Analysis")
+        self.select_lfpio_menu_action = QtGui.QAction("&LFP IO region", self)
+        self.menu_bar_analysis.addAction(self.select_lfpio_menu_action)
 
         # analysis windows
         self.LFPIOWindow = None
@@ -73,24 +67,19 @@ class ABFExplorer(qt.QMainWindow):
         self.main_layout.addWidget(self.plotWidget, 0, 1)
         self.main_layout.addWidget(self.fileInfoPlotControlsWidget, 1, 0, 1, 2)
         self.main_layout.addWidget(self.fileInfoPlotControlsWidget, 1, 1)
-        self.centralWidget.setLayout(self.main_layout)
+        self.central_widget.setLayout(self.main_layout)
 
         #### events ####
 
         # ADD ACTIONS HERE
 
         # analysis actions
-        self.selectLFPIOMenuAction.triggered.connect(self.lfp_io_analysis_frame)
-        self.selectLFPRefractoryMenuAction.triggered.connect(
-            self.lfp_refractory_analysis_frame
-        )
-        self.selectLFP83HzMenuAction.triggered.connect(self.lfp_83Hz_analysis_frame)
+        self.select_lfpio_menu_action.triggered.connect(self.lfp_io_analysis_frame)
 
         # keyboard shortcuts
-        # self.shortcut_update_plot.activated.connect(self.signal_plot_item_called)
 
         self.shortcut_lfp_io = qt.QShortcut(
-            QtGui.QKeySequence("Ctrl+i"), self.centralWidget
+            QtGui.QKeySequence("Ctrl+i"), self.central_widget
         )
         self.shortcut_lfp_io.activated.connect(self.lfp_io_analysis_frame)
 
@@ -100,7 +89,7 @@ class ABFExplorer(qt.QMainWindow):
 
     def _init_file_explorer(self):
         logger.debug("Initializing FileDisplay")
-        self.fileExplorerWidget = FileDisplay(parent=self.centralWidget)
+        self.fileExplorerWidget = FileDisplay(parent=self.central_widget)
         self.fileExplorerWidget.dirchanged.connect(
             self.update_current_directory_and_selection
         )
@@ -118,7 +107,7 @@ class ABFExplorer(qt.QMainWindow):
     def _init_file_info_plot_controls(self):
         logger.debug("Initializing FileInfoPlotControls")
         self.fileInfoPlotControlsWidget = FileInfoPlotControls(
-            parent=self.centralWidget
+            parent=self.central_widget
         )
 
         self.metadatachanged.connect(
@@ -127,14 +116,14 @@ class ABFExplorer(qt.QMainWindow):
         self.fileInfoPlotControlsWidget.sendselections.connect(self.send_to_plot)
         self.fileInfoPlotControlsWidget.clearplot.connect(self.clear_plot)
         self.shortcut_update_plot = qt.QShortcut(
-            QtGui.QKeySequence("Tab"), self.centralWidget
+            QtGui.QKeySequence("Tab"), self.central_widget
         )
         self.shortcut_update_plot.activated.connect(
             self.fileInfoPlotControlsWidget.get_sweep_and_channel_plotting_opts
         )
 
         self.shortcut_clear_plot = qt.QShortcut(
-            QtGui.QKeySequence("c"), self.centralWidget
+            QtGui.QKeySequence("c"), self.central_widget
         )
         self.shortcut_clear_plot.activated.connect(
             self.fileInfoPlotControlsWidget.emit_clear_plot
@@ -144,7 +133,7 @@ class ABFExplorer(qt.QMainWindow):
 
     def _init_plot_widget(self):
         logger.debug("Initializing PlotWidget")
-        self.plotWidget = PlotWidget(parent=self.centralWidget)
+        self.plotWidget = PlotWidget(parent=self.central_widget)
         self.sendplotdata.connect(self.plotWidget.update_plot)
 
     def send_to_plot(self, sweep_and_channel):
@@ -207,14 +196,6 @@ class ABFExplorer(qt.QMainWindow):
     def lfp_io_analysis_frame(self):
         logger.debug("raise IO frame")
         self.LFPIOWindow = lfp.LFPIOAnalysis(self, self.var_current_metadata_dict)
-
-    def lfp_refractory_analysis_frame(self):
-        logger.debug("Raise refractory!")
-        return
-
-    def lfp_83Hz_analysis_frame(self):
-        logger.debug("Raise 83Hz")
-        return
 
     def clear_plot(self, *args):
         """clears plot and currently_plotted_items"""
