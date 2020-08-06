@@ -14,10 +14,11 @@ We use the excellent pyABF package (https://github.com/swharden/pyABF) to do the
 
 ** Useage
 
-   *Currently in development*. To use, clone this repository, make a virtual environment, =pip install -r requirements.txt= and run =python abf_explorer= from the project root. If you want to directly load a folder full of abf's at startup, use the =-d= or =--startup-dir= flag and pass the path to the directory.
+   *Currently in development*. To use, clone this repository, make a virtual environment, =cd= to the root of the cloned directory, and =pip install -e .=. Then you can run run =abf_explorer= from the project root. If you want to directly load a folder full of abf's at startup, use the =-d= or =--startup-dir= flag and pass the path to the directory.
 
 #+BEGIN_SRC python :session new :results output
-python abf_explorer -d path/to/abfs
+# after pip install:
+abf_explorer -d path/to/abfs
 #+END_SRC
 
 * Roadmap/plans
