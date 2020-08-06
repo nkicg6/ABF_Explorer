@@ -5,9 +5,9 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 )  # hack for absolute imports/tests for now..
 import PyQt5.QtWidgets as qt
-from args import parser
-from gui import ABFExplorer
-from abf_logging import make_logger
+from .args import parser
+from .gui import ABFExplorer
+from .abf_logging import make_logger
 
 logger = make_logger(__name__)
 
