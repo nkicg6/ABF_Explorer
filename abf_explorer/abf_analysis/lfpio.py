@@ -12,7 +12,7 @@ from abf_explorer import plotutils
 logger = make_logger(__name__)
 
 
-class LFPIOAnalysis(qt.QWidget):
+class LfpIoAnalysis(qt.QWidget):
     def __init__(self, base_ref, init_dict):
         super().__init__()
         logger.debug("initializing")
@@ -170,7 +170,7 @@ class LFPIOAnalysis(qt.QWidget):
         # clear plot
         self.parent.clear_plot()
         self.var_metadata_dict_plotted = self.make_plot_opts()
-        self.parent.plotWidget.update_plot(self.var_metadata_dict_plotted)
+        self.parent.plot_widget.update_plot(self.var_metadata_dict_plotted)
         (
             self.var_default_window_x1,
             self.var_default_window_x2,
@@ -179,7 +179,7 @@ class LFPIOAnalysis(qt.QWidget):
         self.parent.set_linear_selection_region(
             [self.var_default_window_x1, self.var_default_window_x2]
         )
-        self.parent.plotWidget.linear_region.sigRegionChangeFinished.connect(
+        self.parent.plot_widget.linear_region.sigRegionChangeFinished.connect(
             self.update_linear_region_signal
         )
         new_str = self.fmt_bounds_as_str_indicies(

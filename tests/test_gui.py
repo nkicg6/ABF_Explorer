@@ -12,14 +12,15 @@ ABF_DATA_DIR_METADATA_CHECK = "data/abfs/metadata-check"
 def test_startup_no_startup_dir():
     cmd_args = parser.parse_args([])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
-    assert explorer.fileExplorerWidget.listbox_file_list.count() == 0
+    assert explorer.file_explorer_widget.listbox_file_list.count() == 0
 
 
 def test_startup_non_existent_dir():
     cmd_args = parser.parse_args(["-d" "I_dont_exist"])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "No ABFs found"
+        explorer.file_explorer_widget.listbox_file_list.item(0).text()
+        == "No ABFs found"
     )
 
 
@@ -27,7 +28,7 @@ def test_startup_real_dir():
     cmd_args = parser.parse_args(["-d", ABF_DATA_DIR])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+        explorer.file_explorer_widget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     abfs_in_test_dir = sorted(
         [
@@ -36,7 +37,7 @@ def test_startup_real_dir():
             if f.endswith(".abf")
         ]
     )
-    assert explorer.fileExplorerWidget.listbox_file_list.count() == len(
+    assert explorer.file_explorer_widget.listbox_file_list.count() == len(
         abfs_in_test_dir
     )
 
@@ -63,7 +64,7 @@ def test_metadata_contents_gui_class():
         "target_sweep": None,
     }
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+        explorer.file_explorer_widget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert explorer.var_current_selection_short_name == "20101001.abf"
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
@@ -75,18 +76,18 @@ def test_metadata_contents_file_display_fields():
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     test_file_path = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101001.abf")
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+        explorer.file_explorer_widget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_file_name_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_file_name_val.text()
         == "20101001"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_protocol_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_protocol_val.text()
         == "cc_01-steps"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_sampling_frequency_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_sampling_frequency_val.text()
         == "20.0"
     )
 
@@ -95,36 +96,36 @@ def test_switch_file_updates_display_fields():
     cmd_args = parser.parse_args(["-d", ABF_DATA_DIR_METADATA_CHECK])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+        explorer.file_explorer_widget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_file_name_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_file_name_val.text()
         == "20101001"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_protocol_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_protocol_val.text()
         == "cc_01-steps"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_sampling_frequency_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_sampling_frequency_val.text()
         == "20.0"
     )
     #### CHANGE SELECTION ####
-    explorer.fileExplorerWidget.listbox_file_list.setCurrentRow(1)
+    explorer.file_explorer_widget.listbox_file_list.setCurrentRow(1)
     #### did metadata update? ####
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(1).text() == "20101006.abf"
+        explorer.file_explorer_widget.listbox_file_list.item(1).text() == "20101006.abf"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_file_name_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_file_name_val.text()
         == "20101006"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_protocol_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_protocol_val.text()
         == "cc_04-long-steps"
     )
     assert (
-        explorer.fileInfoPlotControlsWidget.label_file_info_sampling_frequency_val.text()
+        explorer.file_info_plot_controls_widget.label_file_info_sampling_frequency_val.text()
         == "20.0"
     )
 
@@ -162,13 +163,13 @@ def test_metadata_contents_gui_class_changes_on_selection():
         "target_sweep": None,
     }
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+        explorer.file_explorer_widget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert explorer.var_current_selection_short_name == "20101001.abf"
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict1
     assert explorer.var_current_metadata_dict == current_metadata_dict1
     #### CHANGE SELECTION ####
-    explorer.fileExplorerWidget.listbox_file_list.setCurrentRow(1)
+    explorer.file_explorer_widget.listbox_file_list.setCurrentRow(1)
     #### did metadata update? ####
     assert explorer.var_current_selection_short_name == "20101006.abf"
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict1
@@ -211,23 +212,23 @@ def test_metadata_contents_gui_class_bad_file():
     }
 
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(0).text() == "20101001.abf"
+        explorer.file_explorer_widget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.selectedItems()[0].text()
+        explorer.file_explorer_widget.listbox_file_list.selectedItems()[0].text()
         == "20101001.abf"
     )
     assert explorer.var_current_selection_short_name == "20101001.abf"
     assert explorer.var_selected_abf_files_dict == selected_abf_files_dict
     assert explorer.var_current_metadata_dict == current_metadata_dict1
     #### CHANGE SELECTION ####
-    explorer.fileExplorerWidget.listbox_file_list.setCurrentRow(1)
+    explorer.file_explorer_widget.listbox_file_list.setCurrentRow(1)
     #### did metadata update? ####
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.item(1).text() == "20101002.abf"
+        explorer.file_explorer_widget.listbox_file_list.item(1).text() == "20101002.abf"
     )
     assert (
-        explorer.fileExplorerWidget.listbox_file_list.selectedItems()[0].text()
+        explorer.file_explorer_widget.listbox_file_list.selectedItems()[0].text()
         == "20101002.abf"
     )
     assert explorer.var_current_selection_short_name == "20101002.abf"
