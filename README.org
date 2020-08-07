@@ -23,12 +23,22 @@ abf_explorer -d path/to/abfs
 
 * Roadmap/plans
 
-** =ABF_Explorer= should be easy to both *share* and *use*
-- =pip= installable, with few dependencies and reasonable command line options.
-- Easy to share and use with non-programmers or people unfamiliar with the nightmare that is python packaging.
-  - This means making a simple downloadable =app= or =exe=, likely with [[https://www.pyinstaller.org/][PyInstaller]], [[https://beeware.org/][BeeWare]], or a comparable tool.
-  - Cross platform (Windows, Mac OS, and Linux)
-- Keep it simple!
+** =ABF_Explorer= deployment
+
+*** pip
+- =pip= installable, with few dependencies and reasonable command line options. 
+  - 2020-08-06 *DONE* for local/custom installs from github
+  - *TODO* upload to pypi
+*** MacOS
+  - Partially done with hacks 2020-08-06
+  - need to figure out how to add =version.txt= data for the pyABF package. Currently using workaround via my =Makefile=
+    - =make clean= removes =dist= and =build= directories
+    - =make build= runs the pyinstaller installation scripts
+    - This will require using =venv= rather than =venvwrapper=. See https://realpython.com/pyinstaller-python/ use the =--add-data= option for the =version.txt=
+*** TODO Windows
+  - get working with local [[https://docs.python.org/3/library/venv.html][venv]] then port to windows. Make a batchfile installer
+*** Other experiments
+- [[https://beeware.org/][BeeWare]] briefcase project may be easier to use. Uses [[https://briefcase.readthedocs.io/en/latest/how-to/upgrade-from-v0.2.html][pyproject.toml]] as the configuration file
 ** =ABF_Explorer= for analysis
 - =ABF_Explorer= is meant to be a simple way to view patch clamp or extracellular electrophysiology data.
 - Analysis needs are often complex and require experiment specific customization, so the scope of this project will remain focused on displaying =ABF= files.
@@ -38,7 +48,7 @@ abf_explorer -d path/to/abfs
 
 * Development and design decisions
 ** testing 
-- We use [[https://docs.pytest.org/en/latest/][pytest]]. Run unit test by running =pytest= from the base directory.
+- [[https://docs.pytest.org/en/latest/][pytest]] is used for testing. Run unit test by running =pytest .= from the base directory.
 ** class interactions and inheritance
 - Classes communicate exclusively with Qt signals/slots, passing pure data (typically python dictionaries). 
 - Classes should not directly access fields or methods in other classes.
