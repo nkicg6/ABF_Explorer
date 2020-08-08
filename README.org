@@ -57,3 +57,16 @@ abf_explorer -d path/to/abfs
 - https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
+* finishing up todos
+** TODO [#A] automate building of app on MacOS
+*** TODO add version.txt data for pyABF for building on MacOS
+*** pyinstaller only supports python 3.7
+** TODO [#A] automate building of app on Windows
+*** TODO add version.txt data for pyABF for building on Windows 
+*** pyinstaller only supports python 3.7
+** TODO upload to pypi
+** TODO add copy region :feature:
+** TODO set style as light even if system is dark
+** TODO setup tox for py3.7, py3.8
+** TODO docstrings!
+** TODO sphynx docs
