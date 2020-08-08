@@ -3,10 +3,10 @@
 block_cipher = None
 
 
-a = Analysis(['__main__.py'],
-             pathex=['/Users/nick/personal_projects/pyqt_abf_explorer/abf_explorer'],
+a = Analysis(['app.py'],
+             pathex=['/Users/nick/personal_projects/pyqt_abf_explorer'],
              binaries=[],
-             datas=[],
+             datas=[('build_app_env/lib/python3.7/site-packages/pyabf/version.txt', 'pyabf')],
              hiddenimports=['pkg_resources.py2_warn'],
              hookspath=[],
              runtime_hooks=[],
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='abfexplore',
+          name='abfexplorer',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -32,6 +32,6 @@ exe = EXE(pyz,
           runtime_tmpdir=None,
           console=False )
 app = BUNDLE(exe,
-             name='abfexplore.app',
+             name='abfexplorer.app',
              icon=None,
              bundle_identifier=None)

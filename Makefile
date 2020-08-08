@@ -1,16 +1,14 @@
 clean:
 	rm -rf build
 	rm -rf dist
-	cd abf_explorer;rm -rf build;rm -rf dist
 
 build:
-	yes | pip uninstall pyabf; \
-	pip install ../temppyabf/pyABF/src/;\
-	cd abf_explorer;\
-	pyinstaller __main__.py -F \
+	pyinstaller app.py -F \
 	--windowed \
+	-w \
+	--add-data "build_app_env/lib/python3.7/site-packages/pyabf/version.txt:pyabf" \
 	--hidden-import='pkg_resources.py2_warn' \
 	--exclude-module=pytest \
-	--exclude-module=matplotlib -n abfexplore; \
-	yes| pip uninstall pyABF; \
-	pip install pyabf
+	--exclude-module=matplotlib \
+	-n abfexplorer
+
