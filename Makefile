@@ -1,8 +1,10 @@
+all: clean build_app
+
 clean:
 	rm -rf build
 	rm -rf dist
 
-build:
+spec:
 	pyinstaller app.py -F \
 	--windowed \
 	-w \
@@ -10,5 +12,4 @@ build:
 	--hidden-import='pkg_resources.py2_warn' \
 	--exclude-module=pytest \
 	--exclude-module=matplotlib \
-	-n abfexplorer
-
+	-n abf_explorer

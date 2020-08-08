@@ -2,13 +2,14 @@ import os
 import sys
 
 import PyQt5.QtWidgets as qt
+import PyQt5.QtCore as qtc
 from .args import parser
 from .gui import ABFExplorer
 from .abf_logging import make_logger
 
 logger = make_logger(__name__)
 
-# this is a this is a this is a this is a this is a this is a this is a this is a this is a
+qt.QApplication.setAttribute(qtc.Qt.AA_EnableHighDpiScaling, True)
 
 
 def main():
