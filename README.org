@@ -22,21 +22,18 @@ abf_explorer -d path/to/abfs
 #+END_SRC
 
 * Roadmap/plans
-
 ** =ABF_Explorer= deployment
 
 *** pip
 - =pip= installable, with few dependencies and reasonable command line options. 
-  - 2020-08-06 *DONE* for local/custom installs from github
+  - *DONE* for local pip installs from from source (2020-08-06)
   - *TODO* upload to pypi
 *** MacOS
-  - Partially done with hacks 2020-08-06
-  - need to figure out how to add =version.txt= data for the pyABF package. Currently using workaround via my =Makefile=
-    - =make clean= removes =dist= and =build= directories
-    - =make build= runs the pyinstaller installation scripts
-    - This will require using =venv= rather than =venvwrapper=. See https://realpython.com/pyinstaller-python/ use the =--add-data= option for the =version.txt=
+- =make clean= removes =dist= and =build= directories
+- =make spec= runs the pyinstaller to make a new spec file (don't use, added custom options)
+- =make build_app= runs =pyinstaller= with =abf_explorer.spec= to build app
 *** TODO Windows
-  - get working with local [[https://docs.python.org/3/library/venv.html][venv]] then port to windows. Make a batchfile installer
+  - get working with local [[https://docs.python.org/3/library/venv.html][venv]] then port to windows. Make a batchfile installer similar to MacOS
 *** Other experiments
 - [[https://beeware.org/][BeeWare]] briefcase project may be easier to use. Uses [[https://briefcase.readthedocs.io/en/latest/how-to/upgrade-from-v0.2.html][pyproject.toml]] as the configuration file
 ** =ABF_Explorer= for analysis
@@ -58,15 +55,13 @@ abf_explorer -d path/to/abfs
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
 * finishing up todos
-** In-progress [#A] automate building of app on MacOS
-*** TODO add icon
-https://retifrav.github.io/blog/2018/10/09/macos-convert-png-to-icns/
-** TODO [#A] automate building of app on Windows
-*** TODO add version.txt data for pyABF for building on Windows 
-*** pyinstaller only supports python 3.7
-** TODO upload to pypi
-** TODO add copy region :feature:
-** TODO set style as light even if system is dark
-** TODO setup tox for py3.7, py3.8
-** TODO docstrings!
-** TODO sphynx docs
+- Automate building of app on MacOS (In-progress)
+  - add icon https://retifrav.github.io/blog/2018/10/09/macos-convert-png-to-icns/
+- automate building of app on Windows
+- upload to pypi
+- add copy region
+-  setup tox for py3.7, py3.8
+- docstrings!
+- sphynx docs
+
+
