@@ -58,9 +58,9 @@ abf_explorer -d path/to/abfs
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
 * finishing up todos
-** TODO [#A] automate building of app on MacOS
-*** TODO add version.txt data for pyABF for building on MacOS
-*** pyinstaller only supports python 3.7
+** In-progress [#A] automate building of app on MacOS
+*** TODO add icon
+https://retifrav.github.io/blog/2018/10/09/macos-convert-png-to-icns/
 ** TODO [#A] automate building of app on Windows
 *** TODO add version.txt data for pyABF for building on Windows 
 *** pyinstaller only supports python 3.7

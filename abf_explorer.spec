@@ -23,15 +23,17 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='abfexplorer',
+          name='abf_explorer',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False )
+          console=False , icon='data/icons/traces.ico')
 app = BUNDLE(exe,
-             name='abfexplorer.app',
-             icon=None,
-             bundle_identifier=None)
+             name='abf_explorer.app',
+             icon='data/icons/traces.ico',
+             bundle_identifier=None,
+             info_plist={'NSHighResolutionCapable': 'True'}  # https://stackoverflow.com/a/40676321/6032156,
+             )
