@@ -1,4 +1,3 @@
-from . import context
 import PyQt5.QtWidgets as qt
 from abf_explorer import gui
 from abf_explorer import filedisplay

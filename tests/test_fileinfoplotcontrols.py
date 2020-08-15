@@ -1,5 +1,4 @@
 import os
-from . import context
 import pytest
 import PyQt5.QtWidgets as qt
 from abf_explorer import gui
