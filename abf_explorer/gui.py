@@ -158,7 +158,7 @@ class ABFExplorer(qt.QMainWindow):
             logger.debug(f"emitting {plot_opts}")
             return
         else:
-            logger.warning("problem, no paths taken.")
+            logger.warning("no paths taken.")
 
     def broadcast_metadata(self):
         logger.debug("sending metadata")

@@ -55,12 +55,14 @@ abf_explorer -d path/to/abfs
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
 * finishing up todos
+- simplify app info flow
+  - abstract the file reading to a class?
 - Automate building of app on MacOS (In-progress)
   - add icon https://retifrav.github.io/blog/2018/10/09/macos-convert-png-to-icns/
 - automate building of app on Windows
 - upload to pypi
 - add copy region
--  setup tox for py3.7, py3.8
+- setup tox for py3.7, py3.8
 - docstrings!
 - sphynx docs
 

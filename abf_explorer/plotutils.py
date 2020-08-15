@@ -4,10 +4,10 @@
 import hashlib
 import os
 import numpy as np
+import pyabf
 from abf_explorer.abf_logging import make_logger
 
 logger = make_logger(__name__)
-import pyabf
 
 
 PLOTDATA = {
