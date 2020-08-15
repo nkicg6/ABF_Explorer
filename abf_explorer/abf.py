@@ -10,6 +10,8 @@ class Abf:
     def __init__(self, abf_path):
         logger.debug(f"passed {abf_path}")
 
+        self.var_abf_path = None
+        self.error = None
         self._var_plot_data = {
             "short_filename": "",
             "full_path": "",
@@ -49,16 +51,12 @@ class Abf:
         _abf = pyabf.ABF(self.var_abf_path)
         metadata = self._var_plot_data.copy()
         metadata["short_filename"] = _abf.abfID
-        metadata["full_path"] = path
+        metadata["full_path"] = self.var_abf_path
         metadata["sampling_frequency_khz"] = str(_abf.dataRate / 1000)
         metadata["protocol"] = str(_abf.protocol)
-        metadata["n_sweeps"] = str(abf.sweepCount)
-        metadata["n_channels"] = abf.channelCount
+        metadata["n_sweeps"] = _abf.sweepCount
+        metadata["n_channels"] = _abf.channelCount
         return metadata
-
-    def send_metadata(self):
-
-        return self.var_metadata.copy()
 
     def send_plot_data(self, channel, sweep):
         pass

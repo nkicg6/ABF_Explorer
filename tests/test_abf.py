@@ -21,18 +21,21 @@ def test_path_init():
 
 
 def test_send_metadata():
-    empty = {
-        "short_filename": "",
-        "full_path": "",
-        "sampling_frequency_khz": "",
-        "protocol": "",
-        "n_sweeps": 0,
-        "n_channels": 0,
+    does_not_exist = "i/do/not/exist.abf"
+    real_path = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101001.abf")
+    truth_20101001 = {
+        "short_filename": "20101001",
+        "full_path": real_path,
+        "sampling_frequency_khz": "20.0",
+        "protocol": "cc_01-steps",
+        "n_sweeps": 23,
+        "n_channels": 1,
         "target_sweep": None,
         "mean_sweeps": False,
         "filtered_sweeps": False,
         "error": None,
     }
-    does_not_exist = "i/do/not/exist.abf"
     abf_obj = Abf(does_not_exist)
-    assert abf_obj.return_metadata() == empty
+    assert abf_obj.return_metadata() == abf_obj._var_plot_data
+    abf_obj = Abf(real_path)
+    assert abf_obj.return_metadata() == truth_20101001
