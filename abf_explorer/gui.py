@@ -14,6 +14,7 @@ from abf_explorer.filedisplay import FileDisplay
 from abf_explorer.fileinfoplotcontrols import FileInfoPlotControls
 from abf_explorer.plotting import PlotWidget
 from abf_explorer import plotutils
+from abf_explorer import abf
 from abf_explorer.abf_analysis import lfpio as lfp
 
 
@@ -185,7 +186,10 @@ class ABFExplorer(qt.QMainWindow):
         item_path = self.var_selected_abf_files_dict.get(
             self.var_current_selection_short_name
         )
-        self.var_current_metadata_dict = plotutils.io_get_metadata(item_path)
+        self.current_selected_object = abf.Abf(item_path)
+        self.var_current_metadata_dict = (
+            self.current_selected_object.return_metadata()
+        )  # plotutils.io_get_metadata(item_path)
         self.broadcast_metadata()
         return
 

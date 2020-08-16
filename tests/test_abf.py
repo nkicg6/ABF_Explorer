@@ -11,10 +11,10 @@ def test_path_init():
     real_path = os.path.join(ABF_DATA_DIR_METADATA_CHECK, "20101001.abf")
     abf_obj = Abf(non_abf_ending)
     assert abf_obj.error == f"path: {non_abf_ending} does not end in `.abf`"
-    assert abf_obj.var_abf_path == None
+    assert abf_obj.var_abf_path == ""
     abf_obj = Abf(does_not_exist)
     assert abf_obj.error == f"path: {does_not_exist} does not exist"
-    assert abf_obj.var_abf_path == None
+    assert abf_obj.var_abf_path == ""
     abf_obj = Abf(real_path)
     assert abf_obj.error == None
     assert abf_obj.var_abf_path == real_path

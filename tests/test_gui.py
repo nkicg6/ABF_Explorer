@@ -149,6 +149,7 @@ def test_metadata_contents_gui_class_changes_on_selection():
         "sampling_frequency_khz": "20.0",
         "short_filename": "20101001",
         "target_sweep": None,
+        # "error": None,
     }
     current_metadata_dict2 = {
         "filtered_sweeps": False,
@@ -160,6 +161,7 @@ def test_metadata_contents_gui_class_changes_on_selection():
         "sampling_frequency_khz": "20.0",
         "short_filename": "20101006",
         "target_sweep": None,
+        "error": None,
     }
     assert (
         explorer.file_explorer_widget.listbox_file_list.item(0).text() == "20101001.abf"
@@ -206,8 +208,9 @@ def test_metadata_contents_gui_class_bad_file():
         "n_sweeps": 0,
         "protocol": "",
         "sampling_frequency_khz": "",
-        "short_filename": "",
+        "short_filename": "20101002",
         "target_sweep": None,
+        "error": None,
     }
 
     assert (
