@@ -49,6 +49,7 @@ def abf_files():
         for i in os.listdir(abf_base_dir)
         if i.endswith(".abf")
     }
+    bad_path = os.path.join(abf_base_dir, "20101002.abf")
     contents = sorted(
         [
             os.path.join(abf_base_dir, f)
@@ -79,7 +80,7 @@ def abf_files():
             "sampling_frequency_khz": "",
             "short_filename": "20101002",
             "target_sweep": None,
-            "error": None,
+            "error": f"cannot read file : {bad_path}. likely pyabf error. exception is : unpack requires a buffer of 253 bytes",
         },
         "20101006.abf": {
             "filtered_sweeps": False,

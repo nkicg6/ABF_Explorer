@@ -55,7 +55,9 @@ class Abf:
         try:
             _abf = pyabf.ABF(self.var_abf_path)
         except Exception as e:
-            logger.warning(f"BAD FILE, exception: {e}")
+            err_str = f"cannot read file : {metadata['full_path']}. likely pyabf error. exception is : {e}"
+            metadata["error"] = err_str
+            logger.warning(err_str)
             return metadata
         metadata["sampling_frequency_khz"] = str(_abf.dataRate / 1000)
         metadata["protocol"] = str(_abf.protocol)
