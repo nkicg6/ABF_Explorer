@@ -41,16 +41,16 @@ def test_startup_real_dir():
     )
 
 
-def test_metadata_contents_gui_class(data_files):
-    data, all_files_dict = data_files
-    cmd_args = parser.parse_args(["-d", ABF_DATA_DIR_METADATA_CHECK])
+def test_metadata_contents_gui_class(metadata_test_files):
+    all_data, all_paths_dict, base_metadata_dir = metadata_test_files
+    cmd_args = parser.parse_args(["-d", base_metadata_dir])
     explorer = gui.ABFExplorer(startup_dir=cmd_args.startup_dir)
     assert (
         explorer.file_explorer_widget.listbox_file_list.item(0).text() == "20101001.abf"
     )
     assert explorer.var_current_selection_short_name == "20101001.abf"
-    assert explorer.var_selected_abf_files_dict == all_files_dict
-    assert explorer.var_current_metadata_dict == data["20101001.abf"]
+    assert explorer.var_selected_abf_files_dict == all_paths_dict
+    assert explorer.var_current_metadata_dict == all_data["20101001.abf"]
 
 
 def test_metadata_contents_file_display_fields():
