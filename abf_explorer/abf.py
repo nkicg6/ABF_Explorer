@@ -11,6 +11,7 @@ class Abf:
         logger.debug(f"passed {abf_path}")
 
         self.var_abf_path = ""
+        self._var_abf = None
         self.error = None
         self._var_plot_data = {
             "short_filename": "",
@@ -53,18 +54,35 @@ class Abf:
         if self.error:
             return self._var_plot_data.copy()
         try:
-            _abf = pyabf.ABF(self.var_abf_path)
+            self._var_abf = pyabf.ABF(self.var_abf_path)
         except Exception as e:
             err_str = f"cannot read file : {metadata['full_path']}. likely pyabf error. exception is : {e}"
             metadata["error"] = err_str
             logger.warning(err_str)
             return metadata
-        metadata["sampling_frequency_khz"] = str(_abf.dataRate / 1000)
-        metadata["protocol"] = str(_abf.protocol)
-        metadata["n_sweeps"] = _abf.sweepCount
-        metadata["n_channels"] = _abf.channelCount
+        metadata["sampling_frequency_khz"] = str(self._var_abf.dataRate / 1000)
+        metadata["protocol"] = str(self._var_abf.protocol)
+        metadata["n_sweeps"] = self._var_abf.sweepCount
+        metadata["n_channels"] = self._var_abf.channelCount
         logger.debug(f"{metadata}")
         return metadata
 
+    def _get_sweep_and_channel_data(self, channel, sweep):
+        self._var_abf.setSweep(channel=channel, sweep=sweep)
+        return (
+            self._var_abf.sweepX,
+            self._var_abf.sweepY,
+            self._var_abf.sweepUnitsX,
+            self._var_abf.sweepUnitsY,
+        )
+
     def send_plot_data(self, channel, sweep):
-        pass
+        metadata = self.return_metadata()
+        metadata["channel"] = channel
+        metadata["sweep"] = sweep
+        x, y, x_units, y_units = self._get_sweep_and_channel_data(channel, sweep)
+        metadata["x"] = x
+        metadata["y"] = y
+        metadata["x_units"] = x_units
+        metadata["y_units"] = y_units
+        metadata["name"] = f"{metadata['short_filename']} sweep-{sweep} ch-{channel}"

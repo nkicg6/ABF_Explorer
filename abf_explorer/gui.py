@@ -176,7 +176,8 @@ class ABFExplorer(qt.QMainWindow):
         item_path = self.var_selected_abf_files_dict.get(
             self.var_current_selection_short_name
         )
-        self.var_current_metadata_dict = plotutils.io_get_metadata(item_path)
+        self.current_selected_object = abf.Abf(item_path)
+        self.var_current_metadata_dict = self.current_selected_object.return_metadata()
         logger.debug(f"metadata is: {self.var_current_metadata_dict}")
         return
 
@@ -187,9 +188,7 @@ class ABFExplorer(qt.QMainWindow):
             self.var_current_selection_short_name
         )
         self.current_selected_object = abf.Abf(item_path)
-        self.var_current_metadata_dict = (
-            self.current_selected_object.return_metadata()
-        )  # plotutils.io_get_metadata(item_path)
+        self.var_current_metadata_dict = self.current_selected_object.return_metadata()
         self.broadcast_metadata()
         return
 
