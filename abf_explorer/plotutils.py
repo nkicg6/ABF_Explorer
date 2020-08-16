@@ -20,6 +20,7 @@ PLOTDATA = {
     "target_sweep": None,
     "mean_sweeps": False,
     "filtered_sweeps": False,
+    "error": None,
 }
 
 
