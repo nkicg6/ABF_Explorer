@@ -1,12 +1,9 @@
+# TODO update when you write the new class method for abf.Abf
 import os
 import pytest
 import PyQt5.QtWidgets as qt
 from abf_explorer import gui
 from abf_explorer.fileinfoplotcontrols import FileInfoPlotControls
-
-
-ABF_DATA_DIR = "data/abfs"
-ABF_DATA_DIR_METADATA_CHECK = "data/abfs/metadata-check"
 
 
 class DefaultParent(qt.QWidget):

@@ -4,9 +4,6 @@ import PyQt5.QtWidgets as qt
 from abf_explorer import gui
 from abf_explorer.args import parser
 
-ABF_DATA_DIR = "data/abfs"
-ABF_DATA_DIR_METADATA_CHECK = "data/abfs/metadata-check"
-
 
 def test_startup_no_startup_dir():
     cmd_args = parser.parse_args([])
