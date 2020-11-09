@@ -11,11 +11,11 @@ setup(
     version="0.1",
     description="A Qt GUI to quickly visualize ABF electrophysiology files",
     long_description=README,
-    long_description_content="text/markdown",
+    long_description_content_type="text/markdown",
     packages=["abf_explorer"],
     url="https://github.com/nkicg6/ABF_Explorer",
     classifiers=[
-        "License :: OSI Approved :: GNU GPL v3",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Programming Language :: Python :: 3.7",
     ],
     install_requires=["numpy", "PyQt5", "pyqtgraph", "pyabf"],
