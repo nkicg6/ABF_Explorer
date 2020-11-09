@@ -15,7 +15,6 @@ from abf_explorer.fileinfoplotcontrols import FileInfoPlotControls
 from abf_explorer.plotting import PlotWidget
 from abf_explorer import plotutils
 from abf_explorer import abf
-from abf_explorer.abf_analysis import lfpio as lfp
 
 
 logger = make_logger(__name__)
