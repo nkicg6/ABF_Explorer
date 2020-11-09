@@ -8,7 +8,7 @@ author = "Nick George"
 author-email = "nicholas.george32@gmail.com"
 home-page = "https://github.com/nkicg6/ABF_Explorer"
 classifiers = [
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"i,
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3",
     ]
 description-file = "README.md"
