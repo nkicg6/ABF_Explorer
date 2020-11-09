@@ -13,8 +13,10 @@ setup(
     long_description_content="text/markdown",
     packages=["abf_explorer"],
     url="https://github.com/nkicg6/ABF_Explorer",
-    classifiers=["License :: OSI Approved :: GNU GPL v3",
-        "Programming Language :: Python :: 3.7"],
+    classifiers=[
+        "License :: OSI Approved :: GNU GPL v3",
+        "Programming Language :: Python :: 3.7",
+    ],
     install_requires=["numpy", "PyQt5", "pyqtgraph", "pyabf"],
     entry_points={"gui_scripts": ["abf_explorer = abf_explorer.__main__:main"]},
 )
