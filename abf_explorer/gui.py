@@ -22,7 +22,7 @@ logger = make_logger(__name__)
 
 
 class ABFExplorer(qt.QMainWindow):
-    """main abf explorer class contains all widgets and coordinates all actions"""
+    """main class contains all widgets and coordinates all actions"""
 
     # signals
     metadatachanged = qtc.pyqtSignal(dict)
@@ -33,16 +33,8 @@ class ABFExplorer(qt.QMainWindow):
         self.startup_dir = startup_dir
         self.central_widget = qt.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.setWindowTitle("ABF explorer v0.1-dev")
-        # menu bar
-        self.menu_bar = self.menuBar()
-        self.menu_bar_analysis = self.menu_bar.addMenu("&Analysis")
-        self.select_lfpio_menu_action = QtGui.QAction("&LFP IO region", self)
-        self.menu_bar_analysis.addAction(self.select_lfpio_menu_action)
-
-        # analysis windows
-        self.lfpio_window = None
-
+        self.setWindowTitle("ABF Explorer v0.1")
+        # TODO menu bar
         # vars
         self.var_current_selection_short_name = ""
         self.var_selected_abf_files_dict = {}
@@ -70,15 +62,7 @@ class ABFExplorer(qt.QMainWindow):
         self.main_layout.addWidget(self.file_info_plot_controls_widget, 1, 1)
         self.central_widget.setLayout(self.main_layout)
 
-        # analysis actions
-        self.select_lfpio_menu_action.triggered.connect(self.lfp_io_analysis_frame)
-
         # keyboard shortcuts
-
-        self.shortcut_lfp_io = qt.QShortcut(
-            QtGui.QKeySequence("Ctrl+i"), self.central_widget
-        )
-        self.shortcut_lfp_io.activated.connect(self.lfp_io_analysis_frame)
 
         # geometry and run
         self.setGeometry(50, 50, 900, 600)
@@ -191,10 +175,6 @@ class ABFExplorer(qt.QMainWindow):
         self.var_current_metadata_dict = self.current_selected_object.return_metadata()
         self.broadcast_metadata()
         return
-
-    def lfp_io_analysis_frame(self):
-        logger.debug("raise IO frame")
-        self.lfpio_window = lfp.LfpIoAnalysis(self, self.var_current_metadata_dict)
 
     def clear_plot(self, *args):
         """clears plot and currently_plotted_items"""

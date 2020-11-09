@@ -4,3 +4,4 @@ __pycache__
 build_app_env
 build
 dist
+*.swp
