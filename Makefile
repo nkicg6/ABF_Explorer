@@ -18,3 +18,7 @@ spec:
 
 build_app:
 	pyinstaller abf_explorer.spec
+
+build_pip:
+	rm -rf dist build
+	python setup.py sdist bdist_wheel;twine check dist/*
