@@ -8,22 +8,24 @@ We use the excellent pyABF package (https://github.com/swharden/pyABF) by [Scott
 
 # Use
 
-Tested with Python 3.7-3.9. 
+This is a graphical application for inspecting physiology data in ABF files. ABF Explorer supports Python > 3.7.
+
 ## Install
-```
-# python3/pip3 
+
+```bash
+# python3/pip3
 pip install abf_explorer
 ```
 
 ## Launch GUI
 
-```
+```bash
 abf_explorer
 ```
 
 ## Command line options
 
-`-d` specify path to a directory containing ABF files. 
+`-d` or `--startup-dir` specify path to a directory containing ABF files.
 
 Use:
 
