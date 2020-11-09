@@ -6,6 +6,7 @@ with open("README.md", "r") as instructions:
 setup(
     name="abf_explorer",
     author="Nick George",
+    author_email="nicholas.george32@gmail.com",
     license="GPL v3",
     version="0.1",
     description="A Qt GUI to quickly visualize ABF electrophysiology files",
