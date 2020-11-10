@@ -1,8 +1,8 @@
-all: clean build_app
+all: run_tests clean build_app
 
-test_upload: build_pip twine_test_upload
+test_upload: run_tests build_pip twine_test_upload
 
-pip_upload: build_pip twine_upload
+pip_upload: run_tests build_pip twine_upload
 
 
 clean:
@@ -33,3 +33,6 @@ twine_test_upload:
 
 twine_upload:
 	twine upload dist/*
+
+run_tests:
+	tox
