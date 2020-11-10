@@ -33,19 +33,21 @@ Making this package easily installable without touching python is very important
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
 * finishing up todos
-- (NEXT) upload to pypi
 - replace =plotutils.io_gather_plot_data= with =abf.Abf.send_plot_data=
   - +abstract the file reading to a class?+
   - write more =abf.Abf= tests for =send_plot_data= method
   - remove =plotutils=
 - add copy region
   - +remove the LFP analysis package you have now and merge it into this generic one+
-- pyproject.toml for build/settings
 - docstrings!
 - sphinx docs!
-- +simplify app info flow+
 - Automate building of app on MacOS (In-progress)
   - add icon https://retifrav.github.io/blog/2018/10/09/macos-convert-png-to-icns/
 - automate building of app on Windows
 - setup tox for py3.7, py3.8
+- +simplify app info flow+
+- +upload to pypi+
 - +use test fixtures for data validation+
+
+* testing pypi
+pip install --verbose -i https://test.pypi.org/simple/ abf-explorer==VERSION --extra-index-url https://pypi.org/simple
