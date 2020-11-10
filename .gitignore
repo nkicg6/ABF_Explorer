@@ -5,3 +5,4 @@ build_app_env
 build
 dist
 *.swp
+.tox/*
