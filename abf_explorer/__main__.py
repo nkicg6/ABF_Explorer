@@ -3,9 +3,9 @@ import sys
 
 import PyQt5.QtWidgets as qt
 import PyQt5.QtCore as qtc
-from .args import parser
-from .gui import ABFExplorer
-from .abf_logging import make_logger
+from abf_explorer.args import parser
+from abf_explorer.gui import ABFExplorer
+from abf_explorer.abf_logging import make_logger
 
 logger = make_logger(__name__)
 

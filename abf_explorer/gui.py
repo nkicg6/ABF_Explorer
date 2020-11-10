@@ -4,12 +4,12 @@
 # https://doc.qt.io/qt-5/layout.html
 # https://pythonbasics.org/pyqt-grid/
 # examples python -m pyqtgraph.examples
-import re
 
 import PyQt5.QtWidgets as qt
 import PyQt5.QtCore as qtc
 from PyQt5 import QtGui
 
+import abf_explorer
 from abf_explorer.abf_logging import make_logger
 from abf_explorer.filedisplay import FileDisplay
 from abf_explorer.fileinfoplotcontrols import FileInfoPlotControls
@@ -19,12 +19,6 @@ from abf_explorer import abf
 
 
 logger = make_logger(__name__)
-
-with open("__init__.py", "r") as init:
-    init_str = init.read()
-
-version_matcher = re.compile(r"__version__ = (\".*\")")
-VERSION = version_matcher.search(init_str).group(1).strip('"')
 
 
 class ABFExplorer(qt.QMainWindow):
@@ -39,7 +33,7 @@ class ABFExplorer(qt.QMainWindow):
         self.startup_dir = startup_dir
         self.central_widget = qt.QWidget()
         self.setCentralWidget(self.central_widget)
-        self.setWindowTitle(f"ABF Explorer v{VERSION}")
+        self.setWindowTitle(f"ABF Explorer v{abf_explorer.__version__}")
         # TODO menu bar
         # vars
         self.var_current_selection_short_name = ""
