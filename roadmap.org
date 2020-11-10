@@ -3,11 +3,6 @@
 
 * Roadmap/plans
 ** =ABF_Explorer= deployment
-
-*** pip
-- =pip= installable, with few dependencies and reasonable command line options. 
-  - *DONE* for local pip installs from from source (2020-08-06)
-  - upload to pypi 
 *** MacOS (=abf_explorer.app=) 
 My main development machine is a Mac, so this has been the easiest for me to work on. 
 - =make clean= removes =dist= and =build= directories
@@ -16,6 +11,11 @@ My main development machine is a Mac, so this has been the easiest for me to wor
 *** TODO Windows (=abf_explorer.exe=) 
 Making this package easily installable without touching python is very important to me. Windows is harder because I have to find a Windows machine to work on it with, but it will happen. 
   - get working with local [[https://docs.python.org/3/library/venv.html][venv]] then port to windows. Make a batchfile installer similar to MacOS
+*** DONE pip
+    CLOSED: [2020-11-10 Tue 07:53]
+- +=pip= installable, with few dependencies and reasonable command line options.+
+  - +for local pip installs from from source (2020-08-06)+
+  - +upload to pypi (2020-11-09)+
 *** Other experiments
 - [[https://beeware.org/][BeeWare]] briefcase project may be easier to use. Uses [[https://briefcase.readthedocs.io/en/latest/how-to/upgrade-from-v0.2.html][pyproject.toml]] as the configuration file
 ** =ABF_Explorer= for analysis
@@ -33,6 +33,7 @@ Making this package easily installable without touching python is very important
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
 * TODO's
+- (*in-progress*)setup tox for py3.7, py3.8
 - replace =plotutils.io_gather_plot_data= with =abf.Abf.send_plot_data=
   - +abstract the file reading to a class?+
   - write more =abf.Abf= tests for =send_plot_data= method
@@ -45,7 +46,6 @@ Making this package easily installable without touching python is very important
 - Automate building of app on MacOS (In-progress)
   - add icon https://retifrav.github.io/blog/2018/10/09/macos-convert-png-to-icns/
 - automate building of app on Windows
-- setup tox for py3.7, py3.8
 - +simplify app info flow+
 - +upload to pypi+
 - +use test fixtures for data validation+
