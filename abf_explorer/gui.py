@@ -24,7 +24,7 @@ with open("__init__.py", "r") as init:
     init_str = init.read()
 
 version_matcher = re.compile(r"__version__ = (\".*\")")
-VERSION = version_matcher.search(init_str).group(1)
+VERSION = version_matcher.search(init_str).group(1).strip('"')
 
 
 class ABFExplorer(qt.QMainWindow):

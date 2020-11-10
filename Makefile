@@ -1,5 +1,10 @@
 all: clean build_app
 
+test_upload: build_pip twine_test_upload
+
+pip_upload: build_pip twine_upload
+
+
 clean:
 	rm -rf build
 	rm -rf dist
@@ -22,3 +27,9 @@ build_app:
 build_pip:
 	rm -rf dist build
 	python setup.py sdist bdist_wheel;twine check dist/*
+
+twine_test_upload:
+	twine upload -r testpypi dist/*
+
+twine_upload:
+	twine upload dist/*

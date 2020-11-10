@@ -8,7 +8,7 @@ with open("abf_explorer/__init__.py", "r") as init:
     init_str = init.read()
 
 version_matcher = re.compile(r"__version__ = (\".*\")")
-version_str = version_matcher.search(init_str).group(1)
+version_str = version_matcher.search(init_str).group(1).strip('"')
 
 setup(
     name="abf_explorer",
