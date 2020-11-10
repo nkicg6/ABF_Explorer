@@ -32,11 +32,12 @@ Making this package easily installable without touching python is very important
 - https://pyside.github.io/docs/pyside/PySide/QtGui/QGridLayout.html#PySide.QtGui.PySide.QtGui.QGridLayout.setColumnMinimumWidth
 - https://doc.qt.io/qtforpython/overviews/qtwidgets-tutorials-addressbook-part2-example.html
   
-* finishing up todos
+* TODO's
 - replace =plotutils.io_gather_plot_data= with =abf.Abf.send_plot_data=
   - +abstract the file reading to a class?+
   - write more =abf.Abf= tests for =send_plot_data= method
   - remove =plotutils=
+- Option to show all metadata in a window for a selected file in a nice way
 - add copy region
   - +remove the LFP analysis package you have now and merge it into this generic one+
 - docstrings!

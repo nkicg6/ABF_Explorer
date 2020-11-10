@@ -1,6 +1,6 @@
 # ABF Explorer
 
-`ABF_Explorer` is a **simple** app for quickly viewing axon binary format (ABF) files from electrophysiology experiments without writing a bunch of python/matlab/etc. boilerplate. This graphical tool allows you to quickly scroll through files, read the metadata, and take a look at the data.
+`ABF_Explorer` is a **simple** graphical application for quickly viewing axon binary format (ABF) files from electrophysiology experiments without writing a bunch of boilerplate python/matlab/etc. This graphical tool allows you to quickly scroll through files, read the basic metadata, and take a look at the data.
 
 ![ABF_Explorer UI](https://github.com/nkicg6/ABF_Explorer/raw/master/docs/img/abfexplorer-example.png "ABF Explorer UI")
 
@@ -31,6 +31,11 @@ Use:
 ```python
 abf_explorer -d path/to/abfs
 ```
+
+## Keyboard shorcuts
+
+- `TAB` will plot the current selection
+- `c` will clear the current plot
 
 ## Sample data
 
