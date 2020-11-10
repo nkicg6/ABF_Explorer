@@ -31,3 +31,7 @@ Use:
 ```python
 abf_explorer -d path/to/abfs
 ```
+
+## Sample data
+
+Sample data (`abf`'s) can be downloaded from [this repository](https://github.com/nkicg6/ABF_Explorer/tree/master/data/abfs).

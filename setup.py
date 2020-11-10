@@ -1,14 +1,21 @@
+import re
 from setuptools import setup
 
 with open("README.md", "r") as instructions:
     README = instructions.read()
+
+with open("abf_explorer/__init__.py", "r") as init:
+    init_str = init.read()
+
+version_matcher = re.compile(r"__version__ = (\".*\")")
+version_str = version_matcher.search(init_str).group(1)
 
 setup(
     name="abf_explorer",
     author="Nick George",
     author_email="nicholas.george32@gmail.com",
     license="GPL v3",
-    version="0.1.1-dev",
+    version=version_str,
     description="A PyQt GUI to quickly visualize ABF electrophysiology files",
     long_description=README,
     long_description_content_type="text/markdown",
