@@ -40,3 +40,9 @@ abf_explorer -d path/to/abfs
 ## Sample data
 
 Sample data (`abf`'s) can be downloaded from [this repository](https://github.com/nkicg6/ABF_Explorer/tree/master/data/abfs).
+
+# Changelog
+
+## Version bump 0.5 -> 0.6 2021-04-21
+
+Bump PyQt5 version to fix BigSur GUI failure. 
