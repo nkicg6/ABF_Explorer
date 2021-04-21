@@ -32,7 +32,7 @@ setup(
     ],
     install_requires=[
         "numpy == 1.19.4",
-        "PyQt5 == 5.15.1",
+        "PyQt5 == 5.15.4",
         "pyqtgraph == 0.11.0",
         "pyabf == 2.2.8",
     ],
