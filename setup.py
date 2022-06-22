@@ -31,7 +31,7 @@ setup(
         "Topic :: Scientific/Engineering :: Visualization",
     ],
     install_requires=[
-        "numpy == 1.19.4",
+        "numpy == 1.22.0",
         "PyQt5 == 5.15.4",
         "pyqtgraph == 0.11.0",
         "pyabf == 2.2.8",
